@@ -43,4 +43,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function finances()
+    {
+        return $this->hasMany(Finance::class);
+    }
+
+    public function financeLogs()
+    {
+        return $this->hasMany(FinanceLog::class);
+    }
+
+    // helper
+    public function hasRole(...$roles)
+    {
+        return in_array($this->role, $roles);
+    }
+
 }

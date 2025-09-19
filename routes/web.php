@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SuperAdmin\AccountController;
+use App\Http\Controllers\Finance\FinanceController;
+use App\Http\Controllers\Finance\SPPController;
+use App\Http\Controllers\Finance\PayrollController;
+use App\Http\Controllers\Finance\LogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,4 +63,81 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::post('/roles/superadmin/account/{role}', [AccountController::class, 'store'])->name('account.store');
     Route::post('/roles/superadmin/account/update/{id}', [AccountController::class, 'update'])->name('account.update');
     Route::delete('roles/superadmin/account/delete/{id}', [AccountController::class, 'destroy'])->name('account.destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Tambahan route untuk backend keuangan (finances / spp / payroll / logs)
+| - Semua route baru berada di bawah auth middleware
+| - Akses dibatasi dengan middleware 'role' sesuai requirement:
+|   * lihat / totals / stats: semua role kecuali guru -> super_admin,admin,tu,payroll
+|   * create/update/delete finance: super_admin,admin,tu,payroll
+|   * spp create: super_admin,admin,tu
+|   * spp pay: super_admin,admin,tu,payroll
+|   * payroll create/pay: super_admin,admin,payroll
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->group(function () {
+
+    // Finances (DataTable CRUD) — hanya role selain guru
+    Route::get('/finances', [FinanceController::class, 'index'])
+        ->name('finances.index')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    Route::post('/finances', [FinanceController::class, 'store'])
+        ->name('finances.store')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    Route::put('/finances/{id}', [FinanceController::class, 'update'])
+        ->name('finances.update')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    Route::delete('/finances/{id}', [FinanceController::class, 'destroy'])
+        ->name('finances.destroy')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    // Totals & Stats untuk card + Chart.js — role selain guru
+    Route::get('/finances/totals', [FinanceController::class, 'totals'])
+        ->name('finances.totals')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    Route::get('/finances/stats', [FinanceController::class, 'stats'])
+        ->name('finances.stats')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    // SPP
+    Route::get('/spp', [SPPController::class, 'index'])
+        ->name('spp.index')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    Route::post('/spp', [SPPController::class, 'store'])
+        ->name('spp.store')
+        ->middleware('role:super_admin,admin,tu');
+
+    Route::post('/spp/{id}/pay', [SPPController::class, 'pay'])
+        ->name('spp.pay')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
+    Route::delete('/spp/{id}', [SPPController::class, 'destroy'])
+        ->name('spp.destroy')
+        ->middleware('role:super_admin,admin,tu');
+
+    // Payroll
+    Route::get('/payrolls', [PayrollController::class, 'index'])
+        ->name('payrolls.index')
+        ->middleware('role:super_admin,admin,payroll');
+
+    Route::post('/payrolls', [PayrollController::class, 'store'])
+        ->name('payrolls.store')
+        ->middleware('role:super_admin,admin,payroll');
+
+    Route::post('/payrolls/{id}/pay', [PayrollController::class, 'pay'])
+        ->name('payrolls.pay')
+        ->middleware('role:super_admin,admin,payroll');
+
+    // Finance logs
+    Route::get('/logs/finances', [LogController::class, 'index'])
+        ->name('logs.finances')
+        ->middleware('role:super_admin,admin,tu,payroll');
 });
