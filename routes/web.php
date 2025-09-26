@@ -141,3 +141,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('logs.finances')
         ->middleware('role:super_admin,admin,tu,payroll');
 });
+
+
+Route::prefix('finances')->group(function () {
+    Route::get('/', [FinanceController::class, 'index'])->name('finances.index'); // halaman Blade
+    Route::get('/list', [FinanceController::class, 'list'])->name('finances.list'); // DataTables JSON
+    Route::post('/', [FinanceController::class, 'store'])->name('finances.store');
+    Route::post('/{id}', [FinanceController::class, 'update'])->name('finances.update');
+    Route::delete('/{id}', [FinanceController::class, 'destroy'])->name('finances.destroy');
+});
