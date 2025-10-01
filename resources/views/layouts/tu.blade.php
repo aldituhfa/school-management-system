@@ -18,6 +18,13 @@
             <li><a href="{{ route('roles.tu.dashboard') }}" class="nav-link text-white"><i class="bx bx-home me-2"></i> Dashboard</a></li>
             <li><a href="#" class="nav-link text-white"><i class="bx bx-folder me-2"></i> Arsip</a></li>
             <li><a href="#" class="nav-link text-white"><i class="bx bx-envelope me-2"></i> Surat</a></li>
+            
+            <!-- Menu SPP -->
+            <li>
+                <a href="{{ route('tu.spp.index') }}" class="nav-link text-white">
+                    <i class="bx bx-money me-2"></i> Pembayaran SPP
+                </a>
+            </li>
         </ul>
         <hr>
         <!-- Logout -->
@@ -30,7 +37,6 @@
                 <i class="bx bx-log-out"></i> Logout
             </a>
         </li>
-
     </div>
 
     <div class="p-4 w-100">@yield('content')</div>

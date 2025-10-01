@@ -9,8 +9,24 @@ class SPP extends Model
 {
     use HasFactory;
 
+    protected $table = 'spps'; // 👈 kasih tahu Laravel tabelnya
+
     protected $fillable = [
-        'student_name','student_identifier','month','year','amount','status','tu_id','paid_at'
+        'student_name',
+        'student_identifier',
+        'month',
+        'year',
+        'amount',
+        'status',
+        'tu_id',
+        'paid_at',
+    ];
+
+    protected $casts = [
+        'year' => 'integer',
+        'month' => 'integer',
+        'amount' => 'decimal:2',
+        'paid_at' => 'datetime',
     ];
 
     public function tu()

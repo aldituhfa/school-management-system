@@ -5,72 +5,102 @@ namespace App\Http\Controllers\Finance;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SPP;
-use App\Models\Finance;
-use App\Models\FinanceLog;
 use Illuminate\Support\Facades\Auth;
 
 class SPPController extends Controller
 {
+    // Tampilkan daftar SPP
     public function index()
     {
-        return response()->json(SPP::orderBy('year','desc')->orderBy('month','desc')->get());
+        $spps = SPP::orderByRaw('CAST(`year` AS UNSIGNED) DESC')
+                   ->orderBy('month', 'desc')
+                   ->get();
+
+        return view('roles.tu.spp.index', compact('spps'));
     }
 
+    // Form tambah pembayaran
+    public function create()
+    {
+        return view('roles.tu.spp.create');
+    }
+
+    // Simpan pembayaran baru
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'student_name' => 'required|string',
-            'student_identifier' => 'nullable|string',
+        $request->validate([
+            'student_name' => 'required|string|max:255',
+            'student_identifier' => 'nullable|string|max:255',
             'month' => 'required|integer|min:1|max:12',
-            'year' => 'required|integer',
-            'amount' => 'required|numeric|min:0'
+            'year' => 'required|integer|min:2000|max:2100',
+            'amount' => 'required|numeric|min:0',
         ]);
 
-        $spp = SPP::create($request->only('student_name','student_identifier','month','year','amount'));
-        return response()->json(['success'=>true,'spp'=>$spp]);
+        SPP::create([
+            'student_name' => $request->student_name,
+            'student_identifier' => $request->student_identifier,
+            'month' => $request->month,
+            'year' => $request->year,
+            'amount' => $request->amount,
+            'status' => 'unpaid',
+            'tu_id' => Auth::id(),
+        ]);
+
+        return redirect()->route('tu.spp.index')->with('success', 'Data SPP berhasil ditambahkan!');
     }
 
-    // proses pembayaran spp — akan membuat finance (kas in)
-    public function pay($id)
+    // Form edit pembayaran
+    public function edit($id)
     {
         $spp = SPP::findOrFail($id);
-        if ($spp->status === 'paid') {
-            return response()->json(['error'=>'SPP sudah dibayar'], 400);
-        }
-
-        // create finance masuk ke kas
-        $finance = Finance::create([
-            'type' => 'kas',
-            'category' => 'spp',
-            'amount' => $spp->amount,
-            'in_out' => 'in',
-            'description' => "Pembayaran SPP {$spp->student_name} {$spp->month}/{$spp->year}",
-            'user_id' => Auth::id()
-        ]);
-
-        FinanceLog::create([
-            'user_id' => Auth::id(),
-            'finance_id' => $finance->id,
-            'action' => 'payment',
-            'before_amount' => 0,
-            'after_amount' => $finance->amount,
-            'type' => $finance->type,
-            'meta' => "SPP #{$spp->id}"
-        ]);
-
-        $spp->update([
-            'status' => 'paid',
-            'tu_id' => Auth::id(),
-            'paid_at' => now()
-        ]);
-
-        return response()->json(['success'=>true,'finance'=>$finance,'spp'=>$spp]);
+        return view('roles.tu.spp.edit', compact('spp'));
     }
 
+    // Update pembayaran
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'student_name' => 'required|string|max:255',
+            'student_identifier' => 'nullable|string|max:255',
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2000|max:2100',
+            'amount' => 'required|numeric|min:0',
+            'status' => 'required|in:paid,unpaid',
+        ]);
+
+        $spp = SPP::findOrFail($id);
+        $spp->update([
+            'student_name' => $request->student_name,
+            'student_identifier' => $request->student_identifier,
+            'month' => $request->month,
+            'year' => $request->year,
+            'amount' => $request->amount,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('tu.spp.index')->with('success', 'Data SPP berhasil diperbarui!');
+    }
+
+    // Hapus pembayaran
     public function destroy($id)
     {
         $spp = SPP::findOrFail($id);
         $spp->delete();
-        return response()->json(['success'=>true]);
+
+        return redirect()->route('tu.spp.index')->with('success', 'Data SPP berhasil dihapus!');
+    }
+
+    // Bayar SPP
+    public function pay($id)
+    {
+        $spp = SPP::findOrFail($id);
+
+        $spp->update([
+            'status'   => 'paid',
+            'paid_at'  => now(),      // kolom datetime nullable
+            'tu_id'    => Auth::id(),
+        ]);
+
+        return redirect()->route('tu.spp.index')->with('success', 'SPP berhasil dibayar!');
     }
 }

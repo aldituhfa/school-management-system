@@ -107,21 +107,18 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:super_admin,admin,tu,payroll');
 
     // SPP
-    Route::get('/spp', [SPPController::class, 'index'])
-        ->name('spp.index')
-        ->middleware('role:super_admin,admin,tu,payroll');
+Route::prefix('tu')->name('tu.')->group(function () {
+    Route::get('spp', [SPPController::class, 'index'])->name('spp.index');
+    Route::get('spp/create', [SPPController::class, 'create'])->name('spp.create');
+    Route::post('spp', [SPPController::class, 'store'])->name('spp.store');
+    Route::get('spp/{spp}/edit', [SPPController::class, 'edit'])->name('spp.edit');
+    Route::put('spp/{spp}', [SPPController::class, 'update'])->name('spp.update');
+    Route::delete('spp/{spp}', [SPPController::class, 'destroy'])->name('spp.destroy');
 
-    Route::post('/spp', [SPPController::class, 'store'])
-        ->name('spp.store')
-        ->middleware('role:super_admin,admin,tu');
+    // Tombol bayar
+    Route::patch('spp/{id}/pay', [SPPController::class, 'pay'])->name('spp.pay');
+});
 
-    Route::post('/spp/{id}/pay', [SPPController::class, 'pay'])
-        ->name('spp.pay')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
-    Route::delete('/spp/{id}', [SPPController::class, 'destroy'])
-        ->name('spp.destroy')
-        ->middleware('role:super_admin,admin,tu');
 
     // Payroll
     Route::get('/payrolls', [PayrollController::class, 'index'])
