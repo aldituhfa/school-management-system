@@ -59,4 +59,23 @@ class AccountController extends Controller
         User::destroy($id);
         return back()->with('success', 'Akun berhasil dihapus.');
     }
+
+    public function dashboard()
+    {
+        $counts = [
+            'admin'   => User::where('role', 'admin')->count(),
+            'guru'    => User::where('role', 'guru')->count(),
+            'payroll' => User::where('role', 'payroll')->count(),
+            'siswa'   => User::where('role', 'siswa')->count(),
+            'tu'      => User::where('role', 'tu')->count(),
+        ];
+
+        $total = array_sum($counts);
+
+        $lastUpdate = User::latest('updated_at')->value('updated_at');
+        $latestUsers = User::latest()->take(5)->get();
+
+        return view('roles.superadmin.account.account', compact('counts', 'total', 'lastUpdate', 'latestUsers'));
+    
+    }
 }

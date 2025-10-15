@@ -5,8 +5,16 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\Finance\FinanceController;
 use App\Http\Controllers\Finance\SPPController;
-use App\Http\Controllers\Finance\PayrollController;
+// use App\Http\Controllers\Finance\PayrollController;
 use App\Http\Controllers\Finance\LogController;
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\StatusSiswaController;
+use App\Http\Controllers\BiayaSppController;
+// use App\Http\Controllers\TahunAjaranController;
+// use App\Http\Controllers\TingkatController;
+// use App\Http\Controllers\StatusController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,42 +31,69 @@ use App\Http\Controllers\Finance\LogController;
 //     return view('welcome');
 // });
 
+
 // Landing page
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
 
+
+//LOGIN
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Dashboard sesuai role
-Route::get('/roles/superadmin/dashboard', function () {
-    return view('roles.superadmin.dashboard');
-})->name('roles.superadmin.dashboard');
+// ==========================
+// DASHBOARD SETIAP ROLE
+// ==========================
 
-Route::get('/roles/admin/dashboard', function () {
-    return view('roles.admin.dashboard');
-})->name('roles.admin.dashboard');
-
-Route::get('/roles/guru/dashboard', function () {
-    return view('roles.guru.dashboard');
-})->name('roles.guru.dashboard');
-
-Route::get('/roles/tu/dashboard', function () {
-    return view('roles.tu.dashboard');
-})->name('roles.tu.dashboard');
-
-Route::get('/roles/siswa/dashboard', function () {
-    return view('roles.siswa.dashboard');
-})->name('roles.siswa.dashboard');
-
-Route::get('/roles/payroll/dashboard', function () {
-    return view('roles.payroll.dashboard');
-})->name('roles.payroll.dashboard');
-
-//super admin > crud account di masing' role
+// SUPER ADMIN
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::get('/roles/superadmin/dashboard', function () {
+        return view('roles.superadmin.dashboard');
+    })->name('roles.superadmin.dashboard');
+});
+
+// ADMIN
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/roles/admin/dashboard', function () {
+        return view('roles.admin.dashboard');
+    })->name('roles.admin.dashboard');
+});
+
+// GURU
+Route::middleware(['auth', 'role:guru'])->group(function () {
+    Route::get('/roles/guru/dashboard', function () {
+        return view('roles.guru.dashboard');
+    })->name('roles.guru.dashboard');
+});
+
+// TU
+Route::middleware(['auth', 'role:tu'])->group(function () {
+    Route::get('/roles/tu/dashboard', function () {
+        return view('roles.tu.dashboard');
+    })->name('roles.tu.dashboard');
+});
+
+// SISWA
+Route::middleware(['auth', 'role:siswa'])->group(function () {
+    Route::get('/roles/siswa/dashboard', function () {
+        return view('roles.siswa.dashboard');
+    })->name('roles.siswa.dashboard');
+});
+
+// PAYROLL
+Route::middleware(['auth', 'role:payroll'])->group(function () {
+    Route::get('/roles/payroll/dashboard', function () {
+        return view('roles.payroll.dashboard');
+    })->name('roles.payroll.dashboard');
+});
+
+
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    // SUPER ADMIN > managemen akun
+    Route::get('/roles/superadmin/account', [AccountController::class, 'dashboard'])->name('account.main');
+    //crud akun
     Route::get('/roles/superadmin/account/{role}', [AccountController::class, 'index'])->name('account.index');
     Route::post('/roles/superadmin/account/{role}', [AccountController::class, 'store'])->name('account.store');
     Route::post('/roles/superadmin/account/update/{id}', [AccountController::class, 'update'])->name('account.update');
@@ -80,7 +115,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    // Finances (DataTable CRUD) — hanya role selain guru
+    // SUPER ADMIN > finance
     Route::get('/finances', [FinanceController::class, 'index'])
         ->name('finances.index')
         ->middleware('role:super_admin,admin,tu,payroll');
@@ -97,53 +132,99 @@ Route::middleware(['auth'])->group(function () {
         ->name('finances.destroy')
         ->middleware('role:super_admin,admin,tu,payroll');
 
-    // Totals & Stats untuk card + Chart.js — role selain guru
-    Route::get('/finances/totals', [FinanceController::class, 'totals'])
-        ->name('finances.totals')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
-    Route::get('/finances/stats', [FinanceController::class, 'stats'])
-        ->name('finances.stats')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
-    // SPP
-Route::prefix('tu')->name('tu.')->group(function () {
-    Route::get('spp', [SPPController::class, 'index'])->name('spp.index');
-    Route::get('spp/create', [SPPController::class, 'create'])->name('spp.create');
-    Route::post('spp', [SPPController::class, 'store'])->name('spp.store');
-    Route::get('spp/{spp}/edit', [SPPController::class, 'edit'])->name('spp.edit');
-    Route::put('spp/{spp}', [SPPController::class, 'update'])->name('spp.update');
-    Route::delete('spp/{spp}', [SPPController::class, 'destroy'])->name('spp.destroy');
-
-    // Tombol bayar
-    Route::patch('spp/{id}/pay', [SPPController::class, 'pay'])->name('spp.pay');
-});
-
-
-    // Payroll
-    Route::get('/payrolls', [PayrollController::class, 'index'])
-        ->name('payrolls.index')
-        ->middleware('role:super_admin,admin,payroll');
-
-    Route::post('/payrolls', [PayrollController::class, 'store'])
-        ->name('payrolls.store')
-        ->middleware('role:super_admin,admin,payroll');
-
-    Route::post('/payrolls/{id}/pay', [PayrollController::class, 'pay'])
-        ->name('payrolls.pay')
-        ->middleware('role:super_admin,admin,payroll');
-
-    // Finance logs
+    // SUPER ADMIN > Finance logs
     Route::get('/logs/finances', [LogController::class, 'index'])
         ->name('logs.finances')
         ->middleware('role:super_admin,admin,tu,payroll');
+
+    // Totals & Stats untuk card + Chart.js — role selain guru
+    // Route::get('/finances/totals', [FinanceController::class, 'totals'])
+    //     ->name('finances.totals')
+    //     ->middleware('role:super_admin,admin,tu,payroll');
+
+    // Route::get('/finances/stats', [FinanceController::class, 'stats'])
+    //     ->name('finances.stats')
+    //     ->middleware('role:super_admin,admin,tu,payroll');
+
+
+    // TU > SPP
+    Route::prefix('tu')->name('tu.')->group(function () {
+        Route::get('spp', [SPPController::class, 'index'])->name('spp.index');
+        Route::get('spp/create', [SPPController::class, 'create'])->name('spp.create');
+        Route::post('spp', [SPPController::class, 'store'])->name('spp.store');
+        Route::get('spp/{spp}/edit', [SPPController::class, 'edit'])->name('spp.edit');
+        Route::put('spp/{spp}', [SPPController::class, 'update'])->name('spp.update');
+        Route::delete('spp/{spp}', [SPPController::class, 'destroy'])->name('spp.destroy');
+        // Tombol bayar
+        Route::patch('spp/{id}/pay', [SPPController::class, 'pay'])->name('spp.pay');
+    });
+
+
+    // // Payroll
+    // Route::get('/payrolls', [PayrollController::class, 'index'])
+    //     ->name('payrolls.index')
+    //     ->middleware('role:super_admin,admin,payroll');
+
+    // Route::post('/payrolls', [PayrollController::class, 'store'])
+    //     ->name('payrolls.store')
+    //     ->middleware('role:super_admin,admin,payroll');
+
+    // Route::post('/payrolls/{id}/pay', [PayrollController::class, 'pay'])
+    //     ->name('payrolls.pay')
+    //     ->middleware('role:super_admin,admin,payroll');
+
+    // SUPER ADMIN > data siswa 
+    Route::prefix('roles/superadmin')->group(function () {
+
+        // CRUD siswa
+        Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+        Route::post('/siswa', [SiswaController::class, 'store'])->name('siswa.store');
+        Route::put('/siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
+        Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+
+        // CRUD kelas
+        Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+        Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
+
+        // CRUD status
+        Route::post('/status', [StatusSiswaController::class, 'store'])->name('status.store');
+        Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
+    });
+
+
+    //SUPER ADMIN > biaya spp
+    Route::prefix('superadmin')->name('superadmin.')->middleware(['auth'])->group(function () {
+
+        // CRUD Biaya SPP
+        Route::get('biaya-spp', [BiayaSppController::class, 'index'])->name('biayaspp.index');
+        Route::post('biaya-spp/store', [BiayaSppController::class, 'store'])->name('biayaspp.store');
+        Route::put('biaya-spp/{spp}', [BiayaSppController::class, 'update'])->name('biayaspp.update');
+        Route::delete('biaya-spp/{spp}', [BiayaSppController::class, 'destroy'])->name('biayaspp.destroy');
+
+        // CRUD Tahun Ajaran 
+        Route::post('biaya-spp/tahun-ajaran', [BiayaSppController::class, 'storeTahunAjaran'])->name('biayaspp.tahun-ajaran.store');
+        Route::delete('biaya-spp/tahun-ajaran/{tahun}', [BiayaSppController::class, 'destroyTahunAjaran'])->name('biayaspp.tahun-ajaran.destroy');
+
+        // CRUD Tingkat
+        Route::post('biaya-spp/tingkat', [BiayaSppController::class, 'storeTingkat'])->name('biayaspp.tingkat.store');
+        Route::delete('biaya-spp/tingkat/{tingkat}', [BiayaSppController::class, 'destroyTingkat'])->name('biayaspp.tingkat.destroy');
+
+        // CRUD Status
+        Route::post('biaya-spp/status', [BiayaSppController::class, 'storeStatus'])->name('biayaspp.status.store');
+        Route::delete('biaya-spp/status/{status}', [BiayaSppController::class, 'destroyStatus'])->name('biayaspp.status.destroy');
+    });
 });
 
 
-Route::prefix('finances')->group(function () {
-    Route::get('/', [FinanceController::class, 'index'])->name('finances.index'); // halaman Blade
-    Route::get('/list', [FinanceController::class, 'list'])->name('finances.list'); // DataTables JSON
-    Route::post('/', [FinanceController::class, 'store'])->name('finances.store');
-    Route::post('/{id}', [FinanceController::class, 'update'])->name('finances.update');
-    Route::delete('/{id}', [FinanceController::class, 'destroy'])->name('finances.destroy');
-});
+// Route::prefix('finances')->group(function () {
+//     Route::get('/', [FinanceController::class, 'index'])->name('finances.index'); // halaman Blade
+//     Route::get('/list', [FinanceController::class, 'list'])->name('finances.list'); // DataTables JSON
+//     Route::post('/', [FinanceController::class, 'store'])->name('finances.store');
+//     Route::post('/{id}', [FinanceController::class, 'update'])->name('finances.update');
+//     Route::delete('/{id}', [FinanceController::class, 'destroy'])->name('finances.destroy');
+// });
+
+
+// Route::get('/spp', function () {
+//     return view('roles.superadmin.spp.index');
+// })->name('superadmin.spp.index');
