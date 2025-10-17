@@ -7,17 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Siswa extends Model
 {
+    use HasFactory;
+
     protected $table = 'siswa';
-    protected $fillable = [
-        'nisn',
-        'nama_siswa',
-        'jenis_kelamin',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'kelas_id',
-        'agama',
-        'status_id'
-    ];
+
+    // Izinkan semua kolom diisi (termasuk kolom baru yang ditambahkan dinamis)
+    protected $guarded = [];
 
     protected $casts = [
         'tanggal_lahir' => 'date',

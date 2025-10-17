@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\StatusSiswa;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class SiswaController extends Controller
 {
@@ -34,8 +36,9 @@ class SiswaController extends Controller
 
         $kelas = Kelas::all();
         $status = StatusSiswa::all();
+        $columns = Schema::getColumnListing('siswa');
 
-        return view('roles.superadmin.siswa.index', compact('siswa', 'kelas', 'status'));
+        return view('roles.superadmin.siswa.index', compact('siswa', 'kelas', 'status', 'columns'));
     }
 
     public function create()
@@ -47,6 +50,7 @@ class SiswaController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi kolom wajib (yang tetap)
         $request->validate([
             'nisn' => 'required|unique:siswa,nisn',
             'nama_siswa' => 'required',
@@ -58,9 +62,18 @@ class SiswaController extends Controller
             'status_id' => 'required|exists:status_siswa,id',
         ]);
 
-        Siswa::create($request->all());
+        // Ambil semua kolom dari tabel 'siswa'
+        $columns = Schema::getColumnListing('siswa');
+
+        // Ambil data request hanya untuk kolom yang ada di tabel (biar aman)
+        $data = $request->only($columns);
+
+        // Simpan ke database
+        Siswa::create($data);
+
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
     }
+
 
     public function edit(Siswa $siswa)
     {
@@ -69,7 +82,8 @@ class SiswaController extends Controller
 
     public function update(Request $request, Siswa $siswa)
     {
-        $validated = $request->validate([
+        // Validasi kolom wajib (yang pasti ada)
+        $request->validate([
             'nisn' => 'required|string|max:20|unique:siswa,nisn,' . $siswa->id,
             'nama_siswa' => 'required|string|max:100',
             'jenis_kelamin' => 'required',
@@ -80,16 +94,58 @@ class SiswaController extends Controller
             'status_id' => 'required|integer|exists:status_siswa,id',
         ]);
 
-        $siswa->update($validated);
+        // Ambil semua kolom dari tabel 'siswa'
+        $columns = Schema::getColumnListing('siswa');
+
+        // Ambil data dari request hanya untuk kolom yang benar-benar ada di tabel
+        $data = $request->only($columns);
+
+        // Update data
+        $siswa->update($data);
 
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui.');
     }
-
-
 
     public function destroy(Siswa $siswa)
     {
         $siswa->delete();
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus.');
+    }
+
+    public function addColumn(Request $request)
+    {
+        $request->validate([
+            'column_name' => 'required|string|max:50|alpha_dash',
+        ]);
+
+        $column = $request->column_name;
+
+        // Cek kalau kolom sudah ada
+        if (Schema::hasColumn('siswa', $column)) {
+            return redirect()->back()->with('error', 'Kolom sudah ada!');
+        }
+
+        // Tambah kolom baru ke tabel siswa
+        Schema::table('siswa', function (Blueprint $table) use ($column) {
+            $table->string($column)->nullable();
+        });
+
+        return redirect()->back()->with('success', 'Kolom "' . $column . '" berhasil ditambahkan!');
+    }
+
+    public function deleteColumn($column)
+    {
+        // Daftar kolom default yang tidak boleh dihapus
+        $protected = ['id', 'nisn', 'nama_siswa', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'kelas_id', 'agama', 'status_id', 'created_at', 'updated_at'];
+
+        if (in_array($column, $protected)) {
+            return back()->withErrors(['Kolom ini tidak boleh dihapus.']);
+        }
+
+        Schema::table('siswa', function ($table) use ($column) {
+            $table->dropColumn($column);
+        });
+
+        return back()->with('success', "Kolom '$column' berhasil dihapus!");
     }
 }
