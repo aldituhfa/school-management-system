@@ -337,6 +337,17 @@
                         <span>Biaya SPP</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('superadmin.mata_pelajaran.index') ? 'active' : '' }}"
+       href="{{ route('superadmin.mata_pelajaran.index') }}">
+        <i class="ti ti-book"></i>
+        <span>Mata Pelajaran</span>
+    </a>
+</li>
+
+
+
             </ul>
         </div>
     </div>

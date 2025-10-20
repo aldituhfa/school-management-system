@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\Finance\FinanceController;
 use App\Http\Controllers\Finance\SPPController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\StatusSiswaController;
 use App\Http\Controllers\BiayaSppController;
+use App\Http\Controllers\Superadmin\MataPelajaranController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -36,6 +38,8 @@ use App\Models\User;
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
+
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 
 //LOGIN
@@ -216,6 +220,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('biaya-spp/status/{status}', [BiayaSppController::class, 'destroyStatus'])->name('biayaspp.status.destroy');
     });
 });
+
+// Mata Pelajaran Routes
+Route::prefix('superadmin')->name('superadmin.')->group(function () {
+    Route::resource('mata_pelajaran', MataPelajaranController::class);
+});
+
+
+
 
 
 // Route::prefix('finances')->group(function () {
