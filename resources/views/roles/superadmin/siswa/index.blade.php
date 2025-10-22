@@ -339,6 +339,7 @@
 
 
 {{-- ================================================== --}}
+{{-- ================================================== --}}
 {{-- MODAL KELOLA KELAS --}}
 <div class="modal fade" id="modalKelas" tabindex="-1">
   <div class="modal-dialog modal-md" role="document">
@@ -347,17 +348,35 @@
         <h5 class="modal-title">Kelola Data Kelas</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
+
+        {{-- Alert sukses --}}
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
+        {{-- Form tambah kelas --}}
         <form id="formTambahKelas" action="{{ route('kelas.store') }}" method="POST" class="mb-3 d-flex">
           @csrf
           <input type="text" name="nama_kelas" class="form-control" placeholder="Nama kelas baru" required>
           <button type="submit" class="btn btn-outline-primary ms-2">Tambah</button>
         </form>
 
+        {{-- List kelas --}}
         <ul class="list-group">
           @foreach($kelas as $k)
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ $k->nama_kelas }}
+            <form action="{{ route('kelas.update', $k->id) }}" method="POST" class="d-flex w-100 align-items-center">
+              @csrf
+              @method('PUT')
+              <input type="text" name="nama_kelas" value="{{ $k->nama_kelas }}" class="form-control me-2">
+              <button type="submit" class="btn btn-sm btn-outline-warning me-2">Update</button>
+            </form>
+
             <form action="{{ route('kelas.destroy', $k->id) }}" method="POST" onsubmit="return confirm('Yakin hapus kelas ini?')">
               @csrf @method('DELETE')
               <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
@@ -370,6 +389,8 @@
   </div>
 </div>
 
+
+
 {{-- ================================================== --}}
 {{-- MODAL KELOLA STATUS --}}
 <div class="modal fade" id="modalStatus" tabindex="-1">
@@ -379,17 +400,26 @@
         <h5 class="modal-title">Kelola Status Siswa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
+        {{-- Form tambah status --}}
         <form id="formTambahStatus" action="{{ route('status.store') }}" method="POST" class="mb-3 d-flex">
           @csrf
           <input type="text" name="nama_status" class="form-control" placeholder="Tambah status baru" required>
           <button type="submit" class="btn btn-outline-primary ms-2">Tambah</button>
         </form>
 
+        {{-- List status --}}
         <ul class="list-group">
           @foreach($status as $s)
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ $s->nama_status }}
+            <form action="{{ route('status.update', $s->id) }}" method="POST" class="d-flex w-100 align-items-center">
+              @csrf
+              @method('PUT')
+              <input type="text" name="nama_status" value="{{ $s->nama_status }}" class="form-control me-2">
+              <button type="submit" class="btn btn-sm btn-outline-warning me-2">Update</button>
+            </form>
+
             <form action="{{ route('status.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Yakin hapus status ini?')">
               @csrf @method('DELETE')
               <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
@@ -402,7 +432,9 @@
   </div>
 </div>
 
-<!-- Modal Tambah & Kelola Kolom -->
+
+{{-- ================================================== --}}
+{{-- MODAL KELOLA KOLOM TAMBAHAN --}}
 <div class="modal fade" id="modalTambahKolom" tabindex="-1" aria-labelledby="modalTambahKolomLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -438,10 +470,13 @@
               <tr>
                 <td>{{ $col }}</td>
                 <td class="text-center">
-                  <form action="{{ route('siswa.deleteColumn', $col) }}" method="POST" onsubmit="return confirm('Yakin hapus kolom {{ $col }}?')">
+                  <form action="{{ route('siswa.deleteColumn', $col) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                      onclick="return confirm('Hapus kolom {{ $col }}?')">
+                      Hapus
+                    </button>
                   </form>
                 </td>
               </tr>
@@ -454,13 +489,11 @@
           </table>
         </div>
       </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
     </div>
   </div>
 </div>
+
+
 
 
 {{-- ================================================== --}}

@@ -259,7 +259,7 @@
             </div>
         </div>
 
-        {{-- Modal Tahun Ajaran --}}
+        {{-- ==================== MODAL TAHUN AJARAN ==================== --}}
         <div class="modal modal-blur fade" id="tahunModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -276,6 +276,7 @@
                                 <button class="btn btn-primary" type="submit"><i class="ti ti-device-floppy me-2"></i>Simpan</button>
                             </div>
                         </form>
+
                         {{-- List Tahun --}}
                         <table class="table table-bordered text-center mb-0">
                             <thead>
@@ -289,9 +290,15 @@
                                 @foreach($tahunAjarans->reverse() as $i => $t)
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
-                                    <td>{{ $t->nama_tahun }}</td>
-                                    <td class="d-flex justify-content-center gap-2">
-                                        {{-- Tombol Hapus --}}
+                                    <td>
+                                        <form action="{{ route('superadmin.biayaspp.tahun-ajaran.update', $t->id) }}" method="POST" class="d-flex justify-content-center gap-2">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="text" name="nama_tahun" value="{{ $t->nama_tahun }}" class="form-control text-center" required>
+                                            <button class="btn btn-outline-success btn-sm"><i class="ti ti-edit me-1"></i>Update</button>
+                                        </form>
+                                    </td>
+                                    <td>
                                         <form action="{{ route('superadmin.biayaspp.tahun-ajaran.destroy', $t->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus tahun ajaran ini?')">
                                             @csrf
                                             @method('DELETE')
@@ -299,7 +306,6 @@
                                         </form>
                                     </td>
                                 </tr>
-
                                 @endforeach
                             </tbody>
                         </table>
@@ -308,7 +314,7 @@
             </div>
         </div>
 
-        {{-- Modal Tingkat --}}
+        {{-- ==================== MODAL TINGKAT ==================== --}}
         <div class="modal modal-blur fade" id="tingkatModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -321,10 +327,11 @@
                         <form action="{{ route('superadmin.biayaspp.tingkat.store') }}" method="POST" class="mb-3">
                             @csrf
                             <div class="input-group">
-                                <input type="text" name="nama_tingkat" class="form-control" placeholder="sma/smk" required>
+                                <input type="text" name="nama_tingkat" class="form-control" placeholder="SMA / SMK" required>
                                 <button class="btn btn-primary" type="submit"><i class="ti ti-device-floppy me-2"></i>Simpan</button>
                             </div>
                         </form>
+
                         {{-- List Tingkat --}}
                         <table class="table table-bordered text-center mb-0">
                             <thead>
@@ -338,9 +345,15 @@
                                 @foreach($tingkats->reverse() as $i => $t)
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
-                                    <td>{{ $t->nama_tingkat }}</td>
-                                    <td class="d-flex justify-content-center gap-2">
-                                        {{-- Tombol Hapus --}}
+                                    <td>
+                                        <form action="{{ route('superadmin.biayaspp.tingkat.update', $t->id) }}" method="POST" class="d-flex justify-content-center gap-2">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="text" name="nama_tingkat" value="{{ $t->nama_tingkat }}" class="form-control text-center" required>
+                                            <button class="btn btn-outline-success btn-sm"><i class="ti ti-edit me-1"></i>Update</button>
+                                        </form>
+                                    </td>
+                                    <td>
                                         <form action="{{ route('superadmin.biayaspp.tingkat.destroy', $t->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus tingkat ini?')">
                                             @csrf
                                             @method('DELETE')
@@ -348,7 +361,6 @@
                                         </form>
                                     </td>
                                 </tr>
-
                                 @endforeach
                             </tbody>
                         </table>
@@ -357,7 +369,7 @@
             </div>
         </div>
 
-        {{-- Modal Status --}}
+        {{-- ==================== MODAL STATUS ==================== --}}
         <div class="modal modal-blur fade" id="statusModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -374,6 +386,7 @@
                                 <button class="btn btn-primary" type="submit"><i class="ti ti-device-floppy me-2"></i>Simpan</button>
                             </div>
                         </form>
+
                         {{-- List Status --}}
                         <table class="table table-bordered text-center mb-0">
                             <thead>
@@ -387,9 +400,15 @@
                                 @foreach($statuses->reverse() as $i => $s)
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
-                                    <td>{{ $s->nama_status }}</td>
-                                    <td class="d-flex justify-content-center gap-2">
-                                        {{-- Tombol Hapus --}}
+                                    <td>
+                                        <form action="{{ route('superadmin.biayaspp.status.update', $s->id) }}" method="POST" class="d-flex justify-content-center gap-2">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="text" name="nama_status" value="{{ $s->nama_status }}" class="form-control text-center" required>
+                                            <button class="btn btn-outline-success btn-sm"><i class="ti ti-edit me-1"></i>Update</button>
+                                        </form>
+                                    </td>
+                                    <td>
                                         <form action="{{ route('superadmin.biayaspp.status.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus status ini?')">
                                             @csrf
                                             @method('DELETE')

@@ -128,4 +128,34 @@ class BiayaSppController extends Controller
         $status->delete();
         return back()->with('success', 'Status berhasil dihapus.');
     }
+
+    // ===============================
+    //  UPDATE TAHUN AJARAN
+    // ===============================
+    public function updateTahunAjaran(Request $request, TahunAjaran $tahun)
+    {
+        $request->validate(['nama_tahun' => 'required|string|max:255']);
+        $tahun->update(['nama_tahun' => $request->nama_tahun]);
+        return back()->with('success', 'Tahun ajaran berhasil diperbarui.');
+    }
+
+    // ===============================
+    //  UPDATE TINGKAT
+    // ===============================
+    public function updateTingkat(Request $request, Tingkat $tingkat)
+    {
+        $request->validate(['nama_tingkat' => 'required|string|max:255']);
+        $tingkat->update(['nama_tingkat' => $request->nama_tingkat]);
+        return back()->with('success', 'Tingkat berhasil diperbarui.');
+    }
+
+    // ===============================
+    //  UPDATE STATUS
+    // ===============================
+    public function updateStatus(Request $request, Status $status)
+    {
+        $request->validate(['nama_status' => 'required|string|max:255']);
+        $status->update(['nama_status' => $request->nama_status]);
+        return back()->with('success', 'Status berhasil diperbarui.');
+    }
 }

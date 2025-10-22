@@ -189,15 +189,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/siswa', [SiswaController::class, 'store'])->name('siswa.store');
         Route::put('/siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+
+        //CRUD KOLOM
         Route::post('/siswa/add-column', [App\Http\Controllers\SiswaController::class, 'addColumn'])->name('siswa.addColumn');
         Route::delete('/roles/superadmin/siswa/delete-column/{column}', [SiswaController::class, 'deleteColumn'])->name('siswa.deleteColumn');
 
         // CRUD kelas
         Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+        Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update'); // <– tambahkan ini
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
         // CRUD status
         Route::post('/status', [StatusSiswaController::class, 'store'])->name('status.store');
+        Route::put('/status/{id}', [StatusSiswaController::class, 'update'])->name('status.update'); // <– tambahkan ini
         Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
     });
 
@@ -222,6 +226,10 @@ Route::middleware(['auth'])->group(function () {
         // CRUD Status
         Route::post('biaya-spp/status', [BiayaSppController::class, 'storeStatus'])->name('biayaspp.status.store');
         Route::delete('biaya-spp/status/{status}', [BiayaSppController::class, 'destroyStatus'])->name('biayaspp.status.destroy');
+
+        Route::put('biaya-spp/tahun-ajaran/{tahun}', [BiayaSppController::class, 'updateTahunAjaran'])->name('biayaspp.tahun-ajaran.update');
+        Route::put('biaya-spp/tingkat/{tingkat}', [BiayaSppController::class, 'updateTingkat'])->name('biayaspp.tingkat.update');
+        Route::put('biaya-spp/status/{status}', [BiayaSppController::class, 'updateStatus'])->name('biayaspp.status.update');
     });
 });
 

@@ -20,6 +20,20 @@ class StatusSiswaController extends Controller
         return back()->with('success', 'Status berhasil ditambahkan.');
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_status' => 'required|string|max:255',
+        ]);
+
+        $status = StatusSiswa::findOrFail($id);
+        $status->update([
+            'nama_status' => $request->nama_status,
+        ]);
+
+        return redirect()->back()->with('success', 'Status berhasil diperbarui!');
+    }
+
     public function destroy(StatusSiswa $status)
     {
         $status->delete();
