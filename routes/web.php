@@ -163,6 +163,10 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('spp/{id}/pay', [SPPController::class, 'pay'])->name('spp.pay');
     });
 
+    // TU > data SPP
+    Route::get('/tu/data-spp', [App\Http\Controllers\DataSppController::class, 'index'])->name('tu.data_spp.index');
+    Route::get('/tu/data-spp/{id}', [App\Http\Controllers\DataSppController::class, 'show'])->name('tu.data_spp.detail');
+
 
     // // Payroll
     // Route::get('/payrolls', [PayrollController::class, 'index'])
@@ -221,7 +225,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Mata Pelajaran Routes
+// SUPER ADMIN > mata Pelajaran
 Route::prefix('superadmin')->name('superadmin.')->group(function () {
     Route::resource('mata_pelajaran', MataPelajaranController::class);
 });

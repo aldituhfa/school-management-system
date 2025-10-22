@@ -5,9 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistem Manajemen Sekolah</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">t">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
   <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --secondary: #64748b;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --border: #e2e8f0;
+    }
+    
     * {
       margin: 0;
       padding: 0;
@@ -16,16 +25,15 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      color: #2d3748;
-      overflow-x: hidden;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
     }
 
     /* Navbar */
     .navbar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       padding: 1rem 0;
       position: sticky;
       top: 0;
@@ -35,92 +43,60 @@
     .navbar-brand {
       font-weight: 700;
       font-size: 1.5rem;
-      color: #4e54c8;
+      color: var(--primary);
     }
 
     .btn-login {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--primary);
       color: white;
-      padding: 10px 30px;
-      border-radius: 25px;
+      padding: 8px 24px;
+      border-radius: 6px;
       border: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
 
     .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      background-color: var(--primary-light);
       color: white;
     }
 
     /* Hero Section */
     .hero {
-      min-height: 100vh;
+      min-height: 80vh;
       display: flex;
       align-items: center;
       padding: 80px 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      top: -200px;
-      right: -200px;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      bottom: -150px;
-      left: -150px;
-    }
-
-    .hero-content {
-      color: white;
-      position: relative;
-      z-index: 2;
+      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
     }
 
     .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
+      font-size: 3rem;
+      font-weight: 700;
       margin-bottom: 1.5rem;
       line-height: 1.2;
+      color: var(--dark);
     }
 
     .hero p {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       margin-bottom: 2rem;
-      opacity: 0.95;
+      color: var(--secondary);
     }
 
     .hero-image {
-      position: relative;
-      z-index: 2;
+      text-align: center;
     }
 
-    .hero-image img {
-      max-width: 100%;
-      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+    .hero-image i {
+      font-size: 18rem;
+      color: rgba(37, 99, 235, 0.1);
     }
 
     /* Features Section */
     .features {
-      padding: 100px 0;
-      background: white;
+      padding: 80px 0;
+      background-color: white;
     }
 
     .section-title {
@@ -129,77 +105,75 @@
     }
 
     .section-title h2 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
-      color: #2d3748;
+      color: var(--dark);
       margin-bottom: 1rem;
     }
 
     .section-title p {
       font-size: 1.1rem;
-      color: #718096;
+      color: var(--secondary);
     }
 
     .feature-card {
       background: white;
-      border-radius: 15px;
-      padding: 40px 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
+      border-radius: 10px;
+      padding: 30px 25px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
       height: 100%;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border);
     }
 
     .feature-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     }
 
     .feature-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 15px;
+      width: 60px;
+      height: 60px;
+      background-color: var(--primary);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 25px;
-      font-size: 2rem;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
       color: white;
     }
 
     .feature-card h4 {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 15px;
-      color: #2d3748;
+      color: var(--dark);
     }
 
     .feature-card p {
-      color: #718096;
-      line-height: 1.7;
+      color: var(--secondary);
+      line-height: 1.6;
     }
 
     /* Roles Section */
     .roles {
-      padding: 100px 0;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 80px 0;
+      background-color: #f8fafc;
     }
 
     .role-card {
       background: white;
-      border-radius: 15px;
-      padding: 30px;
+      border-radius: 10px;
+      padding: 25px;
       margin-bottom: 20px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+      border: 1px solid var(--border);
     }
 
     .role-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      border-color: #667eea;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .role-header {
@@ -209,66 +183,60 @@
     }
 
     .role-icon-circle {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      margin-right: 20px;
+      font-size: 1.2rem;
+      margin-right: 15px;
+      color: white;
     }
 
     .role-card h5 {
       font-weight: 600;
-      color: #2d3748;
+      color: var(--dark);
       margin: 0;
     }
 
     .role-card p {
-      color: #718096;
+      color: var(--secondary);
       margin: 0;
       line-height: 1.6;
     }
 
-    .superadmin-bg { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-    .admin-bg { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-    .guru-bg { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-    .siswa-bg { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-    .tu-bg { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
-    .payroll-bg { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+    .superadmin-bg { background-color: #7c3aed; }
+    .admin-bg { background-color: #0ea5e9; }
+    .guru-bg { background-color: #10b981; }
+    .siswa-bg { background-color: #f59e0b; }
+    .tu-bg { background-color: #6366f1; }
+    .payroll-bg { background-color: #ec4899; }
 
     /* Stats Section */
     .stats {
-      padding: 80px 0;
-      background: white;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 30px;
+      padding: 60px 0;
+      background-color: white;
     }
 
     .stat-number {
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
       margin-bottom: 10px;
     }
 
     .stat-label {
       font-size: 1.1rem;
-      color: #718096;
+      color: var(--secondary);
       font-weight: 500;
     }
 
     /* Footer */
     .footer {
-      background: #2d3748;
+      background: var(--dark);
       color: white;
-      padding: 60px 0 30px;
+      padding: 50px 0 25px;
     }
 
     .footer h5 {
@@ -286,7 +254,7 @@
     }
 
     .footer-links a {
-      color: #a0aec0;
+      color: #cbd5e1;
       text-decoration: none;
       transition: color 0.3s;
     }
@@ -297,15 +265,15 @@
 
     .footer-bottom {
       margin-top: 40px;
-      padding-top: 30px;
-      border-top: 1px solid #4a5568;
+      padding-top: 25px;
+      border-top: 1px solid #334155;
       text-align: center;
-      color: #a0aec0;
+      color: #94a3b8;
     }
 
     @media (max-width: 768px) {
       .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
 
       .hero p {
@@ -313,7 +281,11 @@
       }
 
       .section-title h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+      }
+      
+      .hero-image i {
+        font-size: 12rem;
       }
     }
   </style>
@@ -337,15 +309,15 @@
   <section class="hero">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-lg-6 hero-content">
+        <div class="col-lg-6">
           <h1>Sistem Manajemen Sekolah Modern</h1>
           <p>Kelola seluruh aktivitas sekolah dengan mudah, efisien, dan terintegrasi dalam satu platform</p>
           <a href="{{ route('login') }}" class="btn btn-login btn-lg">
             Mulai Sekarang <i class="bi bi-arrow-right ms-2"></i>
           </a>
         </div>
-        <div class="col-lg-6 hero-image text-center">
-          <i class="bi bi-laptop" style="font-size: 20rem; color: rgba(255,255,255,0.2);"></i>
+        <div class="col-lg-6 hero-image">
+          <i class="bi bi-laptop"></i>
         </div>
       </div>
     </div>
@@ -429,7 +401,7 @@
           <div class="role-card">
             <div class="role-header">
               <div class="role-icon-circle superadmin-bg">
-                <i class="bi bi-shield text-white"></i>
+                <i class="bi bi-shield"></i>
               </div>
               <div>
                 <h5>Super Admin</h5>
@@ -442,7 +414,7 @@
           <div class="role-card">
             <div class="role-header">
               <div class="role-icon-circle admin-bg">
-                <i class="bi bi-people text-white"></i>
+                <i class="bi bi-people"></i>
               </div>
               <div>
                 <h5>Admin Sekolah</h5>
@@ -455,7 +427,7 @@
           <div class="role-card">
             <div class="role-header">
               <div class="role-icon-circle guru-bg">
-                <i class="bi bi-mortarboard text-white"></i>
+                <i class="bi bi-mortarboard"></i>
               </div>
               <div>
                 <h5>Guru</h5>
@@ -468,7 +440,7 @@
           <div class="role-card">
             <div class="role-header">
               <div class="role-icon-circle siswa-bg">
-                <i class="bi bi-person text-white"></i>
+                <i class="bi bi-person"></i>
               </div>
               <div>
                 <h5>Siswa</h5>
@@ -481,7 +453,7 @@
           <div class="role-card">
             <div class="role-header">
               <div class="role-icon-circle tu-bg">
-                <i class="bi bi-clipboard-data text-white"></i>
+                <i class="bi bi-clipboard-data"></i>
               </div>
               <div>
                 <h5>Tata Usaha</h5>
@@ -494,7 +466,7 @@
           <div class="role-card">
             <div class="role-header">
               <div class="role-icon-circle payroll-bg">
-                <i class="bi bi-calculator text-white"></i>
+                <i class="bi bi-calculator"></i>
               </div>
               <div>
                 <h5>Payroll/Keuangan</h5>
@@ -508,28 +480,24 @@
   </section>
 
   <!-- Stats Section -->
-  <section class="py-5 text-center">
+  <section class="stats text-center">
     <div class="container">
-        <div class="row justify-content-center">
-
-            <div class="col-md-3 mb-4">
-                <h2 class="fw-bold text-primary">{{ number_format($tataUsaha) }}+</h2>
-                <p>Tata Usaha</p>
-            </div>
-
-            <div class="col-md-3 mb-4">
-                <h2 class="fw-bold text-primary">{{ number_format($siswa) }}+</h2>
-                <p>Siswa</p>
-            </div>
-
-            <div class="col-md-3 mb-4">
-                <h2 class="fw-bold text-primary">{{ number_format($guru) }}+</h2>
-                <p>Guru</p>
-            </div>
-
+      <div class="row justify-content-center">
+        <div class="col-md-3 mb-4">
+          <div class="stat-number">{{ number_format($tataUsaha) }}+</div>
+          <div class="stat-label">Tata Usaha</div>
         </div>
+        <div class="col-md-3 mb-4">
+          <div class="stat-number">{{ number_format($siswa) }}+</div>
+          <div class="stat-label">Siswa</div>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="stat-number">{{ number_format($guru) }}+</div>
+          <div class="stat-label">Guru</div>
+        </div>
+      </div>
     </div>
-</section>
+  </section>
 
   <!-- Footer -->
   <footer class="footer">
@@ -564,12 +532,5 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
- 
-
-  
- 
-
-  
 </body>
 </html>

@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #a4d3f0ff 0%, #b3daf4ff 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -27,30 +27,30 @@
         body::before {
             content: '';
             position: absolute;
-            width: 500px;
-            height: 500px;
+            width: 400px;
+            height: 400px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            top: -200px;
-            right: -200px;
+            top: -150px;
+            right: -150px;
         }
 
         body::after {
             content: '';
             position: absolute;
-            width: 400px;
-            height: 400px;
+            width: 300px;
+            height: 300px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            bottom: -150px;
-            left: -150px;
+            bottom: -100px;
+            left: -100px;
         }
 
         .login-container {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 450px;
+            max-width: 900px;
             padding: 20px;
         }
 
@@ -60,6 +60,8 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             animation: slideUp 0.5s ease;
+            display: flex;
+            min-height: 500px;
         }
 
         @keyframes slideUp {
@@ -73,33 +75,41 @@
             }
         }
 
-        .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
-            text-align: center;
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #b6d4e9ff 0%, #2796dfff 100%);
+            padding: 50px 40px;
             color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
         }
 
-        .login-header i {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .login-left i {
+            font-size: 4rem;
+            margin-bottom: 20px;
             opacity: 0.9;
         }
 
-        .login-header h4 {
-            font-size: 1.8rem;
+        .login-left h3 {
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
-        .login-header p {
-            font-size: 0.95rem;
+        .login-left p {
+            font-size: 1.1rem;
             opacity: 0.9;
             margin: 0;
         }
 
-        .login-body {
-            padding: 40px 30px;
+        .login-right {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .alert {
@@ -153,18 +163,18 @@
         }
 
         .form-control:focus {
-            border-color: #667eea;
+            border-color: #3282b8;
             background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(50, 130, 184, 0.1);
             outline: none;
         }
 
         .form-control:focus + .input-icon {
-            color: #667eea;
+            color: #3282b8;
         }
 
         .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
             border: none;
             border-radius: 12px;
             padding: 14px;
@@ -173,13 +183,13 @@
             color: white;
             width: 100%;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(15, 76, 117, 0.4);
             margin-top: 10px;
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 6px 20px rgba(15, 76, 117, 0.5);
         }
 
         .btn-login:active {
@@ -194,7 +204,7 @@
         }
 
         .back-link a {
-            color: #667eea;
+            color: #3282b8;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -204,7 +214,7 @@
         }
 
         .back-link a:hover {
-            color: #764ba2;
+            color: #0f4c75;
             gap: 12px;
         }
 
@@ -221,24 +231,35 @@
         }
 
         .password-toggle:hover {
-            color: #667eea;
+            color: #3282b8;
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .login-left {
+                padding: 30px 20px;
+            }
+            
+            .login-right {
+                padding: 30px 20px;
+            }
+            
+            .login-left i {
+                font-size: 3rem;
+            }
+            
+            .login-left h3 {
+                font-size: 1.5rem;
+            }
         }
 
         @media (max-width: 576px) {
             .login-container {
                 padding: 15px;
-            }
-
-            .login-header {
-                padding: 30px 20px;
-            }
-
-            .login-header h4 {
-                font-size: 1.5rem;
-            }
-
-            .login-body {
-                padding: 30px 20px;
             }
         }
     </style>
@@ -246,13 +267,13 @@
 <body>
     <div class="login-container">
         <div class="login-card">
-            <div class="login-header">
+            <div class="login-left">
                 <i class="bi bi-mortarboard-fill"></i>
-                <h4>Selamat Datang</h4>
+                <h3>Selamat Datang</h3>
                 <p>Sistem Manajemen Sekolah</p>
             </div>
 
-            <div class="login-body">
+            <div class="login-right">
                 @if(session('error'))
                     <div class="alert alert-danger">
                         <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
@@ -270,7 +291,7 @@
                                 type="email"
                                 name="email"
                                 class="form-control"
-                                placeholder="nama@sekolah.id"
+                                placeholder="Username"
                                 required
                                 autofocus
                             >

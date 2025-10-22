@@ -1,109 +1,133 @@
-{{-- resources/views/roles/superadmin/logs.blade.php --}}
 @extends('layouts.superadmin')
 
 @section('content')
-<div class="container-fluid">
-    <h1 class="mb-4">Riwayat Transaksi</h1>
 
-    {{-- Flash message --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+@if(session('success'))
+<div class="alert alert-success">{{ session('success') }}</div>
+@endif
 
-    {{-- Filter Form --}}
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form method="GET" action="{{ route('logs.finances') }}" class="row g-3">
-                <div class="col-md-3">
-                    <label for="type" class="form-label">Jenis Transaksi</label>
-                    <select name="type" id="type" class="form-control">
-                        <option value="">-- Semua --</option>
-                        <option value="dana_bos" {{ request('type') == 'dana_bos' ? 'selected' : '' }}>Dana BOS</option>
-                        <option value="kas" {{ request('type') == 'kas' ? 'selected' : '' }}>Kas</option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="action" class="form-label">Aksi</label>
-                    <select name="action" id="action" class="form-control">
-                        <option value="">-- Semua --</option>
-                        <option value="create" {{ request('action') == 'create' ? 'selected' : '' }}>Create</option>
-                        <option value="update" {{ request('action') == 'update' ? 'selected' : '' }}>Update</option>
-                        <option value="delete" {{ request('action') == 'delete' ? 'selected' : '' }}>Delete</option>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label for="user" class="form-label">User</label>
-                    <select name="user_id" id="user" class="form-control">
-                        <option value="">-- Semua --</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                                {{ $user->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">Filter</button>
-                    <a href="{{ route('logs.finances') }}" class="btn btn-secondary">Reset</a>
-                </div>
-            </form>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Data Log Finance</h3>
     </div>
 
-    {{-- Tabel Logs --}}
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th width="5%">#</th>
-                        <th>Aksi</th>
-                        <th>Jumlah Sebelum</th>
-                        <th>Jumlah Sesudah</th>
-                        <th>Jenis</th>
-                        <th>Keterangan</th>
-                        <th>User</th>
-                        <th>Waktu</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($logs as $log)
-                        <tr>
-                            <td>{{ $logs->firstItem() + $loop->index }}</td>
-                            <td>
-                                @if($log->action === 'create')
-                                    <span class="badge bg-success">Create</span>
-                                @elseif($log->action === 'update')
-                                    <span class="badge bg-warning text-dark">Update</span>
-                                @elseif($log->action === 'delete')
-                                    <span class="badge bg-danger">Delete</span>
-                                @else
-                                    <span class="badge bg-info">{{ ucfirst($log->action) }}</span>
-                                @endif
-                            </td>
-                            <td>{{ number_format($log->before_amount ?? 0, 0, ',', '.') }}</td>
-                            <td>{{ number_format($log->after_amount ?? 0, 0, ',', '.') }}</td>
-                            <td>{{ ucfirst($log->type) }}</td>
-                            <td>{{ $log->meta }}</td>
-                            <td>{{ $log->user->name ?? '-' }}</td>
-                            <td>{{ $log->created_at->format('d-m-Y H:i') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-center">Tidak ada data</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <div class="card-body border-bottom py-3">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <select name="type" id="typeFilter" class="form-select">
+                    <option value="">Semua Jenis</option>
+                    <option value="dana_bos" {{ request('type') == 'dana_bos' ? 'selected' : '' }}>Dana BOS</option>
+                    <option value="kas" {{ request('type') == 'kas' ? 'selected' : '' }}>Kas</option>
+                </select>
+            </div>
 
-            {{-- Pagination --}}
-            <div class="d-flex justify-content-center mt-3">
-                {{ $logs->withQueryString()->links('pagination::bootstrap-5') }}
+            <div class="col-md-3">
+                <select name="action" id="actionFilter" class="form-select">
+                    <option value="">Semua Aksi</option>
+                    <option value="create" {{ request('action') == 'create' ? 'selected' : '' }}>Create</option>
+                    <option value="update" {{ request('action') == 'update' ? 'selected' : '' }}>Update</option>
+                    <option value="delete" {{ request('action') == 'delete' ? 'selected' : '' }}>Delete</option>
+                </select>
+            </div>
+
+            {{-- Tombol Reset --}}
+            <div class="col-md-2">
+                <button id="resetBtn" class="btn btn-outline-secondary w-100" style="height: 38px;">
+                    Reset
+                </button>
             </div>
         </div>
     </div>
+
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Aksi</th>
+                    <th>Jumlah Sebelum</th>
+                    <th>Jumlah Sesudah</th>
+                    <th>Jenis</th>
+                    <th>Keterangan</th>
+                    <th>User</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($logs as $log)
+                <tr>
+                    <td>{{ $logs->firstItem() + $loop->index }}</td>
+                    <td>
+                        @if($log->action === 'create')
+                        <span class="badge bg-green-lt">Create</span>
+                        @elseif($log->action === 'update')
+                        <span class="badge bg-yellow-lt">Update</span>
+                        @elseif($log->action === 'delete')
+                        <span class="badge bg-red-lt">Delete</span>
+                        @else
+                        <span class="badge bg-blue-lt">{{ ucfirst($log->action) }}</span>
+                        @endif
+                    </td>
+                    <td>Rp {{ number_format($log->before_amount ?? 0, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format($log->after_amount ?? 0, 0, ',', '.') }}</td>
+                    <td><span class="badge bg-azure-lt">{{ ucfirst($log->type) }}</span></td>
+                    <td>{{ $log->meta }}</td>
+                    <td>{{ $log->user->name ?? '-' }}</td>
+                    <td class="text-muted">{{ $log->created_at->format('d/m/Y') }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="8" class="text-center py-4">Tidak ada data</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+            Menampilkan {{ $logs->firstItem() ?? 0 }} - {{ $logs->lastItem() ?? 0 }} dari {{ $logs->total() }} data
+        </p>
+        <ul class="pagination m-0 ms-auto">
+            {{ $logs->withQueryString()->links('pagination::bootstrap-5') }}
+        </ul>
+    </div>
 </div>
+
+{{-- Variabel URL route --}}
+<script>
+    const routeUrl = "{{ route('logs.finances') }}";
+</script>
+
+{{-- JS Filter + Reset --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeFilter = document.getElementById('typeFilter');
+        const actionFilter = document.getElementById('actionFilter');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function performFilter() {
+            const typeValue = typeFilter.value;
+            const actionValue = actionFilter.value;
+
+            let url = new URL(routeUrl);
+            let params = new URLSearchParams();
+
+            if (typeValue) params.append('type', typeValue);
+            if (actionValue) params.append('action', actionValue);
+
+            window.location.href = url + '?' + params.toString();
+        }
+
+        typeFilter.addEventListener('change', performFilter);
+        actionFilter.addEventListener('change', performFilter);
+
+        resetBtn.addEventListener('click', function() {
+            typeFilter.value = '';
+            actionFilter.value = '';
+            window.location.href = routeUrl;
+        });
+    });
+</script>
+
 @endsection

@@ -15,7 +15,7 @@
             --tblr-border-color: #e6e7e9;
             --tblr-sidebar-width: 240px;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #f5f7fb;
@@ -24,7 +24,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         .sidebar {
             width: var(--tblr-sidebar-width);
             background-color: #fff;
@@ -36,7 +36,7 @@
             left: 0;
             top: 0;
         }
-        
+
         .sidebar .nav-link {
             color: #576176;
             padding: 0.5rem 0.75rem;
@@ -48,13 +48,13 @@
             text-decoration: none;
             transition: all 0.2s;
         }
-        
-        .sidebar .nav-link:hover, 
+
+        .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             background-color: rgba(32, 107, 196, 0.08);
             color: var(--tblr-primary);
         }
-        
+
         .sidebar .nav-link i {
             margin-right: 0.5rem;
             font-size: 1rem;
@@ -62,7 +62,7 @@
             text-align: center;
             flex-shrink: 0;
         }
-        
+
         .sidebar-header {
             padding: 1rem 0.75rem;
             border-bottom: 1px solid var(--tblr-border-color);
@@ -71,7 +71,7 @@
             top: 0;
             z-index: 10;
         }
-        
+
         .logo-container {
             display: flex;
             flex-direction: column;
@@ -81,14 +81,14 @@
             color: inherit;
             width: 100%;
         }
-        
+
         .logo-img {
             width: 48px;
             height: 48px;
             object-fit: contain;
             border-radius: 6px;
         }
-        
+
         .school-name {
             font-weight: 600;
             font-size: 0.875rem;
@@ -96,7 +96,7 @@
             text-align: center;
             line-height: 1.3;
         }
-        
+
         .logo-fallback {
             width: 48px;
             height: 48px;
@@ -109,13 +109,13 @@
             font-weight: 600;
             font-size: 0.75rem;
         }
-        
+
         .main-content {
             margin-left: var(--tblr-sidebar-width);
             min-height: 100vh;
             background-color: #f5f7fb;
         }
-        
+
         .navbar {
             background-color: #fff;
             border-bottom: 1px solid var(--tblr-border-color);
@@ -125,11 +125,11 @@
             top: 0;
             z-index: 999;
         }
-        
+
         .page-wrapper {
             padding: 1rem;
         }
-        
+
         .avatar {
             width: 28px;
             height: 28px;
@@ -143,30 +143,30 @@
             font-size: 0.75rem;
             flex-shrink: 0;
         }
-        
+
         .user-dropdown .dropdown-toggle::after {
             display: none;
         }
-        
+
         .user-dropdown .dropdown-menu {
             border: 1px solid var(--tblr-border-color);
             font-size: 0.8125rem;
             min-width: 150px;
         }
-        
+
         .page-title {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             color: #1a1a1a;
         }
-        
+
         .page-subtitle {
             font-size: 0.875rem;
             color: #6c757d;
             margin-bottom: 1.5rem;
         }
-        
+
         /* Card Styles */
         .card {
             border: 1px solid var(--tblr-border-color);
@@ -174,24 +174,24 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             margin-bottom: 1.5rem;
         }
-        
+
         .card-header {
             background-color: #fff;
             border-bottom: 1px solid var(--tblr-border-color);
             padding: 1.25rem 1.5rem;
         }
-        
+
         .card-title {
             font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 0;
             color: #1a1a1a;
         }
-        
+
         .card-body {
             padding: 1.5rem;
         }
-        
+
         /* Badge Styles */
         .badge {
             font-size: 0.75rem;
@@ -199,27 +199,27 @@
             padding: 0.375rem 0.75rem;
             border-radius: 6px;
         }
-        
+
         .badge-success {
             background-color: #d1fae5;
             color: #065f46;
         }
-        
+
         .badge-warning {
             background-color: #fef3c7;
             color: #92400e;
         }
-        
+
         .badge-danger {
             background-color: #fee2e2;
             color: #991b1b;
         }
-        
+
         .badge-info {
             background-color: #dbeafe;
             color: #1e40af;
         }
-        
+
         /* Button Styles */
         .btn {
             border-radius: 6px;
@@ -230,23 +230,23 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .btn-sm {
             padding: 0.375rem 0.75rem;
             font-size: 0.75rem;
         }
-        
+
         .btn-primary {
             background-color: var(--tblr-primary);
             border-color: var(--tblr-primary);
         }
-        
+
         /* Table Styles */
         .table {
             font-size: 0.8125rem;
             margin-bottom: 0;
         }
-        
+
         .table th {
             font-weight: 600;
             background-color: #f8f9fa;
@@ -254,13 +254,13 @@
             padding: 0.75rem;
             color: #374151;
         }
-        
+
         .table td {
             vertical-align: middle;
             padding: 0.75rem;
             border-color: var(--tblr-border-color);
         }
-        
+
         /* Action Buttons */
         .action-buttons {
             display: flex;
@@ -272,29 +272,29 @@
                 margin-left: calc(-1 * var(--tblr-sidebar-width));
                 transition: margin-left 0.3s ease;
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
-            
+
             .sidebar.show {
                 margin-left: 0;
             }
-            
+
             .navbar {
                 position: relative;
             }
-            
+
             .logo-img {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .logo-fallback {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .school-name {
                 font-size: 0.8125rem;
             }
@@ -308,13 +308,13 @@
         <div class="sidebar-header">
             <a href="{{ route('roles.tu.dashboard') }}" class="logo-container">
                 <!-- Logo Sekolah -->
-                <img src="{{ asset('images/smk taruna bhkti logo.png') }}" alt="Logo SMK Taruna Bhakti" class="logo-img" 
-                     onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                <img src="{{ asset('images/smk taruna bhkti logo.png') }}" alt="Logo SMK Taruna Bhakti" class="logo-img"
+                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
                 <div class="logo-fallback" id="logo-fallback" style="display: none;">SMK</div>
                 <div class="school-name">SMK Taruna Bhakti</div>
             </a>
         </div>
-        
+
         <div class="p-2">
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -337,6 +337,13 @@
                         <i class="bx bx-money"></i> Pembayaran SPP
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('tu.data_spp.index') }}"
+                        class="nav-link {{ request()->routeIs('tu.data_spp.*') ? 'active' : '' }}">
+                        <i class="bx bx-list-ul"></i> Data SPP
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
@@ -349,12 +356,12 @@
                 <button class="navbar-toggler d-lg-none" type="button" id="sidebarToggle">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                
+
                 <!-- Page Title -->
                 <div class="d-none d-md-flex align-items-center me-auto">
                     <h2 class="page-title mb-0">@yield('title')</h2>
                 </div>
-                
+
                 <div class="navbar-nav ms-auto">
                     <div class="nav-item dropdown user-dropdown">
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
@@ -383,23 +390,23 @@
         <div class="page-wrapper">
             <div class="container-fluid">
                 <!-- Page Header -->
-                <div class="page-header d-print-none mb-4">
+                <!-- <div class="page-header d-print-none mb-4">
                     <div class="row align-items-center">
                         <div class="col">
                             @if(request()->routeIs('roles.tu.dashboard'))
-                                <h1 class="page-title">Dashboard</h1>
-                                <div class="page-subtitle">Panel Tata Usaha - SMK Taruna Bhakti</div>
+                            <h1 class="page-title">Dashboard</h1>
+                            <div class="page-subtitle">Panel Tata Usaha - SMK Taruna Bhakti</div>
                             @elseif(request()->routeIs('tu.spp.index'))
-                                <h1 class="page-title">Pembayaran SPP</h1>
-                                <div class="page-subtitle">Kelola pembayaran SPP siswa</div>
+                            <h1 class="page-title">Pembayaran SPP</h1>
+                            <div class="page-subtitle">Kelola pembayaran SPP siswa</div>
                             @else
-                                <h1 class="page-title">@yield('title')</h1>
-                                <div class="page-subtitle">Panel Tata Usaha - SMK Taruna Bhakti</div>
+                            <h1 class="page-title">@yield('title')</h1>
+                            <div class="page-subtitle">Panel Tata Usaha - SMK Taruna Bhakti</div>
                             @endif
                         </div>
                     </div>
-                </div>
-                
+                </div> -->
+
                 <!-- Content Area -->
                 <div class="row">
                     <div class="col-12">
@@ -421,7 +428,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const logoImg = document.querySelector('.logo-img');
             const logoFallback = document.getElementById('logo-fallback');
-            
+
             if (logoImg && logoFallback) {
                 if (logoImg.complete) {
                     if (logoImg.naturalHeight === 0) {
