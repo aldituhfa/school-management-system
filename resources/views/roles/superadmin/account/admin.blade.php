@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container mt-3">
+    <!-- Tombol Back -->
+    <div class="mb-3">
+        <a href="{{ url()->previous() }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+    </div>
+
     <h3>Manajemen Akun Admin</h3>
 
     <!-- Tombol Tambah -->
@@ -71,7 +78,6 @@
         </tbody>
     </table>
 </div>
-
 
 <!-- Modal Tambah -->
 <div class="modal fade" id="addModal" tabindex="-1">

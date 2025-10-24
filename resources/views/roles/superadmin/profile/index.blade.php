@@ -29,11 +29,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Nomor Telepon</label>
-                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="form-control">
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Email (tidak dapat diubah)</label>
                         <input type="email" value="{{ $user->email }}" class="form-control" disabled>
                     </div>
