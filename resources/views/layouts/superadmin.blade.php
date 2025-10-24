@@ -221,15 +221,18 @@
         }
 
         .sidebar .dropdown-toggle::after {
-            content: "⌄";
+            content: "›";
             border: none;
-            font-size: 1rem;
+            font-size: 1.2rem;
             transition: transform 0.3s ease;
             margin-left: auto;
+            transform: rotate(90deg);
+            width: auto;
+            height: auto;
         }
 
         .sidebar .dropdown-toggle.show::after {
-            transform: rotate(180deg);
+            transform: rotate(-90deg);
         }
 
         .sidebar-content {
@@ -242,6 +245,16 @@
 
         .nav-item {
             margin: 0;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
         }
 
         @media (max-width: 768px) {
@@ -354,7 +367,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
                 <button class="navbar-toggler d-lg-none" type="button" id="sidebarToggle">
-                    <span class="navbar-toggler-icon"></span>
+                    <i class="ti ti-menu-2"></i>
                 </button>
 
                 <div class="d-none d-md-flex align-items-center me-auto">
@@ -364,12 +377,20 @@
                 <div class="navbar-nav ms-auto">
                     <div class="nav-item dropdown user-dropdown">
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
-                            <div class="avatar me-2">SA</div>
-                            <span class="d-none d-md-inline" style="font-size: 0.8125rem;">Super Admin</span>
-                            <i class="ti ti-chevron-down ms-1 d-none d-md-inline" style="font-size: 0.75rem;"></i>
+                            <div class="avatar me-2">
+                                @if(Auth::user()->profile_photo)
+                                    <img src="{{ Auth::user()->profile_photo_url }}" 
+                                         alt="Profile" 
+                                         class="rounded-circle" 
+                                         style="width:28px; height:28px; object-fit:cover;">
+                                @else
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                @endif
+                            </div>
+                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="{{ route('account.main') }}" style="font-size: 0.8125rem;">
+                            <a class="dropdown-item" href="{{ route('superadmin.profile') }}" style="font-size: 0.8125rem;">
                                 <i class="ti ti-user me-2"></i> Profile
                             </a>
                             <div class="dropdown-divider"></div>

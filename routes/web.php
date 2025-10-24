@@ -13,6 +13,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\StatusSiswaController;
 use App\Http\Controllers\BiayaSppController;
 use App\Http\Controllers\Superadmin\MataPelajaranController;
+use App\Http\Controllers\SuperAdminProfileController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -236,6 +237,12 @@ Route::middleware(['auth'])->group(function () {
 // SUPER ADMIN > mata Pelajaran
 Route::prefix('superadmin')->name('superadmin.')->group(function () {
     Route::resource('mata_pelajaran', MataPelajaranController::class);
+});
+
+//Profile Super Admin
+Route::prefix('superadmin')->middleware(['auth'])->group(function () {
+    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
+    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('superadmin.profile.update');
 });
 
 
