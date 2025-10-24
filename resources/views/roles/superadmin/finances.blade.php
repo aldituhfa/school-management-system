@@ -52,10 +52,10 @@
 
         {{-- Flash message --}}
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         @endif
 
         {{-- Daftar Transaksi --}}
@@ -111,9 +111,9 @@
                                         <td>{{ number_format($finance->amount, 0, ',', '.') }}</td>
                                         <td>
                                             @if($finance->in_out == 'in')
-                                                <span class="badge bg-success-subtle text-success">IN</span>
+                                            <span class="badge bg-success-subtle text-success">IN</span>
                                             @else
-                                                <span class="badge bg-danger-subtle text-danger">OUT</span>
+                                            <span class="badge bg-danger-subtle text-danger">OUT</span>
                                             @endif
                                         </td>
                                         <td>{{ $finance->user->name ?? '-' }}</td>
@@ -130,7 +130,9 @@
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr><td colspan="8" class="text-center text-muted">Belum ada transaksi Dana BOS</td></tr>
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">Belum ada transaksi Dana BOS</td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -167,9 +169,9 @@
                                         <td>{{ number_format($finance->amount, 0, ',', '.') }}</td>
                                         <td>
                                             @if($finance->in_out == 'in')
-                                                <span class="badge bg-success-subtle text-success">IN</span>
+                                            <span class="badge bg-success-subtle text-success">IN</span>
                                             @else
-                                                <span class="badge bg-danger-subtle text-danger">OUT</span>
+                                            <span class="badge bg-danger-subtle text-danger">OUT</span>
                                             @endif
                                         </td>
                                         <td>{{ $finance->user->name ?? '-' }}</td>
@@ -186,7 +188,9 @@
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr><td colspan="8" class="text-center text-muted">Belum ada transaksi Kas</td></tr>
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">Belum ada transaksi Kas</td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -249,6 +253,106 @@
         </form>
     </div>
 </div>
+
+{{-- Modal Edit --}}
+@foreach($danaBos as $finance)
+<div class="modal fade" id="editFinanceModal{{ $finance->id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('finances.update', $finance->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Transaksi Dana BOS</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label>Jenis</label>
+                        <select name="type" class="form-control" required>
+                            <option value="dana_bos" {{ $finance->type == 'dana_bos' ? 'selected' : '' }}>Dana BOS</option>
+                            <option value="kas" {{ $finance->type == 'kas' ? 'selected' : '' }}>Kas</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Kategori</label>
+                        <input type="text" name="category" value="{{ $finance->category }}" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Jumlah</label>
+                        <input type="number" name="amount" value="{{ $finance->amount }}" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>In/Out</label>
+                        <select name="in_out" class="form-control" required>
+                            <option value="in" {{ $finance->in_out == 'in' ? 'selected' : '' }}>Pemasukan</option>
+                            <option value="out" {{ $finance->in_out == 'out' ? 'selected' : '' }}>Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Deskripsi</label>
+                        <textarea name="description" class="form-control">{{ $finance->description }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-outline-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
+{{-- Modal Edit untuk Kas --}}
+@foreach($kas as $finance)
+<div class="modal fade" id="editFinanceModal{{ $finance->id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('finances.update', $finance->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Transaksi Kas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label>Jenis</label>
+                        <select name="type" class="form-control" required>
+                            <option value="dana_bos" {{ $finance->type == 'dana_bos' ? 'selected' : '' }}>Dana BOS</option>
+                            <option value="kas" {{ $finance->type == 'kas' ? 'selected' : '' }}>Kas</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Kategori</label>
+                        <input type="text" name="category" value="{{ $finance->category }}" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Jumlah</label>
+                        <input type="number" name="amount" value="{{ $finance->amount }}" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>In/Out</label>
+                        <select name="in_out" class="form-control" required>
+                            <option value="in" {{ $finance->in_out == 'in' ? 'selected' : '' }}>Pemasukan</option>
+                            <option value="out" {{ $finance->in_out == 'out' ? 'selected' : '' }}>Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label>Deskripsi</label>
+                        <textarea name="description" class="form-control">{{ $finance->description }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-outline-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
 @endsection
 
 @push('scripts')
@@ -260,14 +364,28 @@
         type: 'bar',
         data: {
             labels: ['Dana BOS', 'Kas'],
-            datasets: [
-                { label: 'Pemasukan', data: [totals.dana_bos.in, totals.kas.in], backgroundColor: 'rgba(54, 162, 235, 0.7)' },
-                { label: 'Pengeluaran', data: [totals.dana_bos.out, totals.kas.out], backgroundColor: 'rgba(255, 99, 132, 0.7)' }
+            datasets: [{
+                    label: 'Pemasukan',
+                    data: [totals.dana_bos.in, totals.kas.in],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                },
+                {
+                    label: 'Pengeluaran',
+                    data: [totals.dana_bos.out, totals.kas.out],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
             ]
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: true, ticks: { callback: v => new Intl.NumberFormat('id-ID').format(v) } } }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: v => new Intl.NumberFormat('id-ID').format(v)
+                    }
+                }
+            }
         }
     });
 
