@@ -168,6 +168,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tu/data-spp', [App\Http\Controllers\DataSppController::class, 'index'])->name('tu.data_spp.index');
     Route::get('/tu/data-spp/{id}', [App\Http\Controllers\DataSppController::class, 'show'])->name('tu.data_spp.detail');
     // Route::post('/tu/data_spp/bayar', [app\Http\Controllers\DataSppController::class, 'bayar'])->name('tu.data_spp.bayar');
+    Route::post('/tu/data_spp/cancel/{id}', [App\Http\Controllers\DataSppController::class, 'cancel'])->name('tu.data_spp.cancel');
+    Route::post('/tu/data-spp/{id}/update', [App\Http\Controllers\DataSppController::class, 'update'])
+        ->name('tu.data_spp.update');
     Route::post('/tu/data-spp/{id}/bayar', [App\Http\Controllers\DataSppController::class, 'bayar'])
         ->name('tu.data_spp.bayar');
 

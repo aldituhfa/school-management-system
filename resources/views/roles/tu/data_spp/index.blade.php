@@ -16,7 +16,10 @@
           <div class="d-flex gap-2">
             {{-- Dropdown Tahun Ajaran --}}
             <form method="GET" id="tahunAjaranForm">
-              <select name="tahun_ajaran_id" class="form-select form-select-sm" style="width: 160px;" onchange="document.getElementById('tahunAjaranForm').submit()">
+              <select name="tahun_ajaran_id"
+                class="form-select form-select-sm"
+                style="width: 160px;"
+                onchange="konfirmasiGantiTahun(this)">
                 @foreach($tahunAjaran as $t)
                 <option value="{{ $t->id }}" {{ $tahunAjaranId == $t->id ? 'selected' : '' }}>
                   {{ $t->nama_tahun }}
@@ -103,5 +106,16 @@
     searchInput.addEventListener('keyup', filterTable);
     filterKelas.addEventListener('change', filterTable);
   });
+
+  function konfirmasiGantiTahun(select) {
+    const form = document.getElementById('tahunAjaranForm');
+    const konfirmasi = confirm('Apakah Anda yakin ingin mengganti tahun ajaran?');
+    if (konfirmasi) {
+      form.submit();
+    } else {
+      // Batalkan perubahan dropdown
+      select.value = "{{ $tahunAjaranId }}";
+    }
+  }
 </script>
 @endsection

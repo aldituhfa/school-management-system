@@ -50,7 +50,7 @@ class DataSppController extends Controller
         $biaya = BiayaSpp::where('tahun_ajaran_id', $tahunAjaranId)->first();
         $nominal = $biaya ? $biaya->nominal : 0;
 
-        // List bulan 1–12 dengan tahun dari tahun ajaran
+        // List bulan
         $bulanList = [
             'Januari',
             'Februari',
@@ -66,9 +66,9 @@ class DataSppController extends Controller
             'Desember'
         ];
 
+        // Generate tagihan otomatis jika belum ada
         foreach ($bulanList as $bulan) {
-            $namaBulan = $bulan . ' ' . $tahunMulai; // contoh: Januari 2022
-
+            $namaBulan = $bulan . ' ' . $tahunMulai;
             $tagihan = TagihanSpp::firstOrCreate(
                 [
                     'siswa_id' => $siswa->id,
@@ -81,19 +81,38 @@ class DataSppController extends Controller
                 ]
             );
 
-            // Update nominal jika berubah
             if ($tagihan->nominal != $nominal) {
                 $tagihan->update(['nominal' => $nominal]);
             }
         }
 
-        // Ambil semua tagihan untuk siswa dan tahun ajaran yang dipilih
+        // Ambil semua tagihan untuk tahun ajaran yang dipilih
         $tagihan = TagihanSpp::where('siswa_id', $siswa->id)
             ->where('tahun_ajaran_id', $tahunAjaranId)
             ->orderByRaw("FIELD(bulan, 'Januari $tahunMulai','Februari $tahunMulai','Maret $tahunMulai','April $tahunMulai','Mei $tahunMulai','Juni $tahunMulai','Juli $tahunMulai','Agustus $tahunMulai','September $tahunMulai','Oktober $tahunMulai','November $tahunMulai','Desember $tahunMulai')")
             ->get();
 
-        return view('roles.tu.data_spp.detail', compact('siswa', 'tagihan', 'tahunAjaranId', 'nominal', 'tahunAjaran'));
+        // === Statistik SPP ===
+        $totalTagihan = $tagihan->sum('nominal');
+        $totalDibayar = $tagihan->where('status', 'lunas')->sum('nominal');
+        $sisaTagihan = $totalTagihan - $totalDibayar;
+        $bulanLunas = $tagihan->where('status', 'lunas')->count();
+        $bulanBelum = $tagihan->where('status', 'belum lunas')->count();
+        $terakhirBayar = $tagihan->where('status', 'lunas')->max('tanggal_bayar');
+
+        return view('roles.tu.data_spp.detail', compact(
+            'siswa',
+            'tagihan',
+            'tahunAjaranId',
+            'nominal',
+            'tahunAjaran',
+            'totalTagihan',
+            'totalDibayar',
+            'sisaTagihan',
+            'bulanLunas',
+            'bulanBelum',
+            'terakhirBayar'
+        ));
     }
 
 
@@ -109,5 +128,46 @@ class DataSppController extends Controller
         ]);
 
         return back()->with('success', 'Tagihan bulan ' . $tagihan->bulan . ' telah dibayar.');
+    }
+
+    public function cancel($id)
+    {
+        $tagihan = TagihanSpp::findOrFail($id);
+
+        // Update data tagihan jadi belum lunas kembali
+        $tagihan->update([
+            'tanggal_bayar' => null,
+            'status' => 'belum lunas',
+            'keterangan' => 'Dibatalkan pada ' . now()->translatedFormat('d F Y'),
+        ]);
+
+        return back()->with('success', 'Pembayaran bulan ' . $tagihan->bulan . ' telah dibatalkan.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $tagihan = TagihanSpp::findOrFail($id);
+
+        $request->validate([
+            'tanggal_bayar' => 'nullable|date',
+            'keterangan_tambahan' => 'nullable|string|max:255',
+        ]);
+
+        // Format tanggal bayar
+        $tanggalBayar = $request->tanggal_bayar ? \Carbon\Carbon::parse($request->tanggal_bayar) : null;
+        $textTanggal = $tanggalBayar ? 'Dibayar pada ' . $tanggalBayar->translatedFormat('d F Y') : null;
+
+        // Gabungkan dengan keterangan tambahan
+        $keteranganFinal = $textTanggal;
+        if ($request->filled('keterangan_tambahan')) {
+            $keteranganFinal .= "\n" . $request->keterangan_tambahan;
+        }
+
+        $tagihan->update([
+            'tanggal_bayar' => $tanggalBayar,
+            'keterangan' => $keteranganFinal,
+        ]);
+
+        return back()->with('success', 'Tagihan bulan ' . $tagihan->bulan . ' berhasil diperbarui.');
     }
 }
