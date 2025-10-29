@@ -271,13 +271,22 @@
                 <div class="navbar-nav ms-auto">
                     <div class="nav-item dropdown user-dropdown">
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
-                            <div class="avatar me-2">G</div>
-                            <span class="d-none d-md-inline" style="font-size: 0.8125rem;">Guru</span>
-                            <i class="bx bx-chevron-down ms-1 d-none d-md-inline" style="font-size: 0.75rem;"></i>
+                            <div class="avatar me-2">
+                                @if(Auth::user()->profile_photo)
+                                    <img src="{{ Auth::user()->profile_photo_url }}" 
+                                         alt="Profile" 
+                                         class="rounded-circle" 
+                                         style="width:28px; height:28px; object-fit:cover;">
+                                @else
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                @endif
+                            </div>
+                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </a>
+
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#" style="font-size: 0.8125rem;">
-                                <i class="bx bx-user me-2"></i> Profile
+                             <a class="dropdown-item" href="{{ route('guru.profile') }}" style="font-size: 0.8125rem;">
+                                <i class="ti ti-user me-2"></i> Profile
                             </a>
                             <div class="dropdown-divider"></div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST">

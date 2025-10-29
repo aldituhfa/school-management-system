@@ -12,12 +12,23 @@ class SuperAdminProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('roles.superadmin.profile.index', compact('user'));
+
+        // Sesuaikan tampilan berdasarkan role user
+        $viewPath = match ($user->role) {
+            'super_admin' => 'roles.superadmin.profile.index',
+            'admin'       => 'roles.admin.profile.index',
+            'guru'        => 'roles.guru.profile.index',
+            'tu'          => 'roles.tu.profile.index',
+            'payroll'     => 'roles.payroll.profile.index',
+            default       => abort(403, 'Role tidak dikenali'),
+        };
+
+        return view($viewPath, compact('user'));
     }
 
     public function update(Request $request)
     {
-        $user = User::find(Auth::id()); // ✅ pastikan instance model User
+        $user = User::find(Auth::id());
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -28,12 +39,12 @@ class SuperAdminProfileController extends Controller
         $data = $request->only('name', 'phone');
 
         if ($request->hasFile('profile_photo')) {
-            // hapus foto lama jika ada
+            // Hapus foto lama jika ada
             if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
                 Storage::disk('public')->delete($user->profile_photo);
             }
 
-            // simpan foto baru
+            // Simpan foto baru
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $data['profile_photo'] = $path;
         }

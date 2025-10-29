@@ -246,11 +246,34 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
     Route::resource('mata_pelajaran', MataPelajaranController::class);
 });
 
-//Profile Super Admin
+
+
+//Profile 
 Route::prefix('superadmin')->middleware(['auth'])->group(function () {
     Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
     Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('superadmin.profile.update');
 });
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('admin.profile');
+    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('admin.profile.update');
+});
+
+Route::prefix('guru')->middleware(['auth'])->group(function () {
+    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('guru.profile');
+    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('guru.profile.update');
+});
+
+Route::prefix('tu')->middleware(['auth'])->group(function () {
+    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('tu.profile');
+    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('tu.profile.update');
+});
+
+Route::prefix('payroll')->middleware(['auth'])->group(function () {
+    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('payroll.profile');
+    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('payroll.profile.update');
+});
+
 
 
 

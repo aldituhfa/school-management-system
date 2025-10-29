@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Profile Super Admin')
+@section('title', 'Profile Payroll')
 
 @section('content')
 <div class="page-body">
@@ -11,10 +11,10 @@
 
         <div class="card shadow-sm">
             <div class="card-header">
-                <h3 class="card-title">Profil Super Admin</h3>
+                <h3 class="card-title">Profil Payroll</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('superadmin.profile.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('payroll.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3 text-center">
                         <img src="{{ $user->profile_photo_url }}" alt="Foto Profil" class="rounded-circle mb-3" width="120" height="120">
