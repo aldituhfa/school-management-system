@@ -1,4 +1,4 @@
-@extends('layouts.superadmin')
+@extends('layouts.payroll')
 
 @section('title', 'Profile Payroll')
 

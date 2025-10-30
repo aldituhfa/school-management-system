@@ -1,4 +1,4 @@
-@extends('layouts.superadmin')
+@extends('layouts.guru')
 
 @section('title', 'Profile Guru')
 

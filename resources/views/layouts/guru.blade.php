@@ -305,7 +305,7 @@
         <div class="page-wrapper">
             <div class="container-fluid">
                 <!-- Page Header -->
-                <div class="page-header d-print-none mb-4">
+                <!-- <div class="page-header d-print-none mb-4">
                     <div class="row align-items-center">
                         <div class="col">
                             @if(request()->routeIs('roles.guru.dashboard'))
@@ -315,8 +315,8 @@
                                 <h1 class="page-title">@yield('title')</h1>
                                 <div class="page-subtitle">Panel Guru - SMK Taruna Bhakti</div>
                             @endif
-                        </div>
-                        <div class="col-auto">
+                        </div> -->
+                        <!-- <div class="col-auto">
                             <div class="page-header-actions">
                                 @if(request()->routeIs('roles.guru.dashboard'))
                                     <button class="btn btn-primary">
@@ -326,7 +326,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 
                 <!-- Content Area - DI SINI DASHBOARD ANDA AKAN DITAMPILKAN -->
                 @yield('content')

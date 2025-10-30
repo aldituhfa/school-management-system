@@ -1,4 +1,4 @@
-@extends('layouts.superadmin')
+@extends('layouts.tu')
 
 @section('title', 'Profile Tata Usaha')
 
