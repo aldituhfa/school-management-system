@@ -14,6 +14,8 @@ use App\Http\Controllers\StatusSiswaController;
 use App\Http\Controllers\BiayaSppController;
 use App\Http\Controllers\Superadmin\MataPelajaranController;
 use App\Http\Controllers\SuperAdminProfileController;
+use App\Http\Controllers\PilihMapelController;
+
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -174,6 +176,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tu/data-spp/{id}/bayar', [App\Http\Controllers\DataSppController::class, 'bayar'])
         ->name('tu.data_spp.bayar');
 
+
+
+        // SUPER ADMIN > pilih mata pelajaran untuk guru
+     Route::prefix('roles/superadmin')->name('roles.superadmin.')->group(function () {
+    Route::get('/pilihmapel', [PilihMapelController::class, 'index'])->name('pilihmapel.index');
+    Route::get('/pilihmapel/{id}/edit', [PilihMapelController::class, 'edit'])->name('pilihmapel.edit');
+    Route::put('/pilihmapel/{id}', [PilihMapelController::class, 'update'])->name('pilihmapel.update');
+});
 
 
 

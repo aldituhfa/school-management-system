@@ -90,4 +90,10 @@ class User extends Authenticatable
 
         $this->update(['profile_photo' => null]);
     }
+
+    public function mataPelajaran()
+{
+    return $this->belongsToMany(MataPelajaran::class, 'guru_mata_pelajaran', 'guru_id', 'mata_pelajaran_id');
+}
+
 }

@@ -351,13 +351,25 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('superadmin.mata_pelajaran.index') ? 'active' : '' }}"
-                       href="{{ route('superadmin.mata_pelajaran.index') }}">
+                <!-- Dropdown Mata Pelajaran -->
+                <li class="nav-item sidebar-dropdown" id="mataPelajaranDropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('superadmin.mata_pelajaran.*') || request()->routeIs('roles.superadmin.pilihmapel.*') ? 'active' : '' }}"
+                        href="#" role="button" aria-expanded="false">
                         <i class="ti ti-book"></i>
-                        <span>Mata Pelajaran</span>
+                        <span>Kelola Guru</span>
                     </a>
+                    <div class="sidebar-dropdown-menu">
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.mata_pelajaran.index') ? 'active' : '' }}"
+                           href="{{ route('superadmin.mata_pelajaran.index') }}">
+                            Data Mata Pelajaran
+                        </a>
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('roles.superadmin.pilihmapel.index') ? 'active' : '' }}"
+                           href="{{ route('roles.superadmin.pilihmapel.index') }}">
+                            Pilih Mata Pelajaran
+                        </a>
+                    </div>
                 </li>
+                
             </ul>
         </div>
     </div>
@@ -426,19 +438,25 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Finance Dropdown
             const financeDropdown = document.getElementById('financeDropdown');
-            const dropdownToggle = financeDropdown.querySelector('.dropdown-toggle');
+            const financeDropdownToggle = financeDropdown.querySelector('.dropdown-toggle');
+
+            // Mata Pelajaran Dropdown
+            const mataPelajaranDropdown = document.getElementById('mataPelajaranDropdown');
+            const mataPelajaranDropdownToggle = mataPelajaranDropdown.querySelector('.dropdown-toggle');
 
             // Function to toggle dropdown
-            function toggleFinanceDropdown() {
-                financeDropdown.classList.toggle('show');
+            function toggleDropdown(dropdown, dropdownToggle) {
+                dropdown.classList.toggle('show');
                 dropdownToggle.classList.toggle('show');
                 
                 // Save state to localStorage
-                if (financeDropdown.classList.contains('show')) {
-                    localStorage.setItem('financeDropdownOpen', 'true');
+                const dropdownId = dropdown.id;
+                if (dropdown.classList.contains('show')) {
+                    localStorage.setItem(dropdownId + 'Open', 'true');
                 } else {
-                    localStorage.setItem('financeDropdownOpen', 'false');
+                    localStorage.setItem(dropdownId + 'Open', 'false');
                 }
             }
 
@@ -452,49 +470,82 @@
                 });
             }
 
-            // Click handler for dropdown toggle
-            dropdownToggle.addEventListener('click', function(e) {
+            // Click handler for finance dropdown toggle
+            financeDropdownToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleFinanceDropdown();
+                toggleDropdown(financeDropdown, financeDropdownToggle);
                 closeOtherDropdowns(financeDropdown);
             });
 
-            // Click handler for dropdown items - tidak menutup dropdown
-            financeDropdown.querySelectorAll('.sidebar-dropdown-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    // Tidak menutup dropdown setelah memilih item
-                    // Hanya menandai item sebagai active
-                    financeDropdown.querySelectorAll('.sidebar-dropdown-item').forEach(i => {
-                        i.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Tetap buka dropdown dan simpan state
-                    financeDropdown.classList.add('show');
-                    dropdownToggle.classList.add('show');
-                    localStorage.setItem('financeDropdownOpen', 'true');
-                });
+            // Click handler for mata pelajaran dropdown toggle
+            mataPelajaranDropdownToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleDropdown(mataPelajaranDropdown, mataPelajaranDropdownToggle);
+                closeOtherDropdowns(mataPelajaranDropdown);
             });
+
+            // Click handler for dropdown items - tidak menutup dropdown
+            function setupDropdownItems(dropdown) {
+                dropdown.querySelectorAll('.sidebar-dropdown-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        // Tidak menutup dropdown setelah memilih item
+                        // Hanya menandai item sebagai active
+                        dropdown.querySelectorAll('.sidebar-dropdown-item').forEach(i => {
+                            i.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Tetap buka dropdown dan simpan state
+                        const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+                        dropdown.classList.add('show');
+                        dropdownToggle.classList.add('show');
+                        localStorage.setItem(dropdown.id + 'Open', 'true');
+                    });
+                });
+            }
+
+            setupDropdownItems(financeDropdown);
+            setupDropdownItems(mataPelajaranDropdown);
 
             // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
-                if (!financeDropdown.contains(e.target)) {
+                const isFinanceDropdown = financeDropdown.contains(e.target);
+                const isMataPelajaranDropdown = mataPelajaranDropdown.contains(e.target);
+                
+                if (!isFinanceDropdown) {
                     // Jangan tutup jika ada item yang aktif
                     const hasActiveItem = financeDropdown.querySelector('.sidebar-dropdown-item.active');
                     if (!hasActiveItem) {
                         financeDropdown.classList.remove('show');
-                        dropdownToggle.classList.remove('show');
+                        financeDropdownToggle.classList.remove('show');
                         localStorage.setItem('financeDropdownOpen', 'false');
+                    }
+                }
+                
+                if (!isMataPelajaranDropdown) {
+                    // Jangan tutup jika ada item yang aktif
+                    const hasActiveItem = mataPelajaranDropdown.querySelector('.sidebar-dropdown-item.active');
+                    if (!hasActiveItem) {
+                        mataPelajaranDropdown.classList.remove('show');
+                        mataPelajaranDropdownToggle.classList.remove('show');
+                        localStorage.setItem('mataPelajaranDropdownOpen', 'false');
                     }
                 }
             });
 
-            // Restore dropdown state from localStorage
-            const savedState = localStorage.getItem('financeDropdownOpen');
-            if (savedState === 'true') {
+            // Restore dropdown states from localStorage
+            const financeSavedState = localStorage.getItem('financeDropdownOpen');
+            if (financeSavedState === 'true') {
                 financeDropdown.classList.add('show');
-                dropdownToggle.classList.add('show');
+                financeDropdownToggle.classList.add('show');
+            }
+
+            const mataPelajaranSavedState = localStorage.getItem('mataPelajaranDropdownOpen');
+            if (mataPelajaranSavedState === 'true') {
+                mataPelajaranDropdown.classList.add('show');
+                mataPelajaranDropdownToggle.classList.add('show');
             }
 
             // Set active states based on current path
@@ -517,7 +568,7 @@
                             dropdownToggle.classList.add('show', 'active');
                         }
                         // Simpan state bahwa dropdown harus terbuka
-                        localStorage.setItem('financeDropdownOpen', 'true');
+                        localStorage.setItem(parentDropdown.id + 'Open', 'true');
                     }
                 }
             });
