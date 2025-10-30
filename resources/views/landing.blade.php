@@ -16,7 +16,7 @@
       --dark: #1e293b;
       --border: #e2e8f0;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
@@ -91,6 +91,68 @@
     .hero-image i {
       font-size: 18rem;
       color: rgba(37, 99, 235, 0.1);
+    }
+
+    /* Partners Section */
+    .partners {
+      padding: 60px 0;
+      background-color: white;
+      overflow: hidden;
+    }
+
+    .partners-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: var(--secondary);
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .partners-slider {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .partners-track {
+      display: flex;
+      animation: scroll 30s linear infinite;
+      gap: 60px;
+    }
+
+    .partner-logo {
+      flex-shrink: 0;
+      width: 150px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: grayscale(100%) opacity(0.6);
+      transition: all 0.3s ease;
+    }
+
+    .partner-logo:hover {
+      filter: grayscale(0%) opacity(1);
+    }
+
+    .partner-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-111%);
+      }
+    }
+
+    .partners-slider:hover .partners-track {
+      animation-play-state: paused;
     }
 
     /* Features Section */
@@ -232,6 +294,78 @@
       font-weight: 500;
     }
 
+    /* Testimonials Section */
+    .testimonials {
+      padding: 80px 0;
+      background-color: #f8fafc;
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      height: 100%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .testimonial-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--primary);
+      flex-shrink: 0;
+    }
+
+    .testimonial-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .testimonial-user-info h5 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .testimonial-user-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--secondary);
+    }
+
+    .testimonial-rating {
+      color: #fbbf24;
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+
+    .testimonial-text {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--secondary);
+      flex-grow: 1;
+      font-style: italic;
+    }
+
     /* Footer */
     .footer {
       background: var(--dark);
@@ -283,9 +417,18 @@
       .section-title h2 {
         font-size: 1.8rem;
       }
-      
+
       .hero-image i {
         font-size: 12rem;
+      }
+
+      .partner-logo {
+        width: 120px;
+        height: 60px;
+      }
+
+      .partners-track {
+        gap: 40px;
       }
     }
   </style>
@@ -318,6 +461,68 @@
         </div>
         <div class="col-lg-6 hero-image">
           <i class="bi bi-laptop"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Section (Logo Berjalan) -->
+  <section class="partners">
+    <div class="container">
+      <div class="partners-title">Dipercaya oleh berbagai institusi pendidikan</div>
+    </div>
+    <div class="partners-slider">
+      <div class="partners-track">
+        <!-- Set 1 - Ganti src dengan URL logo Anda -->
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 1">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 2">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 3">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 4">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 5">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 6">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 7">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 8">
+        </div>
+
+        <!-- Set 2 - Duplikat untuk loop seamless -->
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 1">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 2">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 3">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 4">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 5">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 6">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 7">
+        </div>
+        <div class="partner-logo">
+          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 8">
         </div>
       </div>
     </div>
@@ -479,7 +684,7 @@
     </div>
   </section>
 
-  <!-- Stats Section -->
+<!-- Stats Section -->
   <section class="stats text-center">
     <div class="container">
       <div class="row justify-content-center">
@@ -494,6 +699,92 @@
         <div class="col-md-3 mb-4">
           <div class="stat-number">{{ number_format($guru) }}+</div>
           <div class="stat-label">Guru</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-title">
+        <h2>Apa Kata Mereka?</h2>
+        <p>Testimoni dari pengguna yang telah merasakan manfaat sistem kami</p>
+      </div>
+      <div class="row">
+        <!-- Testimonial 1 -->
+        <div class="col-md-4 mb-4">
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar">
+                <img src="https://i.pravatar.cc/150?img=12" alt="Ahmad Syarif">
+              </div>
+              <div class="testimonial-user-info">
+                <h5>Ahmad Syarif</h5>
+                <p>Kepala Sekolah</p>
+                <div class="testimonial-rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              "Sistem ini sangat membantu kami dalam mengelola administrasi sekolah. Semua data tersimpan rapi dan mudah diakses kapan saja. Sangat direkomendasikan!"
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="col-md-4 mb-4">
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Siti Putri">
+              </div>
+              <div class="testimonial-user-info">
+                <h5>Siti Putri</h5>
+                <p>Guru Matematika</p>
+                <div class="testimonial-rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              "Interface yang user-friendly membuat pekerjaan saya sebagai guru menjadi lebih efisien. Input nilai dan absensi siswa jadi sangat mudah dan cepat."
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="col-md-4 mb-4">
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar">
+                <img src="https://i.pravatar.cc/150?img=33" alt="Budi Wibowo">
+              </div>
+              <div class="testimonial-user-info">
+                <h5>Budi Wibowo</h5>
+                <p>Bendahara Sekolah</p>
+                <div class="testimonial-rating">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-half"></i>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              "Fitur payroll dan keuangan sangat lengkap dan akurat. Memudahkan kami dalam mengatur gaji guru dan keuangan sekolah dengan transparan."
+            </div>
+          </div>
         </div>
       </div>
     </div>
