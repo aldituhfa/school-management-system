@@ -210,6 +210,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/siswa', [SiswaController::class, 'store'])->name('siswa.store');
         Route::put('/siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+        Route::get('/siswa-per-kelas', [SiswaController::class, 'perKelas'])->name('siswa.perkelas');
+        Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])->name('siswa.showByKelas');
 
         //CRUD KOLOM
         Route::post('/siswa/add-column', [App\Http\Controllers\SiswaController::class, 'addColumn'])->name('siswa.addColumn');

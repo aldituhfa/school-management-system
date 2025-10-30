@@ -15,7 +15,7 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <!-- Tabler CSS untuk warna background (bg-blue-lt, bg-green-lt, dst) -->
     <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta19/dist/css/tabler.min.css" rel="stylesheet">
-    
+
 
     <style>
         :root {
@@ -297,8 +297,8 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="{{ route('roles.superadmin.dashboard') }}" class="logo-container">
-                <img src="{{ asset('images/Logo TB .png') }}" alt="Logo SMK Taruna Bhakti" class="logo-img" 
-                     onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                <img src="{{ asset('images/Logo TB .png') }}" alt="Logo SMK Taruna Bhakti" class="logo-img"
+                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
                 <div class="logo-fallback" id="logo-fallback" style="display: none;">SMK</div>
                 <div class="school-name">SMK Taruna Bhakti</div>
             </a>
@@ -337,11 +337,24 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('siswa.index') ? 'active' : '' }}" href="{{ route('siswa.index') }}">
+                <!-- DROPDOWN SISWA -->
+                <li class="nav-item sidebar-dropdown" id="siswaDropdown">
+                    <a class="nav-link dropdown-toggle
+            {{ request()->routeIs('siswa.index') || request()->routeIs('siswa.perkelas') || request()->routeIs('siswa.showByKelas') ? 'active' : '' }}"
+                        href="#" role="button" aria-expanded="false">
                         <i class="ti ti-users"></i>
-                        <span>Data Siswa</span>
+                        <span>Siswa</span>
                     </a>
+                    <div class="sidebar-dropdown-menu">
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('siswa.index') ? 'active' : '' }}"
+                            href="{{ route('siswa.index') }}">
+                            Data Siswa
+                        </a>
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('siswa.perkelas') || request()->routeIs('siswa.showByKelas') ? 'active' : '' }}"
+                            href="{{ route('siswa.perkelas') }}">
+                            Data Siswa per Kelas
+                        </a>
+                    </div>
                 </li>
 
                 <li class="nav-item">
@@ -360,16 +373,16 @@
                     </a>
                     <div class="sidebar-dropdown-menu">
                         <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.mata_pelajaran.index') ? 'active' : '' }}"
-                           href="{{ route('superadmin.mata_pelajaran.index') }}">
+                            href="{{ route('superadmin.mata_pelajaran.index') }}">
                             Data Mata Pelajaran
                         </a>
                         <a class="sidebar-dropdown-item {{ request()->routeIs('roles.superadmin.pilihmapel.index') ? 'active' : '' }}"
-                           href="{{ route('roles.superadmin.pilihmapel.index') }}">
+                            href="{{ route('roles.superadmin.pilihmapel.index') }}">
                             Pilih Mata Pelajaran
                         </a>
                     </div>
                 </li>
-                
+
             </ul>
         </div>
     </div>
@@ -391,12 +404,12 @@
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
                             <div class="avatar me-2">
                                 @if(Auth::user()->profile_photo)
-                                    <img src="{{ Auth::user()->profile_photo_url }}" 
-                                         alt="Profile" 
-                                         class="rounded-circle" 
-                                         style="width:28px; height:28px; object-fit:cover;">
+                                <img src="{{ Auth::user()->profile_photo_url }}"
+                                    alt="Profile"
+                                    class="rounded-circle"
+                                    style="width:28px; height:28px; object-fit:cover;">
                                 @else
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                                 @endif
                             </div>
                             <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
@@ -438,158 +451,106 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Finance Dropdown
-            const financeDropdown = document.getElementById('financeDropdown');
-            const financeDropdownToggle = financeDropdown.querySelector('.dropdown-toggle');
+            // Semua dropdown sidebar
+            const dropdowns = [{
+                    id: 'financeDropdown'
+                },
+                {
+                    id: 'mataPelajaranDropdown'
+                },
+                {
+                    id: 'siswaDropdown'
+                } // Tambahan untuk dropdown siswa
+            ];
 
-            // Mata Pelajaran Dropdown
-            const mataPelajaranDropdown = document.getElementById('mataPelajaranDropdown');
-            const mataPelajaranDropdownToggle = mataPelajaranDropdown.querySelector('.dropdown-toggle');
-
-            // Function to toggle dropdown
-            function toggleDropdown(dropdown, dropdownToggle) {
+            // Fungsi toggle dropdown
+            function toggleDropdown(dropdown, toggle) {
                 dropdown.classList.toggle('show');
-                dropdownToggle.classList.toggle('show');
-                
-                // Save state to localStorage
-                const dropdownId = dropdown.id;
-                if (dropdown.classList.contains('show')) {
-                    localStorage.setItem(dropdownId + 'Open', 'true');
-                } else {
-                    localStorage.setItem(dropdownId + 'Open', 'false');
-                }
+                toggle.classList.toggle('show');
+                const key = dropdown.id + 'Open';
+                localStorage.setItem(key, dropdown.classList.contains('show') ? 'true' : 'false');
             }
 
-            // Function to close other dropdowns
+            // Tutup dropdown lain
             function closeOtherDropdowns(currentDropdown) {
-                document.querySelectorAll('.sidebar-dropdown').forEach(function(dropdown) {
-                    if (dropdown !== currentDropdown && dropdown.classList.contains('show')) {
-                        dropdown.classList.remove('show');
-                        dropdown.querySelector('.dropdown-toggle').classList.remove('show');
+                document.querySelectorAll('.sidebar-dropdown').forEach(d => {
+                    if (d !== currentDropdown && d.classList.contains('show')) {
+                        d.classList.remove('show');
+                        d.querySelector('.dropdown-toggle').classList.remove('show');
+                        localStorage.setItem(d.id + 'Open', 'false');
                     }
                 });
             }
 
-            // Click handler for finance dropdown toggle
-            financeDropdownToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleDropdown(financeDropdown, financeDropdownToggle);
-                closeOtherDropdowns(financeDropdown);
-            });
+            // Setup tiap dropdown
+            dropdowns.forEach(({
+                id
+            }) => {
+                const dropdown = document.getElementById(id);
+                if (!dropdown) return;
 
-            // Click handler for mata pelajaran dropdown toggle
-            mataPelajaranDropdownToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleDropdown(mataPelajaranDropdown, mataPelajaranDropdownToggle);
-                closeOtherDropdowns(mataPelajaranDropdown);
-            });
+                const toggle = dropdown.querySelector('.dropdown-toggle');
+                const items = dropdown.querySelectorAll('.sidebar-dropdown-item');
 
-            // Click handler for dropdown items - tidak menutup dropdown
-            function setupDropdownItems(dropdown) {
-                dropdown.querySelectorAll('.sidebar-dropdown-item').forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        // Tidak menutup dropdown setelah memilih item
-                        // Hanya menandai item sebagai active
-                        dropdown.querySelectorAll('.sidebar-dropdown-item').forEach(i => {
-                            i.classList.remove('active');
-                        });
-                        this.classList.add('active');
-                        
-                        // Tetap buka dropdown dan simpan state
-                        const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+                // Toggle dropdown on click
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdown(dropdown, toggle);
+                    closeOtherDropdowns(dropdown);
+                });
+
+                // Setup item click
+                items.forEach(item => {
+                    item.addEventListener('click', () => {
+                        items.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
                         dropdown.classList.add('show');
-                        dropdownToggle.classList.add('show');
-                        localStorage.setItem(dropdown.id + 'Open', 'true');
+                        toggle.classList.add('show', 'active');
+                        localStorage.setItem(id + 'Open', 'true');
                     });
                 });
-            }
 
-            setupDropdownItems(financeDropdown);
-            setupDropdownItems(mataPelajaranDropdown);
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                const isFinanceDropdown = financeDropdown.contains(e.target);
-                const isMataPelajaranDropdown = mataPelajaranDropdown.contains(e.target);
-                
-                if (!isFinanceDropdown) {
-                    // Jangan tutup jika ada item yang aktif
-                    const hasActiveItem = financeDropdown.querySelector('.sidebar-dropdown-item.active');
-                    if (!hasActiveItem) {
-                        financeDropdown.classList.remove('show');
-                        financeDropdownToggle.classList.remove('show');
-                        localStorage.setItem('financeDropdownOpen', 'false');
-                    }
-                }
-                
-                if (!isMataPelajaranDropdown) {
-                    // Jangan tutup jika ada item yang aktif
-                    const hasActiveItem = mataPelajaranDropdown.querySelector('.sidebar-dropdown-item.active');
-                    if (!hasActiveItem) {
-                        mataPelajaranDropdown.classList.remove('show');
-                        mataPelajaranDropdownToggle.classList.remove('show');
-                        localStorage.setItem('mataPelajaranDropdownOpen', 'false');
-                    }
+                // Restore state dari localStorage
+                const savedState = localStorage.getItem(id + 'Open');
+                if (savedState === 'true') {
+                    dropdown.classList.add('show');
+                    toggle.classList.add('show', 'active');
                 }
             });
 
-            // Restore dropdown states from localStorage
-            const financeSavedState = localStorage.getItem('financeDropdownOpen');
-            if (financeSavedState === 'true') {
-                financeDropdown.classList.add('show');
-                financeDropdownToggle.classList.add('show');
-            }
-
-            const mataPelajaranSavedState = localStorage.getItem('mataPelajaranDropdownOpen');
-            if (mataPelajaranSavedState === 'true') {
-                mataPelajaranDropdown.classList.add('show');
-                mataPelajaranDropdownToggle.classList.add('show');
-            }
-
-            // Set active states based on current path
+            // Auto aktif berdasarkan path URL
             const currentPath = window.location.pathname;
-
-            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-
             document.querySelectorAll('.sidebar-dropdown-item').forEach(item => {
                 if (item.getAttribute('href') === currentPath) {
                     item.classList.add('active');
                     const parentDropdown = item.closest('.sidebar-dropdown');
                     if (parentDropdown) {
                         parentDropdown.classList.add('show');
-                        const dropdownToggle = parentDropdown.querySelector('.dropdown-toggle');
-                        if (dropdownToggle) {
-                            dropdownToggle.classList.add('show', 'active');
-                        }
-                        // Simpan state bahwa dropdown harus terbuka
+                        const toggle = parentDropdown.querySelector('.dropdown-toggle');
+                        toggle?.classList.add('show', 'active');
                         localStorage.setItem(parentDropdown.id + 'Open', 'true');
                     }
                 }
             });
 
-            // Logo error handling
+            // Logo fallback (biar aman)
             const logoImg = document.querySelector('.logo-img');
             const logoFallback = document.getElementById('logo-fallback');
-
-            if (logoImg.complete) {
-                if (logoImg.naturalHeight === 0) {
+            if (logoImg && logoFallback) {
+                if (logoImg.complete && logoImg.naturalHeight === 0) {
                     logoImg.style.display = 'none';
                     logoFallback.style.display = 'flex';
+                } else {
+                    logoImg.addEventListener('error', () => {
+                        logoImg.style.display = 'none';
+                        logoFallback.style.display = 'flex';
+                    });
                 }
-            } else {
-                logoImg.addEventListener('error', function() {
-                    this.style.display = 'none';
-                    logoFallback.style.display = 'flex';
-                });
             }
         });
     </script>
+
 
     @stack('scripts')
 </body>

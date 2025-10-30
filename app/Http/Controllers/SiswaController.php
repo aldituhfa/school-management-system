@@ -148,4 +148,18 @@ class SiswaController extends Controller
 
         return back()->with('success', "Kolom '$column' berhasil dihapus!");
     }
+    public function perKelas()
+    {
+        $kelas = Kelas::withCount('siswa')->get(); // tambahkan withCount
+        return view('roles.superadmin.siswa.perkelas', compact('kelas'));
+    }
+
+    public function showByKelas($id)
+    {
+        $kelas = Kelas::findOrFail($id);
+        $siswa = Siswa::where('kelas_id', $id)->with('kelas', 'status')->paginate(10);
+        $columns = Schema::getColumnListing('siswa');
+
+        return view('roles.superadmin.siswa.detail_perkelas', compact('kelas', 'siswa', 'columns'));
+    }
 }
