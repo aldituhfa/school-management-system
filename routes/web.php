@@ -15,7 +15,7 @@ use App\Http\Controllers\BiayaSppController;
 use App\Http\Controllers\Superadmin\MataPelajaranController;
 use App\Http\Controllers\SuperAdminProfileController;
 use App\Http\Controllers\PilihMapelController;
-
+use App\Http\Controllers\SuperAdminSettingController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -262,7 +262,6 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
 });
 
 
-
 //Profile 
 Route::prefix('superadmin')->middleware(['auth'])->group(function () {
     Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
@@ -289,9 +288,9 @@ Route::prefix('payroll')->middleware(['auth'])->group(function () {
     Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('payroll.profile.update');
 });
 
-
-
-
+// SUPER ADMIN > setting
+Route::get('/superadmin/setting', [SuperAdminSettingController::class, 'index'])->name('superadmin.setting');
+Route::post('/superadmin/setting/update', [SuperAdminSettingController::class, 'update'])->name('superadmin.setting.update');
 
 
 // Route::prefix('finances')->group(function () {

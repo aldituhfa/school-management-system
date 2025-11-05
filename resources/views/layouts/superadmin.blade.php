@@ -11,11 +11,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <!-- ✅ Tambahkan Boxicons untuk ikon di halaman akun -->
+    <!-- Boxicons -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <!-- Tabler CSS untuk warna background (bg-blue-lt, bg-green-lt, dst) -->
+    <!-- Tabler CSS -->
     <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta19/dist/css/tabler.min.css" rel="stylesheet">
-
 
     <style>
         :root {
@@ -91,8 +90,8 @@
         }
 
         .logo-img {
-            width: 48px;
-            height: 48px;
+            width: 64px; /* Diperbesar dari 48px */
+            height: 64px; /* Diperbesar dari 48px */
             object-fit: contain;
             border-radius: 6px;
         }
@@ -106,8 +105,8 @@
         }
 
         .logo-fallback {
-            width: 48px;
-            height: 48px;
+            width: 64px; /* Diperbesar dari 48px */
+            height: 64px; /* Diperbesar dari 48px */
             border-radius: 6px;
             background-color: var(--tblr-primary);
             display: flex;
@@ -115,7 +114,7 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.875rem; /* Diperbesar dari 0.75rem */
         }
 
         .main-content {
@@ -276,13 +275,13 @@
             }
 
             .logo-img {
-                width: 40px;
-                height: 40px;
+                width: 56px; /* Diperbesar dari 40px */
+                height: 56px; /* Diperbesar dari 40px */
             }
 
             .logo-fallback {
-                width: 40px;
-                height: 40px;
+                width: 56px; /* Diperbesar dari 40px */
+                height: 56px; /* Diperbesar dari 40px */
             }
 
             .school-name {
@@ -292,15 +291,28 @@
     </style>
 </head>
 
+@php
+    use App\Models\Setting;
+    $setting = Setting::first();
+@endphp
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="{{ route('roles.superadmin.dashboard') }}" class="logo-container">
-                <img src="{{ asset('images/Logo TB .png') }}" alt="Logo SMK Taruna Bhakti" class="logo-img"
-                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
-                <div class="logo-fallback" id="logo-fallback" style="display: none;">SMK</div>
-                <div class="school-name">SMK Taruna Bhakti</div>
+                @if($setting && $setting->logo)
+                    <img src="{{ asset('storage/' . $setting->logo) }}"
+                         alt="Logo Sekolah"
+                         class="logo-img"
+                         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                @else
+                    <div class="logo-fallback" id="logo-fallback">LOGO</div>
+                @endif
+
+                <div class="school-name">
+                    {{ $setting->logo_name ?? 'SMS' }}
+                </div>
             </a>
         </div>
 
@@ -383,6 +395,13 @@
                     </div>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('superadmin.setting') ? 'active' : '' }}" 
+                       href="{{ route('superadmin.setting') }}">
+                        <i class="ti ti-settings"></i>
+                        <span>Setting</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -550,7 +569,6 @@
             }
         });
     </script>
-
 
     @stack('scripts')
 </body>

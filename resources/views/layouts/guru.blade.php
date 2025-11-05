@@ -80,8 +80,8 @@
         }
         
         .logo-img {
-            width: 48px;
-            height: 48px;
+            width: 64px; /* Diperbesar dari 48px */
+            height: 64px; /* Diperbesar dari 48px */
             object-fit: contain;
             border-radius: 6px;
         }
@@ -95,8 +95,8 @@
         }
         
         .logo-fallback {
-            width: 48px;
-            height: 48px;
+            width: 64px; /* Diperbesar dari 48px */
+            height: 64px; /* Diperbesar dari 48px */
             border-radius: 6px;
             background-color: var(--tblr-primary);
             display: flex;
@@ -104,7 +104,7 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.875rem; /* Diperbesar dari 0.75rem */
         }
         
         .main-content {
@@ -204,13 +204,13 @@
             }
             
             .logo-img {
-                width: 40px;
-                height: 40px;
+                width: 56px; /* Diperbesar dari 40px */
+                height: 56px; /* Diperbesar dari 40px */
             }
             
             .logo-fallback {
-                width: 40px;
-                height: 40px;
+                width: 56px; /* Diperbesar dari 40px */
+                height: 56px; /* Diperbesar dari 40px */
             }
             
             .school-name {
@@ -220,16 +220,25 @@
     </style>
 </head>
 
+@php
+    use App\Models\Setting;
+    $setting = Setting::first();
+@endphp
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="{{ route('roles.guru.dashboard') }}" class="logo-container">
-                <!-- Logo Sekolah -->
-                <img src="{{ asset('images/smk taruna bhkti logo.png') }}" alt="Logo SMK Taruna Bhakti" class="logo-img" 
-                     onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
-                <div class="logo-fallback" id="logo-fallback" style="display: none;">SMK</div>
-                <div class="school-name">SMK Taruna Bhakti</div>
+            <a href="/" class="logo-container">
+                @if($setting && $setting->logo)
+                    <img src="{{ asset('storage/' . $setting->logo) }}" 
+                         alt="Logo Sekolah" 
+                         class="logo-img"
+                         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                @else
+                    <div class="logo-fallback" id="logo-fallback">LOGO</div>
+                @endif
+                <span class="school-name">{{ $setting->logo_name ?? 'SMK Taruna Bhakti' }}</span>
             </a>
         </div>
         
@@ -304,30 +313,6 @@
         <!-- Page Content -->
         <div class="page-wrapper">
             <div class="container-fluid">
-                <!-- Page Header -->
-                <!-- <div class="page-header d-print-none mb-4">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            @if(request()->routeIs('roles.guru.dashboard'))
-                                <h1 class="page-title">Dashboard</h1>
-                                <div class="page-subtitle">Panel Guru - SMK Taruna Bhakti</div>
-                            @else
-                                <h1 class="page-title">@yield('title')</h1>
-                                <div class="page-subtitle">Panel Guru - SMK Taruna Bhakti</div>
-                            @endif
-                        </div> -->
-                        <!-- <div class="col-auto">
-                            <div class="page-header-actions">
-                                @if(request()->routeIs('roles.guru.dashboard'))
-                                    <button class="btn btn-primary">
-                                        <i class="bx bx-plus"></i> Tambah Materi
-                                    </button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                
                 <!-- Content Area - DI SINI DASHBOARD ANDA AKAN DITAMPILKAN -->
                 @yield('content')
             </div>
