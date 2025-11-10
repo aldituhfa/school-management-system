@@ -16,6 +16,7 @@ use App\Http\Controllers\Superadmin\MataPelajaranController;
 use App\Http\Controllers\SuperAdminProfileController;
 use App\Http\Controllers\PilihMapelController;
 use App\Http\Controllers\SuperAdminSettingController;
+use App\Http\Controllers\LaporanTagihanSppController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -169,21 +170,26 @@ Route::middleware(['auth'])->group(function () {
     // TU > data SPP
     Route::get('/tu/data-spp', [App\Http\Controllers\DataSppController::class, 'index'])->name('tu.data_spp.index');
     Route::get('/tu/data-spp/{id}', [App\Http\Controllers\DataSppController::class, 'show'])->name('tu.data_spp.detail');
-    // Route::post('/tu/data_spp/bayar', [app\Http\Controllers\DataSppController::class, 'bayar'])->name('tu.data_spp.bayar');
     Route::post('/tu/data_spp/cancel/{id}', [App\Http\Controllers\DataSppController::class, 'cancel'])->name('tu.data_spp.cancel');
     Route::post('/tu/data-spp/{id}/update', [App\Http\Controllers\DataSppController::class, 'update'])
         ->name('tu.data_spp.update');
     Route::post('/tu/data-spp/{id}/bayar', [App\Http\Controllers\DataSppController::class, 'bayar'])
         ->name('tu.data_spp.bayar');
 
+    //TU > laporan tagihan spp
+    Route::get('/tu/laporan-tagihan-spp', [LaporanTagihanSppController::class, 'index'])->name('tu.laporan_tagihan_spp.index');
+    Route::get('/tu/laporan-tagihan-spp/export-pdf', [LaporanTagihanSppController::class, 'exportPdf'])->name('tu.laporan_tagihan_spp.exportPdf');
+    Route::get('/tu/laporan-tagihan-spp/export-excel', [LaporanTagihanSppController::class, 'exportExcel'])->name('tu.laporan_tagihan_spp.exportExcel');
 
 
-        // SUPER ADMIN > pilih mata pelajaran untuk guru
-     Route::prefix('roles/superadmin')->name('roles.superadmin.')->group(function () {
-    Route::get('/pilihmapel', [PilihMapelController::class, 'index'])->name('pilihmapel.index');
-    Route::get('/pilihmapel/{id}/edit', [PilihMapelController::class, 'edit'])->name('pilihmapel.edit');
-    Route::put('/pilihmapel/{id}', [PilihMapelController::class, 'update'])->name('pilihmapel.update');
-});
+
+
+    // SUPER ADMIN > pilih mata pelajaran untuk guru
+    Route::prefix('roles/superadmin')->name('roles.superadmin.')->group(function () {
+        Route::get('/pilihmapel', [PilihMapelController::class, 'index'])->name('pilihmapel.index');
+        Route::get('/pilihmapel/{id}/edit', [PilihMapelController::class, 'edit'])->name('pilihmapel.edit');
+        Route::put('/pilihmapel/{id}', [PilihMapelController::class, 'update'])->name('pilihmapel.update');
+    });
 
 
 

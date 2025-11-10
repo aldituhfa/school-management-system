@@ -84,8 +84,10 @@
         }
 
         .logo-img {
-            width: 64px; /* Diperbesar dari 48px */
-            height: 64px; /* Diperbesar dari 48px */
+            width: 64px;
+            /* Diperbesar dari 48px */
+            height: 64px;
+            /* Diperbesar dari 48px */
             object-fit: contain;
             border-radius: 6px;
         }
@@ -99,8 +101,10 @@
         }
 
         .logo-fallback {
-            width: 64px; /* Diperbesar dari 48px */
-            height: 64px; /* Diperbesar dari 48px */
+            width: 64px;
+            /* Diperbesar dari 48px */
+            height: 64px;
+            /* Diperbesar dari 48px */
             border-radius: 6px;
             background-color: var(--tblr-primary);
             display: flex;
@@ -108,7 +112,8 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.875rem; /* Diperbesar dari 0.75rem */
+            font-size: 0.875rem;
+            /* Diperbesar dari 0.75rem */
         }
 
         .main-content {
@@ -287,13 +292,17 @@
             }
 
             .logo-img {
-                width: 56px; /* Diperbesar dari 40px */
-                height: 56px; /* Diperbesar dari 40px */
+                width: 56px;
+                /* Diperbesar dari 40px */
+                height: 56px;
+                /* Diperbesar dari 40px */
             }
 
             .logo-fallback {
-                width: 56px; /* Diperbesar dari 40px */
-                height: 56px; /* Diperbesar dari 40px */
+                width: 56px;
+                /* Diperbesar dari 40px */
+                height: 56px;
+                /* Diperbesar dari 40px */
             }
 
             .school-name {
@@ -304,8 +313,8 @@
 </head>
 
 @php
-    use App\Models\Setting;
-    $setting = Setting::first();
+use App\Models\Setting;
+$setting = Setting::first();
 @endphp
 
 <body>
@@ -314,12 +323,12 @@
         <div class="sidebar-header">
             <div class="logo-container">
                 @if($setting && $setting->logo)
-                    <img src="{{ asset('storage/' . $setting->logo) }}" 
-                         alt="Logo Sekolah" 
-                         class="logo-img"
-                         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                <img src="{{ asset('storage/' . $setting->logo) }}"
+                    alt="Logo Sekolah"
+                    class="logo-img"
+                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
                 @else
-                    <div class="logo-fallback" id="logo-fallback">LOGO</div>
+                <div class="logo-fallback" id="logo-fallback">LOGO</div>
                 @endif
                 <span class="school-name">{{ $setting->logo_name ?? 'SMS' }}</span>
             </div>
@@ -353,6 +362,12 @@
                         <i class="bx bx-list-ul"></i> Data SPP
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('tu.laporan_tagihan_spp.index') }}"
+                        class="nav-link {{ request()->routeIs('tu.laporan_tagihan_spp.*') ? 'active' : '' }}">
+                        <i class="bx bx-file"></i> Laporan Tagihan SPP
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -376,12 +391,12 @@
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
                             <div class="avatar me-2">
                                 @if(Auth::user()->profile_photo)
-                                    <img src="{{ Auth::user()->profile_photo_url }}" 
-                                         alt="Profile" 
-                                         class="rounded-circle" 
-                                         style="width:28px; height:28px; object-fit:cover;">
+                                <img src="{{ Auth::user()->profile_photo_url }}"
+                                    alt="Profile"
+                                    class="rounded-circle"
+                                    style="width:28px; height:28px; object-fit:cover;">
                                 @else
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                                 @endif
                             </div>
                             <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
@@ -391,7 +406,7 @@
                             <a class="dropdown-item" href="{{ route('payroll.profile') }}" style="font-size: 0.8125rem;">
                                 <i class="ti ti-user me-2"></i> Profile
                             </a>
-                            
+
                             <div class="dropdown-divider"></div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                                 @csrf
