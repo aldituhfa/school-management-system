@@ -11,7 +11,7 @@
 
         <div class="card shadow-sm">
             <div class="card-header">
-                <h3 class="card-title">Profil Payroll</h3>
+                <h3 class="card-title">Profile Payroll</h3>
             </div>
             <div class="card-body">
                 <form action="{{ route('payroll.profile.update') }}" method="POST" enctype="multipart/form-data">

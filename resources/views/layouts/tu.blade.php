@@ -80,6 +80,7 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
+            cursor: default; /* Tambahkan ini */
         }
 
         .logo-img {
@@ -311,7 +312,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/" class="logo-container">
+            <div class="logo-container">
                 @if($setting && $setting->logo)
                     <img src="{{ asset('storage/' . $setting->logo) }}" 
                          alt="Logo Sekolah" 
@@ -320,8 +321,8 @@
                 @else
                     <div class="logo-fallback" id="logo-fallback">LOGO</div>
                 @endif
-                <span class="school-name">{{ $setting->logo_name ?? 'SMK Taruna Bhakti' }}</span>
-            </a>
+                <span class="school-name">{{ $setting->logo_name ?? 'SMS' }}</span>
+            </div>
         </div>
 
         <div class="p-2">

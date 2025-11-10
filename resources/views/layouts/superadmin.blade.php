@@ -87,6 +87,7 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
+            cursor: default; /* Tambahkan ini */
         }
 
         .logo-img {
@@ -300,7 +301,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="{{ route('roles.superadmin.dashboard') }}" class="logo-container">
+            <div class="logo-container">
                 @if($setting && $setting->logo)
                     <img src="{{ asset('storage/' . $setting->logo) }}"
                          alt="Logo Sekolah"
@@ -313,7 +314,7 @@
                 <div class="school-name">
                     {{ $setting->logo_name ?? 'SMS' }}
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="sidebar-content">
@@ -399,7 +400,7 @@
                     <a class="nav-link {{ request()->routeIs('superadmin.setting') ? 'active' : '' }}" 
                        href="{{ route('superadmin.setting') }}">
                         <i class="ti ti-settings"></i>
-                        <span>Setting</span>
+                        <span>Upp Logo</span>
                     </a>
                 </li>
             </ul>

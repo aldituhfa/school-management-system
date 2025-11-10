@@ -3,103 +3,218 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Manajemen Sekolah</title>
+  <title>School MS - Sistem Manajemen Sekolah Modern</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
   <style>
     :root {
       --primary: #2563eb;
       --primary-light: #3b82f6;
+      --primary-dark: #1e40af;
       --secondary: #64748b;
       --light: #f8fafc;
       --dark: #1e293b;
       --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --purple: #7c3aed;
     }
-
+ 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+ 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--light);
       color: var(--dark);
       line-height: 1.6;
+      overflow-x: hidden;
     }
-
+ 
     /* Navbar */
     .navbar {
-      background-color: white;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 1rem 0;
       position: sticky;
       top: 0;
       z-index: 1000;
+      transition: all 0.3s ease;
     }
-
+ 
+    .navbar.scrolled {
+      padding: 0.5rem 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+ 
     .navbar-brand {
       font-weight: 700;
       font-size: 1.5rem;
       color: var(--primary);
+      transition: transform 0.3s ease;
     }
-
+ 
+    .navbar-brand:hover {
+      transform: scale(1.05);
+    }
+ 
+    .btn-contact, .btn-login {
+      padding: 8px 24px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-left: 10px;
+    }
+ 
+    .btn-contact {
+      background-color: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+ 
+    .btn-contact:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+ 
     .btn-login {
       background-color: var(--primary);
       color: white;
-      padding: 8px 24px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 500;
-      transition: all 0.2s ease;
     }
-
+ 
     .btn-login:hover {
       background-color: var(--primary-light);
-      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(50, 37, 235, 0.3);
     }
-
-    /* Hero Section */
-    .hero {
-      min-height: 80vh;
+ 
+    /* Hero Slider */
+    .hero-slider {
+      position: relative;
+      height: 90vh;
+      overflow: hidden;
+    }
+ 
+    .hero-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
       display: flex;
       align-items: center;
-      padding: 80px 0;
-      background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe);
     }
-
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: 700;
+ 
+    .hero-slide.active {
+      opacity: 1;
+    }
+ 
+    .hero-slide-1 {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+                  url('images/dashboard.jpg') center/cover;
+    }
+ 
+    .hero-slide-2 {
+      background: linear-gradient(135deg, rgba(240, 147, 251, 0.9) 0%, rgba(245, 87, 108, 0.9) 100%),
+                  url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&h=1080&fit=crop') center/cover;
+    }
+ 
+    .hero-slide-3 {
+      background: linear-gradient(135deg, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.9) 100%),
+                  url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop') center/cover;
+    }
+ 
+    .hero-content {
+      color: white;
+      z-index: 2;
+    }
+ 
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
       margin-bottom: 1.5rem;
-      line-height: 1.2;
-      color: var(--dark);
+      animation: fadeInUp 1s ease;
     }
-
-    .hero p {
-      font-size: 1.2rem;
+ 
+    .hero-content p {
+      font-size: 1.3rem;
       margin-bottom: 2rem;
-      color: var(--secondary);
+      animation: fadeInUp 1s ease 0.2s both;
     }
-
+ 
+    .hero-cta {
+      animation: fadeInUp 1s ease 0.4s both;
+    }
+ 
     .hero-image {
-      text-align: center;
+      animation: float 3s ease-in-out infinite;
     }
-
+ 
     .hero-image i {
-      font-size: 18rem;
-      color: rgba(37, 99, 235, 0.1);
+      font-size: 20rem;
+      color: rgba(255, 255, 255, 0.2);
     }
-
+ 
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+ 
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+ 
+    .slider-dots {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 3;
+    }
+ 
+    .slider-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+ 
+    .slider-dot.active {
+      background-color: white;
+      width: 30px;
+      border-radius: 6px;
+    }
+ 
     /* Partners Section */
     .partners {
       padding: 60px 0;
       background-color: white;
       overflow: hidden;
     }
-
+ 
     .partners-title {
       text-align: center;
       margin-bottom: 40px;
@@ -109,18 +224,18 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
+ 
     .partners-slider {
       overflow: hidden;
       position: relative;
     }
-
+ 
     .partners-track {
       display: flex;
       animation: scroll 30s linear infinite;
       gap: 60px;
     }
-
+ 
     .partner-logo {
       flex-shrink: 0;
       width: 150px;
@@ -130,176 +245,582 @@
       justify-content: center;
       filter: grayscale(100%) opacity(0.6);
       transition: all 0.3s ease;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
     }
-
+ 
     .partner-logo:hover {
       filter: grayscale(0%) opacity(1);
+      transform: scale(1.1);
     }
-
-    .partner-logo img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+ 
+    .partner-logo i {
+      font-size: 3rem;
+      color: var(--secondary);
     }
-
+ 
     @keyframes scroll {
       0% {
         transform: translateX(0);
       }
       100% {
-        transform: translateX(-111%);
+        transform: translateX(-50%);
       }
     }
-
+ 
     .partners-slider:hover .partners-track {
       animation-play-state: paused;
     }
-
-    /* Features Section */
+ 
+    /* Features Section - Phone Centered Design */
     .features {
-      padding: 80px 0;
-      background-color: white;
+      padding: 100px 0;
+      background: linear-gradient(to bottom, white, #f8fafc);
+      position: relative;
+      overflow: hidden;
     }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .section-title h2 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 1rem;
-    }
-
-    .section-title p {
-      font-size: 1.1rem;
-      color: var(--secondary);
-    }
-
-    .feature-card {
-      background: white;
-      border-radius: 10px;
-      padding: 30px 25px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s ease;
-      height: 100%;
-      border: 1px solid var(--border);
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .feature-icon {
-      width: 60px;
-      height: 60px;
-      background-color: var(--primary);
-      border-radius: 10px;
+ 
+    .features-showcase {
+      position: relative;
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 700px;
+    }
+ 
+    .phone-mockup {
+      position: relative;
+      z-index: 10;
+      animation: floatPhone 3s ease-in-out infinite;
+    }
+ 
+    .phone-frame {
+      width: 320px;
+      height: 650px;
+      background: linear-gradient(135deg, #000000ff 0%, #283f93ff 100%);
+      border-radius: 40px;
+      padding: 15px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+ 
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+ 
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 25px;
+      background: #1e293b;
+      border-radius: 0 0 20px 20px;
+      z-index: 1;
+    }
+ 
+    .phone-content {
+      padding: 35px 20px 20px;
+      height: 100%;
+      background: linear-gradient(to bottom, #f8fafc, white);
+    }
+ 
+    .phone-header {
+      text-align: center;
       margin-bottom: 20px;
+    }
+ 
+    .phone-header h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+ 
+    .phone-header p {
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+ 
+    .phone-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+ 
+    .phone-stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+ 
+    .phone-stat-icon {
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 8px;
+      color: white;
+      font-size: 0.9rem;
+    }
+ 
+    .phone-stat-number {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--dark);
+      display: block;
+    }
+ 
+    .phone-stat-label {
+      font-size: 0.75rem;
+      color: var(--secondary);
+    }
+ 
+ 
+ 
+    .feature-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      max-height: 800px;
+    }
+ 
+    .orbit-item {
+      position: absolute;
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+      max-width: 280px;
+    }
+ 
+    .orbit-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      border-color: var(--primary);
+    }
+ 
+    .orbit-item-1 {
+      top: 5%;
+      left: 10%;
+    }
+ 
+    .orbit-item-2 {
+      top: 5%;
+      right: 10%;
+    }
+ 
+    .orbit-item-3 {
+      top: 36%;
+      left: 0%;
+    }
+ 
+    .orbit-item-4 {
+      top: 36%;
+      right: 0%;
+ 
+    }
+ 
+    .orbit-item-5 {
+      bottom: 5%;
+      left: 10%;
+    }
+ 
+    .orbit-item-6 {
+      bottom: 5%;
+      right: 10%;
+    }
+ 
+    .orbit-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
       font-size: 1.5rem;
       color: white;
     }
-
-    .feature-card h4 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 15px;
+ 
+    .orbit-item h5 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
       color: var(--dark);
     }
-
-    .feature-card p {
+ 
+    .orbit-item p {
+      font-size: 0.9rem;
       color: var(--secondary);
-      line-height: 1.6;
+      line-height: 1.5;
+      margin: 0;
     }
-
-    /* Roles Section */
-    .roles {
-      padding: 80px 0;
-      background-color: #f8fafc;
+ 
+    .orbit-bg-1 { background: linear-gradient(135deg, #667eea, #004bfaff); }
+    .orbit-bg-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .orbit-bg-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .orbit-bg-4 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    .orbit-bg-5 { background: linear-gradient(135deg, #fa709a, #fee140); }
+    .orbit-bg-6 { background: linear-gradient(135deg, #30cfd0, #330867); }
+ 
+    .section-title {
+      text-align: center;
+      margin-bottom: 80px;
     }
-
-    .role-card {
+ 
+    .section-title h2 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+ 
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--purple));
+      border-radius: 2px;
+    }
+ 
+    .section-title p {
+      font-size: 1.2rem;
+      color: var(--secondary);
+      margin-top: 20px;
+    }
+ 
+    /* Video Demo Section */
+    .video-demo {
+      padding: 100px 0;
+      background: linear-gradient(135deg, #667eea 0%, #0062ffff 100%);
+      color: white;
+    }
+ 
+    .video-demo .section-title h2,
+    .video-demo .section-title p {
+      color: white;
+    }
+ 
+    .video-demo .section-title h2::after {
       background: white;
-      border-radius: 10px;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s ease;
-      border: 1px solid var(--border);
     }
-
-    .role-card:hover {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+ 
+    .video-thumbnail {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: transform 0.4s ease;
     }
-
-    .role-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
+ 
+    .video-thumbnail:hover {
+      transform: scale(1.02);
     }
-
-    .role-icon-circle {
-      width: 50px;
-      height: 50px;
+ 
+    .video-thumbnail img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+ 
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      margin-right: 15px;
+      transition: all 0.3s ease;
+    }
+ 
+    .play-button i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-left: 5px;
+    }
+ 
+    .video-thumbnail:hover .play-button {
+      transform: translate(-50%, -50%) scale(1.1);
+      background: white;
+    }
+ 
+    /* Video Modal */
+    .video-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+ 
+    .video-modal.active {
+      display: flex;
+    }
+ 
+    .video-modal-content {
+      width: 90%;
+      max-width: 1000px;
+      position: relative;
+    }
+ 
+    .video-modal-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
       color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
     }
-
-    .role-card h5 {
-      font-weight: 600;
-      color: var(--dark);
-      margin: 0;
+ 
+    .video-modal-close:hover {
+      transform: scale(1.2);
     }
-
-    .role-card p {
-      color: var(--secondary);
-      margin: 0;
-      line-height: 1.6;
+ 
+    .video-modal iframe {
+      width: 100%;
+      height: 500px;
+      border-radius: 10px;
     }
-
-    .superadmin-bg { background-color: #7c3aed; }
-    .admin-bg { background-color: #0ea5e9; }
-    .guru-bg { background-color: #10b981; }
-    .siswa-bg { background-color: #f59e0b; }
-    .tu-bg { background-color: #6366f1; }
-    .payroll-bg { background-color: #ec4899; }
-
-    /* Stats Section */
-    .stats {
-      padding: 60px 0;
+ 
+    /* Multi-Role Iconic Section */
+    .multi-role {
+      padding: 100px 0;
       background-color: white;
     }
-
-    .stat-number {
+ 
+    .role-slider-container {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+ 
+    .role-slider {
+      overflow: hidden;
+    }
+ 
+    .role-slides {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+ 
+    .role-slide {
+      min-width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      padding: 40px;
+    }
+ 
+    .role-image {
+      flex: 1;
+      position: relative;
+    }
+ 
+    .role-image-wrapper {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+ 
+    .role-image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+ 
+    .role-content {
+      flex: 1;
+    }
+ 
+    .role-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: white;
+    }
+ 
+    .role-content h3 {
       font-size: 2.5rem;
       font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      color: var(--dark);
     }
-
-    .stat-label {
+ 
+    .role-content p {
       font-size: 1.1rem;
       color: var(--secondary);
-      font-weight: 500;
+      margin-bottom: 30px;
+      line-height: 1.8;
     }
-
+ 
+    .role-features {
+      list-style: none;
+      padding: 0;
+    }
+ 
+    .role-features li {
+      padding: 12px 0;
+      display: flex;
+      align-items: center;
+      font-size: 1.05rem;
+      color: var(--dark);
+    }
+ 
+    .role-features li i {
+      margin-right: 15px;
+      color: var(--success);
+      font-size: 1.3rem;
+    }
+ 
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+ 
+    .slider-nav:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-50%) scale(1.1);
+    }
+ 
+    .slider-nav.prev {
+      left: 0;
+    }
+ 
+    .slider-nav.next {
+      right: 0;
+    }
+ 
+    .slider-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 40px;
+    }
+ 
+    .slider-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+ 
+    .slider-indicator.active {
+      background: var(--primary);
+      width: 30px;
+      border-radius: 6px;
+    }
+ 
+    /* Stats Section */
+    .stats {
+      padding: 80px 0;
+      background: linear-gradient(135deg, #4c6cfbff 0%, #4000ffff 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .stats::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.05)"/></svg>');
+      opacity: 0.3;
+    }
+ 
+    .stat-item {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+ 
+    .stat-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+ 
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+      display: block;
+    }
+ 
+    .stat-label {
+      font-size: 1.2rem;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+ 
     /* Testimonials Section */
     .testimonials {
       padding: 80px 0;
       background-color: #f8fafc;
     }
-
+ 
     .testimonial-card {
       background: white;
       border-radius: 15px;
@@ -311,19 +832,19 @@
       display: flex;
       flex-direction: column;
     }
-
+ 
     .testimonial-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
-
+ 
     .testimonial-header {
       display: flex;
       align-items: center;
       gap: 15px;
       margin-bottom: 20px;
     }
-
+ 
     .testimonial-avatar {
       width: 60px;
       height: 60px;
@@ -332,32 +853,32 @@
       border: 3px solid var(--primary);
       flex-shrink: 0;
     }
-
+ 
     .testimonial-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
+ 
     .testimonial-user-info h5 {
       margin: 0;
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--dark);
     }
-
+ 
     .testimonial-user-info p {
       margin: 0;
       font-size: 0.9rem;
       color: var(--secondary);
     }
-
+ 
     .testimonial-rating {
       color: #fbbf24;
       font-size: 1rem;
       margin-top: 5px;
     }
-
+ 
     .testimonial-text {
       font-size: 1rem;
       line-height: 1.7;
@@ -365,70 +886,140 @@
       flex-grow: 1;
       font-style: italic;
     }
-
+ 
     /* Footer */
     .footer {
       background: var(--dark);
       color: white;
-      padding: 50px 0 25px;
+      padding: 60px 0 30px;
     }
-
+ 
+    .footer text {
+      color: #ffffff;
+    }
+ 
     .footer h5 {
+      color: #cbd5e1;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      font-size: 1.3rem;
     }
-
+ 
     .footer-links {
       list-style: none;
       padding: 0;
     }
-
+ 
     .footer-links li {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
-
+ 
     .footer-links a {
       color: #cbd5e1;
       text-decoration: none;
-      transition: color 0.3s;
+      transition: all 0.3s;
+      display: inline-block;
     }
-
+ 
     .footer-links a:hover {
       color: white;
+      transform: translateX(5px);
     }
-
+ 
     .footer-bottom {
-      margin-top: 40px;
-      padding-top: 25px;
+      margin-top: 50px;
+      padding-top: 30px;
       border-top: 1px solid #334155;
       text-align: center;
       color: #94a3b8;
     }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.2rem;
+ 
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+ 
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: all 0.3s ease;
+    }
+ 
+    .social-links a:hover {
+      background: var(--primary);
+      transform: translateY(-3px);
+    }
+ 
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .orbit-item {
+        max-width: 220px;
+        padding: 20px;
       }
-
-      .hero p {
+ 
+      .orbit-item-1 { top: 3%; left: 10%; }
+      .orbit-item-2 { top: 3%; right: 10%; }
+      .orbit-item-3 { left: -5%; }
+      .orbit-item-4 { right: -5%; }
+      .orbit-item-5 { bottom: 3%; left: 10%; }
+      .orbit-item-6 { bottom: 3%; right: 10%; }
+    }
+ 
+    @media (max-width: 992px) {
+      .features-showcase {
+        min-height: 500px;
+      }
+ 
+      .phone-frame {
+        width: 280px;
+        height: 570px;
+      }
+ 
+      .orbit-item {
+        display: none;
+      }
+ 
+      .role-slide {
+        flex-direction: column;
+        text-align: center;
+      }
+ 
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+    }
+ 
+    @media (max-width: 768px) {
+      .phone-frame {
+        width: 260px;
+        height: 530px;
+      }
+ 
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+ 
+      .hero-content p {
         font-size: 1.1rem;
       }
-
-      .section-title h2 {
-        font-size: 1.8rem;
+ 
+      .hero-device-mockup img {
+        max-width: 350px;
       }
-
-      .hero-image i {
-        font-size: 12rem;
+ 
+      .role-content h3 {
+        font-size: 2rem;
       }
-
-      .partner-logo {
-        width: 120px;
-        height: 60px;
-      }
-
-      .partners-track {
-        gap: 40px;
+ 
+      .stat-number {
+        font-size: 2.5rem;
       }
     }
   </style>
@@ -441,270 +1032,453 @@
         <a class="navbar-brand" href="#">
           <i class="bi bi-mortarboard-fill"></i> School MS
         </a>
-        <a href="{{ route('login') }}" class="btn btn-login">
-          <i class="bi bi-box-arrow-in-right me-2"></i>Login
-        </a>
+        <div>
+          <a href="#contact" class="btn btn-contact">
+            <i class="bi bi-envelope me-2"></i>Contact Me
+          </a>
+          <a href="{{ route('login') }}" class="btn btn-login">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+          </a>
+        </div>
       </div>
     </div>
   </nav>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-6">
-          <h1>Sistem Manajemen Sekolah Modern</h1>
-          <p>Kelola seluruh aktivitas sekolah dengan mudah, efisien, dan terintegrasi dalam satu platform</p>
-          <a href="{{ route('login') }}" class="btn btn-login btn-lg">
-            Mulai Sekarang <i class="bi bi-arrow-right ms-2"></i>
-          </a>
-        </div>
-        <div class="col-lg-6 hero-image">
-          <i class="bi bi-laptop"></i>
+ 
+  <!-- Hero Slider -->
+  <section class="hero-slider">
+    <div class="hero-slide hero-slide-1 active">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 hero-content">
+            <h1>Sistem Manajemen Sekolah Modern</h1>
+            <p>Kelola seluruh aktivitas sekolah dengan mudah, efisien, dan terintegrasi dalam satu platform canggih</p>
+            <div class="hero-cta">
+              <a href="#" class="btn btn-light btn-lg me-3">
+                Mulai Sekarang <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+              <a href="#features" class="btn btn-outline-light btn-lg">
+                Lihat Fitur
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-6 hero-image text-center">
+            <i class="bi bi-laptop"></i>
+          </div>
         </div>
       </div>
     </div>
+ 
+    <div class="hero-slide hero-slide-2">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 hero-content">
+            <h1>Dashboard Interaktif & Real-time</h1>
+            <p>Pantau semua aktivitas sekolah secara real-time dengan dashboard yang intuitif dan mudah dipahami</p>
+            <div class="hero-cta">
+              <a href="#" class="btn btn-light btn-lg me-3">
+                Demo Gratis <i class="bi bi-play-circle ms-2"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-6 hero-image text-center">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="hero-slide hero-slide-3">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 hero-content">
+            <h1>Keamanan Data Terjamin</h1>
+            <p>Data sekolah Anda terlindungi dengan sistem keamanan berlapis dan backup otomatis setiap hari</p>
+            <div class="hero-cta">
+              <a href="#" class="btn btn-light btn-lg me-3">
+                Pelajari Lebih Lanjut <i class="bi bi-shield-check ms-2"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-6 hero-image text-center">
+            <i class="bi bi-shield-lock"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="slider-dots">
+      <div class="slider-dot active" data-slide="0"></div>
+      <div class="slider-dot" data-slide="1"></div>
+      <div class="slider-dot" data-slide="2"></div>
+    </div>
   </section>
-
-  <!-- Partners Section (Logo Berjalan) -->
+ 
+  <!-- Partners Section -->
   <section class="partners">
     <div class="container">
       <div class="partners-title">Dipercaya oleh berbagai institusi pendidikan</div>
     </div>
     <div class="partners-slider">
       <div class="partners-track">
-        <!-- Set 1 - Ganti src dengan URL logo Anda -->
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 1">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 2">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 3">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 4">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 5">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 6">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 7">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 8">
-        </div>
-
-        <!-- Set 2 - Duplikat untuk loop seamless -->
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 1">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 2">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 3">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 4">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 5">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 6">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/Logo TB.png') }}" alt="Partner 7">
-        </div>
-        <div class="partner-logo">
-          <img src="{{ asset('images/partners/kemendikbud.png') }}" alt="Partner 8">
-        </div>
+        <div class="partner-logo"><i class="bi bi-building"></i></div>
+        <div class="partner-logo"><i class="bi bi-mortarboard"></i></div>
+        <div class="partner-logo"><i class="bi bi-book"></i></div>
+        <div class="partner-logo"><i class="bi bi-bank"></i></div>
+        <div class="partner-logo"><i class="bi bi-briefcase"></i></div>
+        <div class="partner-logo"><i class="bi bi-diagram-3"></i></div>
+        <div class="partner-logo"><i class="bi bi-globe"></i></div>
+        <div class="partner-logo"><i class="bi bi-award"></i></div>
+ 
+        <div class="partner-logo"><i class="bi bi-building"></i></div>
+        <div class="partner-logo"><i class="bi bi-mortarboard"></i></div>
+        <div class="partner-logo"><i class="bi bi-book"></i></div>
+        <div class="partner-logo"><i class="bi bi-bank"></i></div>
+        <div class="partner-logo"><i class="bi bi-briefcase"></i></div>
+        <div class="partner-logo"><i class="bi bi-diagram-3"></i></div>
+        <div class="partner-logo"><i class="bi bi-globe"></i></div>
+        <div class="partner-logo"><i class="bi bi-award"></i></div>
       </div>
     </div>
   </section>
-
-  <!-- Features Section -->
-  <section class="features">
+ 
+  <!-- Features Section - Phone Centered -->
+  <section class="features" id="features">
     <div class="container">
       <div class="section-title">
         <h2>Fitur Unggulan</h2>
-        <p>Solusi lengkap untuk kebutuhan manajemen sekolah Anda</p>
+        <p>Solusi lengkap untuk kebutuhan manajemen sekolah modern</p>
       </div>
-      <div class="row">
-        <div class="col-md-4 mb-4">
-          <div class="feature-card">
-            <div class="feature-icon">
+ 
+      <div class="features-showcase">
+        <!-- Phone Mockup Center -->
+        <div class="phone-mockup">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-content">
+                <div class="phone-header">
+                  <h4>School MS Dashboard</h4>
+                  <p>Kelola sekolah dengan mudah</p>
+                </div>
+                <div class="phone-stats">
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-icon">
+                      <i class="bi bi-people-fill"></i>
+                    </div>
+                    <span class="phone-stat-number">1.2K</span>
+                    <div class="phone-stat-label">Siswa</div>
+                  </div>
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-icon">
+                      <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <span class="phone-stat-number">85</span>
+                    <div class="phone-stat-label">Guru</div>
+                  </div>
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-icon">
+                      <i class="bi bi-book-fill"></i>
+                    </div>
+                    <span class="phone-stat-number">42</span>
+                    <div class="phone-stat-label">Kelas</div>
+                  </div>
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-icon">
+                      <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <span class="phone-stat-number">98%</span>
+                    <div class="phone-stat-label">Hadir</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Orbiting Features -->
+        <div class="feature-orbit">
+          <div class="orbit-item orbit-item-1">
+            <div class="orbit-icon orbit-bg-1">
               <i class="bi bi-speedometer2"></i>
             </div>
-            <h4>Dashboard Interaktif</h4>
-            <p>Pantau semua data penting sekolah dalam satu tampilan yang mudah dipahami dengan visualisasi data real-time</p>
+            <h5>Dashboard Real-time</h5>
+            <p>Monitor aktivitas sekolah secara langsung dengan update otomatis</p>
           </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-people-fill"></i>
-            </div>
-            <h4>Manajemen Pengguna</h4>
-            <p>Kelola akses dan hak pengguna dengan sistem role-based yang fleksibel dan aman untuk semua level</p>
-          </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-graph-up-arrow"></i>
-            </div>
-            <h4>Laporan Lengkap</h4>
-            <p>Generate laporan akademik, keuangan, dan administrasi dengan mudah dan akurat</p>
-          </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="feature-card">
-            <div class="feature-icon">
+ 
+          <div class="orbit-item orbit-item-2">
+            <div class="orbit-icon orbit-bg-2">
               <i class="bi bi-shield-check"></i>
             </div>
-            <h4>Keamanan Terjamin</h4>
-            <p>Data sekolah terlindungi dengan sistem keamanan berlapis dan backup otomatis</p>
+            <h5>Keamanan Tinggi</h5>
+            <p>Enkripsi data dan backup otomatis untuk perlindungan maksimal</p>
           </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="feature-card">
-            <div class="feature-icon">
+ 
+          <div class="orbit-item orbit-item-3">
+            <div class="orbit-icon orbit-bg-3">
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <h5>Multi-Role Access</h5>
+            <p>Sistem akses berlapis untuk berbagai tingkat pengguna</p>
+          </div>
+ 
+          <div class="orbit-item orbit-item-4">
+            <div class="orbit-icon orbit-bg-4">
+              <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <h5>Laporan Otomatis</h5>
+            <p>Generate laporan lengkap dengan satu klik tombol</p>
+          </div>
+ 
+          <div class="orbit-item orbit-item-5">
+            <div class="orbit-icon orbit-bg-5">
               <i class="bi bi-phone"></i>
             </div>
-            <h4>Responsive Design</h4>
-            <p>Akses sistem dari berbagai perangkat - desktop, tablet, atau smartphone dengan tampilan optimal</p>
+            <h5>Responsive Design</h5>
+            <p>Akses dari perangkat apapun dengan tampilan optimal</p>
           </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-clock-history"></i>
+ 
+          <div class="orbit-item orbit-item-6">
+            <div class="orbit-icon orbit-bg-6">
+              <i class="bi bi-cloud-check"></i>
             </div>
-            <h4>Real-time Updates</h4>
-            <p>Informasi selalu update secara otomatis untuk memastikan data terkini dan akurat</p>
+            <h5>Cloud Storage</h5>
+            <p>Data tersimpan aman di cloud dengan sinkronisasi otomatis</p>
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Roles Section -->
-  <section class="roles">
+ 
+  <!-- Video Demo Section -->
+  <section class="video-demo">
+    <div class="container">
+      <div class="section-title">
+        <h2>Lihat Demo Sistem</h2>
+        <p>Tonton video demo untuk melihat bagaimana sistem kami bekerja</p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="video-thumbnail" onclick="openVideoModal()">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=675&fit=crop" alt="Video Demo">
+            <div class="play-button">
+              <i class="bi bi-play-fill"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Video Modal -->
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-content">
+      <div class="video-modal-close" onclick="closeVideoModal()">
+        <i class="bi bi-x-circle-fill"></i>
+      </div>
+      <iframe id="videoFrame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+ 
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-clipboard-data"></i>
+            </div>
+            <span class="stat-number counter" data-target="{{ $tataUsaha ?? 150 }}">0</span>
+            <div class="stat-label">Tata Usaha Aktif</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <span class="stat-number counter" data-target="{{ $siswa ?? 5000 }}">0</span>
+            <div class="stat-label">Siswa Terdaftar</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <span class="stat-number counter" data-target="{{ $guru ?? 350 }}">0</span>
+            <div class="stat-label">Guru</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Multi-Role Iconic Section -->
+  <section class="multi-role">
     <div class="container">
       <div class="section-title">
         <h2>Akses Multi-Role</h2>
-        <p>Sistem yang mendukung berbagai peran pengguna dengan hak akses yang sesuai</p>
+        <p>Sistem yang dirancang untuk berbagai peran dengan fitur khusus masing-masing</p>
       </div>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <div class="role-card">
-            <div class="role-header">
-              <div class="role-icon-circle superadmin-bg">
-                <i class="bi bi-shield"></i>
+ 
+      <div class="role-slider-container">
+        <div class="role-slider">
+          <div class="role-slides" id="roleSlides">
+            <!-- Slide 1: Super Admin -->
+            <div class="role-slide">
+              <div class="role-content">
+                <div class="role-badge" style="background: #7c3aed;">
+                  <i class="bi bi-shield-fill me-2"></i>Super Admin
+                </div>
+                <h3>Kontrol Penuh Sistem</h3>
+                <p>Super Admin memiliki akses penuh ke seluruh sistem untuk mengelola konfigurasi, user management, dan pengaturan tingkat lanjut.</p>
+                <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Manajemen seluruh pengguna dan role</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Konfigurasi sistem dan pengaturan global</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Akses ke semua modul dan fitur</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Laporan lengkap dan audit log</li>
+                </ul>
               </div>
-              <div>
-                <h5>Super Admin</h5>
-                <p>Akses penuh ke seluruh sistem dan pengaturan</p>
+              <div class="role-image">
+                <div class="role-image-wrapper">
+                  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop" alt="Super Admin Dashboard">
+                </div>
+              </div>
+            </div>
+ 
+            <!-- Slide 2: Admin Sekolah -->
+            <div class="role-slide">
+              <div class="role-content">
+                <div class="role-badge" style="background: #0ea5e9;">
+                  <i class="bi bi-people-fill me-2"></i>Admin Sekolah
+                </div>
+                <h3>Kelola Operasional Sekolah</h3>
+                <p>Admin sekolah mengelola data siswa, guru, kelas, dan seluruh operasional harian sekolah dengan mudah dan efisien.</p>
+                <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Manajemen data siswa dan guru</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Pengaturan kelas dan jadwal</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Monitoring kehadiran dan prestasi</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Generate laporan akademik</li>
+                </ul>
+              </div>
+              <div class="role-image">
+                <div class="role-image-wrapper">
+                  <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop" alt="Admin Dashboard">
+                </div>
+              </div>
+            </div>
+ 
+            <!-- Slide 3: Guru -->
+            <div class="role-slide">
+              <div class="role-content">
+                <div class="role-badge" style="background: #10b981;">
+                  <i class="bi bi-mortarboard-fill me-2"></i>Guru
+                </div>
+                <h3>Manajemen Pembelajaran</h3>
+                <p>Guru dapat mengelola nilai, absensi, materi pembelajaran, dan berkomunikasi dengan siswa serta orang tua dengan efektif.</p>
+                <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Input dan kelola nilai siswa</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Pencatatan kehadiran real-time</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Upload materi pembelajaran</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Komunikasi dengan siswa dan ortu</li>
+                </ul>
+              </div>
+              <div class="role-image">
+                <div class="role-image-wrapper">
+                  <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=400&fit=crop" alt="Guru Dashboard">
+                </div>
+              </div>
+            </div>
+ 
+            <!-- Slide 4: Siswa -->
+            <div class="role-slide">
+              <div class="role-content">
+                <div class="role-badge" style="background: #f59e0b;">
+                  <i class="bi bi-person-fill me-2"></i>Siswa
+                </div>
+                <h3>Portal Pembelajaran Siswa</h3>
+                <p>Siswa dapat mengakses nilai, jadwal pelajaran, materi pembelajaran, dan informasi akademik dengan mudah kapan saja.</p>
+                <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Lihat nilai dan rapor online</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Akses jadwal dan materi pelajaran</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Cek kehadiran dan izin</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Informasi tugas dan pengumuman</li>
+                </ul>
+              </div>
+              <div class="role-image">
+                <div class="role-image-wrapper">
+                  <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop" alt="Siswa Dashboard">
+                </div>
+              </div>
+            </div>
+ 
+            <!-- Slide 5: Tata Usaha -->
+            <div class="role-slide">
+              <div class="role-content">
+                <div class="role-badge" style="background: #6366f1;">
+                  <i class="bi bi-clipboard-data-fill me-2"></i>Tata Usaha
+                </div>
+                <h3>Administrasi Sekolah</h3>
+                <p>Tata usaha mengelola administrasi, dokumentasi, surat menyurat, dan arsip sekolah secara digital dan terorganisir.</p>
+                <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Manajemen surat dan dokumen</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Arsip digital sekolah</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Generate sertifikat dan ijazah</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Laporan administrasi</li>
+                </ul>
+              </div>
+              <div class="role-image">
+                <div class="role-image-wrapper">
+                  <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=400&fit=crop" alt="Tata Usaha Dashboard">
+                </div>
+              </div>
+            </div>
+ 
+            <!-- Slide 6: Payroll/Keuangan -->
+            <div class="role-slide">
+              <div class="role-content">
+                <div class="role-badge" style="background: #ec4899;">
+                  <i class="bi bi-calculator-fill me-2"></i>Payroll & Keuangan
+                </div>
+                <h3>Manajemen Keuangan</h3>
+                <p>Kelola gaji guru dan staff, pembayaran SPP, serta seluruh transaksi keuangan sekolah dengan transparan dan akurat.</p>
+                <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Penggajian otomatis</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Manajemen pembayaran SPP</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Laporan keuangan lengkap</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Tracking transaksi real-time</li>
+                </ul>
+              </div>
+              <div class="role-image">
+                <div class="role-image-wrapper">
+                  <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop" alt="Payroll Dashboard">
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-md-6 mb-3">
-          <div class="role-card">
-            <div class="role-header">
-              <div class="role-icon-circle admin-bg">
-                <i class="bi bi-people"></i>
-              </div>
-              <div>
-                <h5>Admin Sekolah</h5>
-                <p>Mengelola data siswa, guru, dan operasional sekolah</p>
-              </div>
-            </div>
-          </div>
+ 
+        <div class="slider-nav prev" onclick="prevRoleSlide()">
+          <i class="bi bi-chevron-left"></i>
         </div>
-        <div class="col-md-6 mb-3">
-          <div class="role-card">
-            <div class="role-header">
-              <div class="role-icon-circle guru-bg">
-                <i class="bi bi-mortarboard"></i>
-              </div>
-              <div>
-                <h5>Guru</h5>
-                <p>Input nilai, absensi, dan materi pembelajaran</p>
-              </div>
-            </div>
-          </div>
+        <div class="slider-nav next" onclick="nextRoleSlide()">
+          <i class="bi bi-chevron-right"></i>
         </div>
-        <div class="col-md-6 mb-3">
-          <div class="role-card">
-            <div class="role-header">
-              <div class="role-icon-circle siswa-bg">
-                <i class="bi bi-person"></i>
-              </div>
-              <div>
-                <h5>Siswa</h5>
-                <p>Akses nilai, jadwal, dan informasi akademik</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 mb-3">
-          <div class="role-card">
-            <div class="role-header">
-              <div class="role-icon-circle tu-bg">
-                <i class="bi bi-clipboard-data"></i>
-              </div>
-              <div>
-                <h5>Tata Usaha</h5>
-                <p>Mengelola administrasi dan dokumentasi sekolah</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 mb-3">
-          <div class="role-card">
-            <div class="role-header">
-              <div class="role-icon-circle payroll-bg">
-                <i class="bi bi-calculator"></i>
-              </div>
-              <div>
-                <h5>Payroll/Keuangan</h5>
-                <p>Kelola gaji, pembayaran, dan keuangan sekolah</p>
-              </div>
-            </div>
-          </div>
+ 
+        <div class="slider-indicators" id="roleIndicators">
+          <div class="slider-indicator active" onclick="goToRoleSlide(0)"></div>
+          <div class="slider-indicator" onclick="goToRoleSlide(1)"></div>
+          <div class="slider-indicator" onclick="goToRoleSlide(2)"></div>
+          <div class="slider-indicator" onclick="goToRoleSlide(3)"></div>
+          <div class="slider-indicator" onclick="goToRoleSlide(4)"></div>
+          <div class="slider-indicator" onclick="goToRoleSlide(5)"></div>
         </div>
       </div>
     </div>
   </section>
-
-<!-- Stats Section -->
-  <section class="stats text-center">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-3 mb-4">
-          <div class="stat-number">{{ number_format($tataUsaha) }}+</div>
-          <div class="stat-label">Tata Usaha</div>
-        </div>
-        <div class="col-md-3 mb-4">
-          <div class="stat-number">{{ number_format($siswa) }}+</div>
-          <div class="stat-label">Siswa</div>
-        </div>
-        <div class="col-md-3 mb-4">
-          <div class="stat-number">{{ number_format($guru) }}+</div>
-          <div class="stat-label">Guru</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
+ 
+   <!-- Testimonials Section -->
   <section class="testimonials">
     <div class="container">
       <div class="section-title">
@@ -736,7 +1510,6 @@
             </div>
           </div>
         </div>
-
         <!-- Testimonial 2 -->
         <div class="col-md-4 mb-4">
           <div class="testimonial-card">
@@ -761,7 +1534,6 @@
             </div>
           </div>
         </div>
-
         <!-- Testimonial 3 -->
         <div class="col-md-4 mb-4">
           <div class="testimonial-card">
@@ -789,39 +1561,191 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- Footer -->
-  <footer class="footer">
+  <footer class="footer" id="contact">
     <div class="container">
       <div class="row">
         <div class="col-md-4 mb-4">
           <h5><i class="bi bi-mortarboard-fill"></i> School MS</h5>
-          <p class="text-muted">Sistem Manajemen Sekolah yang modern, efisien, dan mudah digunakan untuk mendukung kemajuan pendidikan.</p>
+          <p class="text">Sistem Manajemen Sekolah yang modern, efisien, dan mudah digunakan untuk mendukung kemajuan pendidikan di Indonesia.</p>
+          <div class="social-links">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-twitter"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-md-3 mb-4">
           <h5>Menu</h5>
           <ul class="footer-links">
             <li><a href="#">Beranda</a></li>
-            <li><a href="#">Fitur</a></li>
-            <li><a href="#">Tentang</a></li>
-            <li><a href="#">Kontak</a></li>
+            <li><a href="#features">Fitur</a></li>
+            <li><a href="#contact">Tentang</a></li>
+            <li><a href="#contact">Kontak</a></li>
           </ul>
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-md-2 mb-4">
+          <h5>Layanan</h5>
+          <ul class="footer-links">
+            <li><a href="#">Demo</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 mb-4">
           <h5>Kontak</h5>
           <ul class="footer-links">
             <li><i class="bi bi-envelope me-2"></i>info@schoolms.id</li>
             <li><i class="bi bi-telephone me-2"></i>+62 812-3456-7890</li>
-            <li><i class="bi bi-geo-alt me-2"></i>Bekasi, West Java, ID</li>
+            <li><i class="bi bi-geo-alt me-2"></i>Depok, West Java, ID</li>
+            <li><i class="bi bi-clock me-2"></i>Senin - Jumat, 08:00 - 17:00</li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 School Management System. All rights reserved.</p>
+        <p>&copy; 2025 School Management System. All rights reserved. Made with <i class="bi bi-heart-fill text-danger"></i> in Indonesia</p>
       </div>
     </div>
   </footer>
-
+ 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+  <script>
+    // Hero Slider
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.slider-dot');
+ 
+    function showSlide(n) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+ 
+      currentSlide = (n + slides.length) % slides.length;
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+ 
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+ 
+    // Auto slide
+    setInterval(nextSlide, 5000);
+ 
+    // Dot navigation
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => showSlide(index));
+    });
+ 
+    // Video Modal
+    function openVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('videoFrame');
+      iframe.src = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
+      modal.classList.add('active');
+    }
+ 
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('videoFrame');
+      iframe.src = '';
+      modal.classList.remove('active');
+    }
+ 
+    // Close modal on click outside
+    document.getElementById('videoModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeVideoModal();
+      }
+    });
+ 
+    // Role Slider
+    let currentRoleSlide = 0;
+    const roleSlides = document.getElementById('roleSlides');
+    const roleIndicators = document.querySelectorAll('#roleIndicators .slider-indicator');
+    const totalRoleSlides = 6;
+ 
+    function updateRoleSlide() {
+      roleSlides.style.transform = `translateX(-${currentRoleSlide * 100}%)`;
+      roleIndicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentRoleSlide);
+      });
+    }
+ 
+    function nextRoleSlide() {
+      currentRoleSlide = (currentRoleSlide + 1) % totalRoleSlides;
+      updateRoleSlide();
+    }
+ 
+    function prevRoleSlide() {
+      currentRoleSlide = (currentRoleSlide - 1 + totalRoleSlides) % totalRoleSlides;
+      updateRoleSlide();
+    }
+ 
+    function goToRoleSlide(index) {
+      currentRoleSlide = index;
+      updateRoleSlide();
+    }
+ 
+    // Auto slide for roles
+    setInterval(nextRoleSlide, 6000);
+ 
+    // Counter Animation
+    function animateCounter(element) {
+      const target = parseInt(element.getAttribute('data-target'));
+      const duration = 2000;
+      const step = target / (duration / 16);
+      let current = 0;
+ 
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          element.textContent = target.toLocaleString();
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current).toLocaleString();
+        }
+      }, 16);
+    }
+ 
+    // Intersection Observer for counter
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.textContent === '0') {
+          animateCounter(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+ 
+    document.querySelectorAll('.counter').forEach(counter => {
+      counterObserver.observe(counter);
+    });
+ 
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+ 
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+  </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - SMK Taruna Bhakti</title>
+    <title>Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" />
 
@@ -78,6 +78,7 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
+            cursor: default; /* Tambahkan ini */
         }
 
         .logo-img {
@@ -216,7 +217,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/" class="logo-container">
+            <div class="logo-container">
                 @if($setting && $setting->logo)
                     <img src="{{ asset('storage/' . $setting->logo) }}" 
                          alt="Logo Sekolah" 
@@ -225,8 +226,8 @@
                 @else
                     <div class="logo-fallback" id="logo-fallback">LOGO</div>
                 @endif
-                <span class="school-name">{{ $setting->logo_name ?? 'SMK Taruna Bhakti' }}</span>
-            </a>
+                <span class="school-name">{{ $setting->logo_name ?? 'SMS' }}</span>
+            </div>
         </div>
 
         <div class="p-2">
@@ -302,7 +303,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h1 class="page-title">@yield('title')</h1>
-                            <div class="page-subtitle">Panel Admin - SMK Taruna Bhakti</div>
+                            <div class="page-subtitle">Panel Admin</div>
                         </div>
                         <div class="col-auto">
                             <div class="page-header-actions">
