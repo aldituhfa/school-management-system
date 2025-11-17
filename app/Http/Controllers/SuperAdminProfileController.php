@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
@@ -10,22 +11,27 @@ use App\Models\User;
 class SuperAdminProfileController extends Controller
 {
     public function index()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Sesuaikan tampilan berdasarkan role user
-        $viewPath = match ($user->role) {
-            'super_admin' => 'roles.superadmin.profile.index',
-            'admin'       => 'roles.admin.profile.index',
-            'guru'        => 'roles.guru.profile.index',
-            'tu'          => 'roles.tu.profile.index',
-            'payroll'     => 'roles.payroll.profile.index',
-            default       => abort(403, 'Role tidak dikenali'),
-        };
-
-        return view($viewPath, compact('user'));
+    // Jika role guru, ambil semua mata pelajaran yang dia ajar
+    $mataPelajaran = null;
+    if ($user->role === 'guru') {
+        $mataPelajaran = $user->mataPelajaran; // dari relasi di model
     }
 
+    // Tentukan tampilan sesuai role
+    $viewPath = match ($user->role) {
+        'super_admin' => 'roles.superadmin.profile.index',
+        'admin'       => 'roles.admin.profile.index',
+        'guru'        => 'roles.guru.profile.index',
+        'tu'          => 'roles.tu.profile.index',
+        'payroll'     => 'roles.payroll.profile.index',
+        default       => abort(403, 'Role tidak dikenali'),
+    };
+
+    return view($viewPath, compact('user', 'mataPelajaran'));
+}
     public function update(Request $request)
     {
         $user = User::find(Auth::id());
@@ -33,7 +39,7 @@ class SuperAdminProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:9120',
         ]);
 
         $data = $request->only('name', 'phone');

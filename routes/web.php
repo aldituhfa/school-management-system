@@ -15,6 +15,7 @@ use App\Http\Controllers\BiayaSppController;
 use App\Http\Controllers\Superadmin\MataPelajaranController;
 use App\Http\Controllers\SuperAdminProfileController;
 use App\Http\Controllers\PilihMapelController;
+use App\Http\Controllers\JamBelajarController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\LaporanTagihanSppController;
 // use App\Http\Controllers\TahunAjaranController;
@@ -297,6 +298,13 @@ Route::prefix('payroll')->middleware(['auth'])->group(function () {
 // SUPER ADMIN > setting
 Route::get('/superadmin/setting', [SuperAdminSettingController::class, 'index'])->name('superadmin.setting');
 Route::post('/superadmin/setting/update', [SuperAdminSettingController::class, 'update'])->name('superadmin.setting.update');
+
+
+// Jam Belajar
+Route::prefix('superadmin')->name('superadmin.')->group(function () {
+    Route::resource('jam-belajar', JamBelajarController::class);
+});
+
 
 
 // Route::prefix('finances')->group(function () {

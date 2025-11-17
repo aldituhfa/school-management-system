@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Daftar Mata Pelajaran')
+@section('title', '')
 
 @section('content')
 <div class="page-body">
@@ -10,7 +10,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h3 class="card-title mb-0">
-                            <i class="ti ti-book me-2"></i> Daftar Mata Pelajaran
+                            Daftar Mata Pelajaran
                         </h3>
                     </div>
 

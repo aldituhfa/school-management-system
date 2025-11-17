@@ -19,7 +19,7 @@ class SuperAdminSettingController extends Controller
         $setting = Setting::first() ?? new Setting();
 
         $validated = $request->validate([
-            'logo' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'logo' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:5120',
             'logo_name' => 'nullable|string|max:255',
         ]);
 

@@ -367,6 +367,13 @@
                             href="{{ route('siswa.perkelas') }}">
                             Data Siswa per Kelas
                         </a>
+
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
+                            href="{{ route('superadmin.jam-belajar.index') }}">
+                            Jam Belajar Per Kelas
+                        </a>
+
+                        
                     </div>
                 </li>
 
@@ -400,7 +407,7 @@
                     <a class="nav-link {{ request()->routeIs('superadmin.setting') ? 'active' : '' }}" 
                        href="{{ route('superadmin.setting') }}">
                         <i class="ti ti-settings"></i>
-                        <span>Upp Logo</span>
+                        <span>Setting Logo</span>
                     </a>
                 </li>
             </ul>

@@ -13,4 +13,10 @@ class Kelas extends Model
     {
         return $this->hasMany(Siswa::class);
     }
+    public function jamBelajar()
+    {
+        return $this->hasOne(JamBelajar::class);
+    }
+
+    
 }
