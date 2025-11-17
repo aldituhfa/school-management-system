@@ -11,7 +11,9 @@ class AccountController extends Controller
 {
     public function index($role)
     {
-        $users = User::where('role', $role)->get();
+        // FIX: gunakan paginate agar Blade bisa pakai ->hasPages()
+        $users = User::where('role', $role)->paginate(5);
+
         return view("roles.superadmin.account.$role", compact('users', 'role'));
     }
 
@@ -76,6 +78,7 @@ class AccountController extends Controller
         $latestUsers = User::latest()->take(5)->get();
 
         return view('roles.superadmin.account.account', compact('counts', 'total', 'lastUpdate', 'latestUsers'));
-    
     }
+
+    
 }

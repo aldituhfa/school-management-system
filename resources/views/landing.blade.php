@@ -1033,9 +1033,11 @@
           <i class="bi bi-mortarboard-fill"></i> School MS
         </a>
         <div>
-          <a href="#contact" class="btn btn-contact">
-            <i class="bi bi-envelope me-2"></i>Contact Me
-          </a>
+         <a href="https://wa.me/6285817093056?text=Halo%20saya%20ingin%20bertanya" 
+   class="btn btn-contact" target="_blank">
+    <i class="bi bi-whatsapp me-2"></i>Contact Me
+</a>
+
           <a href="{{ route('login') }}" class="btn btn-login">
             <i class="bi bi-box-arrow-in-right me-2"></i>Login
           </a>
