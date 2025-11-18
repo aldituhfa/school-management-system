@@ -18,6 +18,7 @@ use App\Http\Controllers\PilihMapelController;
 use App\Http\Controllers\JamBelajarController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\LaporanTagihanSppController;
+use App\Http\Controllers\TU\KegiatanController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -261,6 +262,20 @@ Route::middleware(['auth'])->group(function () {
         Route::put('biaya-spp/tingkat/{tingkat}', [BiayaSppController::class, 'updateTingkat'])->name('biayaspp.tingkat.update');
         Route::put('biaya-spp/status/{status}', [BiayaSppController::class, 'updateStatus'])->name('biayaspp.status.update');
     });
+
+
+    // TU > kegiatan sekolah 
+    Route::prefix('tu')->name('tu.')->group(function () {
+        Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
+        Route::post('/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
+        Route::get('/kegiatan/{id}', [KegiatanController::class, 'show'])->name('kegiatan.show');
+        Route::post('/kegiatan/{id}/selesai', [KegiatanController::class, 'selesai'])->name('kegiatan.selesai');
+
+        Route::post('/kegiatan/{kegiatan}/bayar/{siswa}', [KegiatanController::class, 'bayar'])->name('kegiatan.bayar');
+        Route::post('/kegiatan/{kegiatan}/cancel/{siswa}', [KegiatanController::class, 'cancel'])->name('kegiatan.cancel');
+    });
+
+    
 });
 
 // SUPER ADMIN > mata Pelajaran
@@ -269,7 +284,7 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
 });
 
 
-//Profile 
+// SUPER ADMIN > Profile 
 Route::prefix('superadmin')->middleware(['auth'])->group(function () {
     Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
     Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('superadmin.profile.update');
@@ -294,6 +309,7 @@ Route::prefix('payroll')->middleware(['auth'])->group(function () {
     Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('payroll.profile');
     Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('payroll.profile.update');
 });
+
 
 // SUPER ADMIN > setting
 Route::get('/superadmin/setting', [SuperAdminSettingController::class, 'index'])->name('superadmin.setting');

@@ -88,7 +88,8 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
-            cursor: default; /* Tambahkan ini */
+            cursor: default;
+            /* Tambahkan ini */
         }
 
         .logo-img {
@@ -376,6 +377,13 @@ $setting = Setting::first();
                         <i class="bx bx-file"></i> Laporan Tagihan SPP
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('tu.kegiatan.index') }}"
+                        class="nav-link {{ request()->routeIs('tu.kegiatan.*') ? 'active' : '' }}">
+                        <i class="bx bx-calendar-event"></i> Kegiatan Sekolah
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
