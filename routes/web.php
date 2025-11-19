@@ -6,6 +6,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\Finance\FinanceController;
 use App\Http\Controllers\Finance\SPPController;
+// use App\Http\Controllers\GuruDashboardController;
 // use App\Http\Controllers\Finance\PayrollController;
 use App\Http\Controllers\Finance\LogController;
 use App\Http\Controllers\SiswaController;
@@ -320,6 +321,10 @@ Route::post('/superadmin/setting/update', [SuperAdminSettingController::class, '
 Route::prefix('superadmin')->name('superadmin.')->group(function () {
     Route::resource('jam-belajar', JamBelajarController::class);
 });
+
+
+// GURU DASHBOARD
+// Route::get('/dashboard/guru', [GuruDashboardController::class, 'index']);
 
 
 

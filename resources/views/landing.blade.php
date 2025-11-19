@@ -1496,7 +1496,7 @@
                 <img src="https://i.pravatar.cc/150?img=12" alt="Ahmad Syarif">
               </div>
               <div class="testimonial-user-info">
-                <h5>Ahmad Syarif</h5>
+                <h5>Diono Iwan</h5>
                 <p>Kepala Sekolah</p>
                 <div class="testimonial-rating">
                   <i class="bi bi-star-fill"></i>
@@ -1600,9 +1600,9 @@
           <h5>Kontak</h5>
           <ul class="footer-links">
             <li><i class="bi bi-envelope me-2"></i>info@schoolms.id</li>
-            <li><i class="bi bi-telephone me-2"></i>+62 812-3456-7890</li>
+            <li><i class="bi bi-telephone me-2"></i>+62 858-1709-3056</li>
             <li><i class="bi bi-geo-alt me-2"></i>Depok, West Java, ID</li>
-            <li><i class="bi bi-clock me-2"></i>Senin - Jumat, 08:00 - 17:00</li>
+            <li><i class="bi bi-clock me-2"></i>Senin - Jumat, 10:00 - 17:00</li>
           </ul>
         </div>
       </div>
