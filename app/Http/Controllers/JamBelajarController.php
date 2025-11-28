@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-
 use App\Models\JamBelajar;
 use App\Models\Kelas;
 use App\Http\Controllers\Controller;
@@ -11,35 +9,29 @@ use Illuminate\Http\Request;
 
 class JamBelajarController extends Controller
 {
-   public function index(Request $request)
-{
-    $query = JamBelajar::with('kelas');
+    public function index(Request $request)
+    {
+        $query = JamBelajar::with('kelas');
 
-    // 🔍 Pencarian berdasarkan nama kelas
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->whereHas('kelas', function ($q) use ($search) {
-            $q->where('nama_kelas', 'like', "%{$search}%");
-        });
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('kelas', function ($q) use ($search) {
+                $q->where('nama_kelas', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('filter_kelas')) {
+            $query->where('kelas_id', $request->filter_kelas);
+        }
+
+        $data = $query->orderBy('kelas_id', 'asc')->get();
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
+
+        return view('roles.superadmin.jam_belajar.index', compact('data', 'kelasList'));
     }
-
-    // 🏷️ Filter berdasarkan kelas tertentu
-    if ($request->filled('filter_kelas')) {
-        $query->where('kelas_id', $request->filter_kelas);
-    }
-
-    $data = $query->orderBy('kelas_id', 'asc')->get();
-
-    // Untuk dropdown filter
-    $kelasList = Kelas::orderBy('nama_kelas')->get();
-
-    return view('roles.superadmin.jam_belajar.index', compact('data', 'kelasList'));
-}
-
 
     public function create()
     {
-        // hanya kelas yang belum memiliki jam belajar
         $kelas = Kelas::whereDoesntHave('jamBelajar')->get();
         return view('roles.superadmin.jam_belajar.create', compact('kelas'));
     }
@@ -47,44 +39,47 @@ class JamBelajarController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kelas_id'               => 'required|exists:kelas,id',
-            'total_jam_belajar'      => 'required|integer|min:1',
-            'jam_mulai'              => 'required|date_format:H:i',
-            'waktu_istirahat_mulai'  => 'nullable|date_format:H:i',
-            'waktu_istirahat_selesai'=> 'nullable|date_format:H:i|after:waktu_istirahat_mulai',
+            'kelas_id'                 => 'required|exists:kelas,id',
+            'total_jam_belajar'        => 'required|integer|min:1',
+            'jam_mulai'                => 'required|date_format:H:i',
+
+            // ISTIRAHAT 1
+            'waktu_istirahat_mulai'    => 'nullable|date_format:H:i',
+            'waktu_istirahat_selesai'  => 'nullable|date_format:H:i|after:waktu_istirahat_mulai',
+
+            // ➕ ISTIRAHAT 2 (DITAMBAHKAN)
+            'waktu_istirahat2_mulai'   => 'nullable|date_format:H:i',
+            'waktu_istirahat2_selesai' => 'nullable|date_format:H:i|after:waktu_istirahat2_mulai',
         ]);
 
-        // Cegah duplikasi kelas
         if (JamBelajar::where('kelas_id', $request->kelas_id)->exists()) {
             return back()->withErrors([
                 'kelas_id' => 'Kelas ini sudah memiliki jam belajar!'
             ]);
         }
 
-        // Hitung durasi istirahat (jika ada)
-        $istirahat = 0;
-        if ($request->waktu_istirahat_mulai && $request->waktu_istirahat_selesai) {
-            $istirahat = strtotime($request->waktu_istirahat_selesai) - strtotime($request->waktu_istirahat_mulai);
-        }
-
-        // Hitung jam selesai otomatis:
-        // jam_selesai = jam_mulai + (total_jam_belajar jam) + (durasi istirahat)
+        // tetap tidak menghitung istirahat pada jam selesai (sesuai kode asli)
         $jamMulai = strtotime($request->jam_mulai);
-        $durasiBelajar = $request->total_jam_belajar * 3600; // dikonversi ke detik
+        $durasiBelajar = $request->total_jam_belajar * 3600;
         $jamSelesai = $jamMulai + $durasiBelajar;
 
-        // Masukkan jam selesai hasil perhitungan
         $request->merge([
             'jam_selesai' => date('H:i', $jamSelesai),
         ]);
 
         JamBelajar::create([
-            'kelas_id'               => $request->kelas_id,
-            'total_jam_belajar'      => $request->total_jam_belajar,
-            'jam_mulai'              => $request->jam_mulai,
-            'jam_selesai'            => $request->jam_selesai,
-            'waktu_istirahat_mulai'  => $request->waktu_istirahat_mulai,
-            'waktu_istirahat_selesai'=> $request->waktu_istirahat_selesai,
+            'kelas_id'                  => $request->kelas_id,
+            'total_jam_belajar'         => $request->total_jam_belajar,
+            'jam_mulai'                 => $request->jam_mulai,
+            'jam_selesai'               => $request->jam_selesai,
+
+            // simpan istirahat 1
+            'waktu_istirahat_mulai'     => $request->waktu_istirahat_mulai,
+            'waktu_istirahat_selesai'   => $request->waktu_istirahat_selesai,
+
+            // simpan istirahat 2 (TAMBAHAN)
+            'waktu_istirahat2_mulai'    => $request->waktu_istirahat2_mulai,
+            'waktu_istirahat2_selesai'  => $request->waktu_istirahat2_selesai,
         ]);
 
         return redirect()->route('superadmin.jam-belajar.index')
@@ -101,34 +96,41 @@ class JamBelajarController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'kelas_id'               => 'required|exists:kelas,id',
-            'total_jam_belajar'      => 'required|integer|min:1',
-            'jam_mulai'              => 'required|date_format:H:i',
-            'waktu_istirahat_mulai'  => 'nullable|date_format:H:i',
-            'waktu_istirahat_selesai'=> 'nullable|date_format:H:i|after:waktu_istirahat_mulai',
+            'kelas_id'                 => 'required|exists:kelas,id',
+            'total_jam_belajar'        => 'required|integer|min:1',
+            'jam_mulai'                => 'required|date_format:H:i',
+
+            // ISTIRAHAT 1
+            'waktu_istirahat_mulai'    => 'nullable|date_format:H:i',
+            'waktu_istirahat_selesai'  => 'nullable|date_format:H:i|after:waktu_istirahat_mulai',
+
+            // ➕ ISTIRAHAT 2 (DITAMBAHKAN)
+            'waktu_istirahat2_mulai'   => 'nullable|date_format:H:i',
+            'waktu_istirahat2_selesai' => 'nullable|date_format:H:i|after:waktu_istirahat2_mulai',
         ]);
 
-        $istirahat = 0;
-        if ($request->waktu_istirahat_mulai && $request->waktu_istirahat_selesai) {
-            $istirahat = strtotime($request->waktu_istirahat_selesai) - strtotime($request->waktu_istirahat_mulai);
-        }
-
-        // Hitung jam selesai otomatis TANPA menambahkan durasi istirahat
-            $jamMulai = strtotime($request->jam_mulai);
-            $durasiBelajar = $request->total_jam_belajar * 3600; // dikonversi ke detik
-            $jamSelesai = $jamMulai + $durasiBelajar;
+        // tetap tanpa logika istirahat ke jam selesai (sesuai kode asli)
+        $jamMulai = strtotime($request->jam_mulai);
+        $durasiBelajar = $request->total_jam_belajar * 3600;
+        $jamSelesai = $jamMulai + $durasiBelajar;
 
         $request->merge([
             'jam_selesai' => date('H:i', $jamSelesai),
         ]);
 
         JamBelajar::where('id', $id)->update([
-            'kelas_id'               => $request->kelas_id,
-            'total_jam_belajar'      => $request->total_jam_belajar,
-            'jam_mulai'              => $request->jam_mulai,
-            'jam_selesai'            => $request->jam_selesai,
-            'waktu_istirahat_mulai'  => $request->waktu_istirahat_mulai,
-            'waktu_istirahat_selesai'=> $request->waktu_istirahat_selesai,
+            'kelas_id'                  => $request->kelas_id,
+            'total_jam_belajar'         => $request->total_jam_belajar,
+            'jam_mulai'                 => $request->jam_mulai,
+            'jam_selesai'               => $request->jam_selesai,
+
+            // update istirahat 1
+            'waktu_istirahat_mulai'     => $request->waktu_istirahat_mulai,
+            'waktu_istirahat_selesai'   => $request->waktu_istirahat_selesai,
+
+            // update istirahat 2
+            'waktu_istirahat2_mulai'    => $request->waktu_istirahat2_mulai,
+            'waktu_istirahat2_selesai'  => $request->waktu_istirahat2_selesai,
         ]);
 
         return redirect()

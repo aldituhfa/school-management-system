@@ -37,14 +37,31 @@
                         </div>
                     </div>
 
+                    {{-- ===========================
+                         ISTIRAHAT PERTAMA
+                    ============================ --}}
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Waktu Istirahat Mulai</label>
+                            <label class="form-label">Waktu Istirahat 1 Mulai</label>
                             <input type="time" id="ist_mulai" name="waktu_istirahat_mulai" class="form-control">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Waktu Istirahat Selesai</label>
+                            <label class="form-label">Waktu Istirahat 1 Selesai</label>
                             <input type="time" id="ist_selesai" name="waktu_istirahat_selesai" class="form-control">
+                        </div>
+                    </div>
+
+                    {{-- ===========================
+                         ISTIRAHAT KEDUA (BARU)
+                    ============================ --}}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Waktu Istirahat 2 Mulai</label>
+                            <input type="time" id="ist2_mulai" name="waktu_istirahat2_mulai" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Waktu Istirahat 2 Selesai</label>
+                            <input type="time" id="ist2_selesai" name="waktu_istirahat2_selesai" class="form-control">
                         </div>
                     </div>
 
@@ -68,25 +85,19 @@
 
         if (!jamMulai || !totalJam) return;
 
-        // Pisahkan jam & menit
         let [h, m] = jamMulai.split(":").map(Number);
 
-        // Buat objek waktu
         let start = new Date();
         start.setHours(h, m);
 
-        // Tambahkan total jam belajar ke waktu mulai
         start.setHours(start.getHours() + totalJam);
 
-        // Format hasilnya
         let jam = String(start.getHours()).padStart(2, "0");
         let menit = String(start.getMinutes()).padStart(2, "0");
 
-        // Tampilkan ke input jam_selesai
         document.getElementById("jam_selesai").value = jam + ":" + menit;
     };
 
-    // Event listener agar otomatis dihitung
     document.getElementById("jam_mulai").addEventListener("change", hitungJamSelesai);
     document.getElementById("total_jam_belajar").addEventListener("input", hitungJamSelesai);
 </script>

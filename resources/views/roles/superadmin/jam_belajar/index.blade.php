@@ -20,7 +20,7 @@
 
             <div class="card-body border-top">
 
-                {{-- ✅ ALERT SUCCESS --}}
+                {{-- ALERT SUCCESS --}}
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible" role="alert">
                         <div class="d-flex align-items-center">
@@ -31,7 +31,7 @@
                     </div>
                 @endif
 
-                {{-- 🔍 SEARCH & FILTER FORM --}}
+                {{-- SEARCH & FILTER --}}
                 <div class="card mb-3 border-0 shadow-sm bg-light p-3 rounded-3">
                     <form action="{{ route('superadmin.jam-belajar.index') }}" method="GET">
                         <div class="row g-3 align-items-end">
@@ -67,7 +67,7 @@
                     </form>
                 </div>
 
-                {{-- 📋 TABEL DATA --}}
+                {{-- TABLE --}}
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable">
                         <thead>
@@ -76,7 +76,8 @@
                                 <th>Total Jam</th>
                                 <th>Jam Mulai</th>
                                 <th>Jam Selesai</th>
-                                <th>Istirahat</th>
+                                <th>Istirahat 1</th>
+                                <th>Istirahat 2</th> {{-- ➕ DITAMBAHKAN --}}
                                 <th class="text-center w-1">Aksi</th>
                             </tr>
                         </thead>
@@ -87,6 +88,8 @@
                                     <td>{{ $item->total_jam_belajar }}</td>
                                     <td>{{ $item->jam_mulai ?? '-' }}</td>
                                     <td>{{ $item->jam_selesai ?? '-' }}</td>
+
+                                    {{-- ISTIRAHAT 1 --}}
                                     <td>
                                         @if($item->waktu_istirahat_mulai && $item->waktu_istirahat_selesai)
                                             {{ $item->waktu_istirahat_mulai }} - {{ $item->waktu_istirahat_selesai }}
@@ -94,6 +97,16 @@
                                             -
                                         @endif
                                     </td>
+
+                                    {{-- ➕ ISTIRAHAT 2 --}}
+                                    <td>
+                                        @if($item->waktu_istirahat2_mulai && $item->waktu_istirahat2_selesai)
+                                            {{ $item->waktu_istirahat2_mulai }} - {{ $item->waktu_istirahat2_selesai }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+
                                     <td class="text-center">
                                         <div class="d-inline-flex align-items-center">
                                             <a href="{{ route('superadmin.jam-belajar.edit', $item->id) }}" 
@@ -114,7 +127,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted">
+                                    <td colspan="7" class="text-center text-muted">
                                         <i class="ti ti-info-circle"></i> Belum ada data jam belajar
                                     </td>
                                 </tr>
@@ -129,9 +142,7 @@
     </div>
 </div>
 
-{{-- ✨ STYLE TAMBAHAN --}}
 <style>
-/* Tombol Edit & Hapus */
 .btn-outline-warning {
     border: 1px solid #ff9800;
     color: #ff9800;
@@ -150,15 +161,11 @@
     background-color: #f44336;
     color: #fff;
 }
-
-/* Tombol umum */
 .btn {
     font-weight: 500;
     border-radius: 6px;
     padding: 6px 12px;
 }
-
-/* Card filter/search */
 .card.bg-light {
     border: 1px solid #e6e9ef;
 }
@@ -171,4 +178,5 @@
     font-size: 0.9rem;
 }
 </style>
+
 @endsection

@@ -48,7 +48,8 @@
                     {{-- TOTAL JAM BELAJAR --}}
                     <div class="mb-3">
                         <label class="form-label">Total Jam Belajar</label>
-                        <input type="number" id="total_jam_belajar" name="total_jam_belajar" value="{{ $jamBelajar->total_jam_belajar }}" class="form-control" required>
+                        <input type="number" id="total_jam_belajar" name="total_jam_belajar"
+                            value="{{ $jamBelajar->total_jam_belajar }}" class="form-control" required>
                     </div>
 
                     {{-- JAM MULAI & SELESAI --}}
@@ -69,18 +70,34 @@
                         </div>
                     </div>
 
-                    {{-- ISTIRAHAT --}}
+                    {{-- ISTIRAHAT 1 --}}
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Waktu Istirahat Mulai</label>
+                            <label class="form-label">Waktu Istirahat 1 Mulai</label>
                             <input type="time" name="waktu_istirahat_mulai"
                                 value="{{ $jamBelajar->waktu_istirahat_mulai ? \Carbon\Carbon::parse($jamBelajar->waktu_istirahat_mulai)->format('H:i') : '' }}"
                                 class="form-control">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Waktu Istirahat Selesai</label>
+                            <label class="form-label">Waktu Istirahat 1 Selesai</label>
                             <input type="time" name="waktu_istirahat_selesai"
                                 value="{{ $jamBelajar->waktu_istirahat_selesai ? \Carbon\Carbon::parse($jamBelajar->waktu_istirahat_selesai)->format('H:i') : '' }}"
+                                class="form-control">
+                        </div>
+                    </div>
+
+                    {{-- ISTIRAHAT 2 (BARU) --}}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Waktu Istirahat 2 Mulai</label>
+                            <input type="time" name="waktu_istirahat2_mulai"
+                                value="{{ $jamBelajar->waktu_istirahat2_mulai ? \Carbon\Carbon::parse($jamBelajar->waktu_istirahat2_mulai)->format('H:i') : '' }}"
+                                class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Waktu Istirahat 2 Selesai</label>
+                            <input type="time" name="waktu_istirahat2_selesai"
+                                value="{{ $jamBelajar->waktu_istirahat2_selesai ? \Carbon\Carbon::parse($jamBelajar->waktu_istirahat2_selesai)->format('H:i') : '' }}"
                                 class="form-control">
                         </div>
                     </div>

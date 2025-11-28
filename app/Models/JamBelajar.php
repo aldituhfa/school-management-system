@@ -14,8 +14,14 @@ class JamBelajar extends Model
         'total_jam_belajar',
         'jam_mulai',
         'jam_selesai',
+
+        // Istirahat 1
         'waktu_istirahat_mulai',
         'waktu_istirahat_selesai',
+
+        // Istirahat 2 (tambahan)
+        'waktu_istirahat2_mulai',
+        'waktu_istirahat2_selesai',
     ];
 
     public function kelas()
