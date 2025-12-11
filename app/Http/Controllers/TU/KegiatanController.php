@@ -72,91 +72,96 @@ class KegiatanController extends Controller
     {
         $kegiatan = Kegiatan::findOrFail($id);
 
-        // Ambil kelas yang terlibat
         $kelasList = Kelas::whereIn('id', $kegiatan->kelas_ids ?? [])->get();
-
-        // Ambil semua siswa di kelas yang dipilih
         $siswa = Siswa::whereIn('kelas_id', $kegiatan->kelas_ids ?? [])->with('kelas')->get();
 
-        // Ambil pembayaran terkait (keyed by siswa_id)
         $pembayarans = KegiatanPembayaran::where('kegiatan_id', $kegiatan->id)
-            ->whereIn('siswa_id', $siswa->pluck('id')->toArray())
+            ->whereIn('siswa_id', $siswa->pluck('id'))
             ->get()
             ->keyBy('siswa_id');
 
-        // Update otomatis status kegiatan jika ada terkumpul
+        // ============
+        // Update Status ke "Sedang Berlangsung" jika ada pembayaran masuk
+        // ============
         if ($kegiatan->terkumpul > 0 && $kegiatan->status == 'Perencanaan') {
             $kegiatan->update(['status' => 'Sedang Berlangsung']);
         }
 
+        // Hitung progress
+        $kegiatan->progress = $kegiatan->target_dana > 0
+            ? ($kegiatan->terkumpul / $kegiatan->target_dana) * 100
+            : 0;
+
         return view('roles.tu.kegiatan.detail', compact('kegiatan', 'kelasList', 'siswa', 'pembayarans'));
     }
 
-    // tandai selesai kegiatan
-    public function selesai($id)
+
+    public function setSelesai($id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
-        $kegiatan->update(['status' => 'Selesai']);
+
+        if ($kegiatan->status == 'Sedang Berlangsung') {
+            $kegiatan->update(['status' => 'Selesai']);
+        }
+
         return back()->with('success', 'Kegiatan telah diselesaikan.');
     }
 
-    // bayar per siswa (POST)
-    public function bayar(Request $request, $kegiatanId, $siswaId)
+
+    public function bayar($id, $siswa_id)
     {
-        $kegiatan = Kegiatan::findOrFail($kegiatanId);
-        $siswa = Siswa::findOrFail($siswaId);
+        $kegiatan = Kegiatan::findOrFail($id);
 
-        DB::transaction(function () use ($kegiatan, $siswa) {
-            $p = KegiatanPembayaran::updateOrCreate(
-                ['kegiatan_id' => $kegiatan->id, 'siswa_id' => $siswa->id],
-                [
-                    'kelas_id' => $siswa->kelas_id,
-                    'jumlah' => $kegiatan->nominal_per_siswa,
-                    'status' => 'lunas',
-                    'tanggal_bayar' => now(),
-                ]
-            );
+        // Tidak boleh membayar jika sudah selesai
+        if ($kegiatan->status == 'Selesai') {
+            return back()->with('error', 'Kegiatan sudah selesai. Tidak dapat melakukan pembayaran.');
+        }
 
-            // update total terkumpul di kegiatan (pastikan tidak double count jika sebelumnya sudah lunas)
-            // jika sebelumnya belum lunas tambah jumlah; jika sebelumnya lunas, jangan tambah lagi
-            // cek apakah sebelumnya sudah lunas
-            // kita rely pada apakah created_at == updated_at? safer to check previous status
-            // retrieve previous record
-            // simpler: decrement/increment based on whether previous status was 'belum'
-            // get previous
-            // But updateOrCreate returns model; to determine previous, try find first
-            // We'll implement with upsert logic: check existing row before update
-            $existing = KegiatanPembayaran::where('kegiatan_id', $kegiatan->id)
-                ->where('siswa_id', $siswa->id)
-                ->first();
-
-            // If existing was null OR existing.status == 'belum' then increment
-            if (!$existing || $existing->wasRecentlyCreated || $existing->status == 'belum') {
-                $kegiatan->increment('terkumpul', $kegiatan->nominal_per_siswa);
-            }
-        });
-
-        return back()->with('success', 'Pembayaran berhasil dicatat.');
-    }
-
-    // batalkan pembayaran (POST)
-    public function cancel(Request $request, $kegiatanId, $siswaId)
-    {
-        $kegiatan = Kegiatan::findOrFail($kegiatanId);
-        $p = KegiatanPembayaran::where('kegiatan_id', $kegiatanId)
-            ->where('siswa_id', $siswaId)
+        $bayar = KegiatanPembayaran::where('kegiatan_id', $id)
+            ->where('siswa_id', $siswa_id)
             ->first();
 
-        if ($p && $p->status == 'lunas') {
-            DB::transaction(function () use ($p, $kegiatan) {
-                // kurangi total terkumpul
-                $kegiatan->decrement('terkumpul', $p->jumlah);
-                // set status kembali
-                $p->update([
-                    'status' => 'belum',
-                    'tanggal_bayar' => null,
-                ]);
-            });
+        if ($bayar && $bayar->status == 'belum') {
+            $bayar->update([
+                'status' => 'lunas',
+                'tanggal_bayar' => now()
+            ]);
+
+            $kegiatan->increment('terkumpul', $bayar->jumlah);
+
+            if ($kegiatan->status == 'Perencanaan') {
+                $kegiatan->update(['status' => 'Sedang Berlangsung']);
+            }
+        }
+
+        return back()->with('success', 'Pembayaran berhasil.');
+    }
+
+
+    public function cancel($id, $siswa_id)
+    {
+        $kegiatan = Kegiatan::findOrFail($id);
+
+        // Tidak boleh membatalkan jika sudah selesai
+        if ($kegiatan->status == 'Selesai') {
+            return back()->with('error', 'Kegiatan sudah selesai. Tidak dapat membatalkan pembayaran.');
+        }
+
+        $bayar = KegiatanPembayaran::where('kegiatan_id', $id)
+            ->where('siswa_id', $siswa_id)
+            ->first();
+
+        if ($bayar && $bayar->status == 'lunas') {
+            $bayar->update([
+                'status' => 'belum',
+                'tanggal_bayar' => null
+            ]);
+
+            $kegiatan->decrement('terkumpul', $bayar->jumlah);
+
+            if ($kegiatan->terkumpul == 0) {
+                $kegiatan->update(['status' => 'Perencanaan']);
+            }
         }
 
         return back()->with('success', 'Pembayaran dibatalkan.');

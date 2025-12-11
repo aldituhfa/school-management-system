@@ -360,11 +360,11 @@ $setting = Setting::first();
                         <i class="bx bx-envelope"></i> Surat
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="{{ route('tu.spp.index') }}" class="nav-link {{ request()->routeIs('tu.spp.index') ? 'active' : '' }}">
                         <i class="bx bx-money"></i> Pembayaran SPP
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a href="{{ route('tu.data_spp.index') }}"
                         class="nav-link {{ request()->routeIs('tu.data_spp.*') ? 'active' : '' }}">

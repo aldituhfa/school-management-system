@@ -269,7 +269,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
         Route::post('/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
         Route::get('/kegiatan/{id}', [KegiatanController::class, 'show'])->name('kegiatan.show');
-        Route::post('/kegiatan/{id}/selesai', [KegiatanController::class, 'selesai'])->name('kegiatan.selesai');
+        Route::post('/kegiatan/{id}/selesai', [KegiatanController::class, 'setSelesai'])->name('kegiatan.selesai');
 
         Route::post('/kegiatan/{kegiatan}/bayar/{siswa}', [KegiatanController::class, 'bayar'])->name('kegiatan.bayar');
         Route::post('/kegiatan/{kegiatan}/cancel/{siswa}', [KegiatanController::class, 'cancel'])->name('kegiatan.cancel');
