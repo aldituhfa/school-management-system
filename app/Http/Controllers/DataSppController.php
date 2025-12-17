@@ -30,7 +30,11 @@ class DataSppController extends Controller
         $kelas = Kelas::all();
         $siswa = Siswa::with(['kelas', 'status'])->paginate(10);
 
-        return view('roles.tu.data_spp.index', compact('siswa', 'kelas', 'tahunAjaran', 'tahunAjaranId'));
+        $view = request()->routeIs('superadmin.*')
+            ? 'roles.superadmin.tata_usaha.data_spp.index'
+            : 'roles.tu.data_spp.index';
+
+        return view($view, compact('siswa', 'kelas', 'tahunAjaran', 'tahunAjaranId'));
     }
 
 
@@ -100,7 +104,11 @@ class DataSppController extends Controller
         $bulanBelum = $tagihan->where('status', 'belum lunas')->count();
         $terakhirBayar = $tagihan->where('status', 'lunas')->max('tanggal_bayar');
 
-        return view('roles.tu.data_spp.detail', compact(
+        $view = request()->routeIs('superadmin.*')
+            ? 'roles.superadmin.tata_usaha.data_spp.detail'
+            : 'roles.tu.data_spp.detail';
+
+        return view($view, compact(
             'siswa',
             'tagihan',
             'tahunAjaranId',

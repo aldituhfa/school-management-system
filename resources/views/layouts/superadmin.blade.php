@@ -87,12 +87,15 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
-            cursor: default; /* Tambahkan ini */
+            cursor: default;
+            /* Tambahkan ini */
         }
 
         .logo-img {
-            width: 64px; /* Diperbesar dari 48px */
-            height: 64px; /* Diperbesar dari 48px */
+            width: 64px;
+            /* Diperbesar dari 48px */
+            height: 64px;
+            /* Diperbesar dari 48px */
             object-fit: contain;
             border-radius: 6px;
         }
@@ -106,8 +109,10 @@
         }
 
         .logo-fallback {
-            width: 64px; /* Diperbesar dari 48px */
-            height: 64px; /* Diperbesar dari 48px */
+            width: 64px;
+            /* Diperbesar dari 48px */
+            height: 64px;
+            /* Diperbesar dari 48px */
             border-radius: 6px;
             background-color: var(--tblr-primary);
             display: flex;
@@ -115,7 +120,8 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.875rem; /* Diperbesar dari 0.75rem */
+            font-size: 0.875rem;
+            /* Diperbesar dari 0.75rem */
         }
 
         .main-content {
@@ -276,13 +282,17 @@
             }
 
             .logo-img {
-                width: 56px; /* Diperbesar dari 40px */
-                height: 56px; /* Diperbesar dari 40px */
+                width: 56px;
+                /* Diperbesar dari 40px */
+                height: 56px;
+                /* Diperbesar dari 40px */
             }
 
             .logo-fallback {
-                width: 56px; /* Diperbesar dari 40px */
-                height: 56px; /* Diperbesar dari 40px */
+                width: 56px;
+                /* Diperbesar dari 40px */
+                height: 56px;
+                /* Diperbesar dari 40px */
             }
 
             .school-name {
@@ -293,8 +303,8 @@
 </head>
 
 @php
-    use App\Models\Setting;
-    $setting = Setting::first();
+use App\Models\Setting;
+$setting = Setting::first();
 @endphp
 
 <body>
@@ -303,12 +313,12 @@
         <div class="sidebar-header">
             <div class="logo-container">
                 @if($setting && $setting->logo)
-                    <img src="{{ asset('storage/' . $setting->logo) }}"
-                         alt="Logo Sekolah"
-                         class="logo-img"
-                         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                <img src="{{ asset('storage/' . $setting->logo) }}"
+                    alt="Logo Sekolah"
+                    class="logo-img"
+                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
                 @else
-                    <div class="logo-fallback" id="logo-fallback">LOGO</div>
+                <div class="logo-fallback" id="logo-fallback">LOGO</div>
                 @endif
 
                 <div class="school-name">
@@ -368,6 +378,15 @@
                             Data Siswa per Kelas
                         </a>
 
+<<<<<<< Updated upstream
+=======
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
+                            href="{{ route('superadmin.jam-belajar.index') }}">
+                            Jam Belajar Per Kelas
+                        </a>
+
+
+>>>>>>> Stashed changes
                     </div>
                 </li>
 
@@ -375,6 +394,13 @@
                     <a class="nav-link {{ request()->routeIs('superadmin.biayaspp.index') ? 'active' : '' }}" href="{{ route('superadmin.biayaspp.index') }}">
                         <i class="ti ti-credit-card"></i>
                         <span>Biaya SPP</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('superadmin.data_spp.index') }}"
+                        class="nav-link {{ request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}">
+                        <i class="bx bx-list-ul"></i> SPP
                     </a>
                 </li>
 
@@ -425,8 +451,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('superadmin.setting') ? 'active' : '' }}" 
-                       href="{{ route('superadmin.setting') }}">
+                    <a class="nav-link {{ request()->routeIs('superadmin.setting') ? 'active' : '' }}"
+                        href="{{ route('superadmin.setting') }}">
                         <i class="ti ti-settings"></i>
                         <span>Setting Logo</span>
                     </a>

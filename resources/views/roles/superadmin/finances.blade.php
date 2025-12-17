@@ -108,7 +108,7 @@
                                     <tr>
                                         <td>{{ $finance->id }}</td>
                                         <td>{{ $finance->category }}</td>
-                                        <td>{{ number_format($finance->amount, 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($finance->amount, 0, ',', '.') }}</td>
                                         <td>
                                             @if($finance->in_out == 'in')
                                             <span class="badge bg-success-subtle text-success">IN</span>
@@ -117,7 +117,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $finance->user->name ?? '-' }}</td>
-                                        <td>{{ $finance->created_at->format('d-m-Y H:i') }}</td>
+                                        <td>{{ $finance->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $finance->description ?? '-' }}</td>
                                         <td class="text-center">
                                             <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
@@ -166,7 +166,7 @@
                                     <tr>
                                         <td>{{ $finance->id }}</td>
                                         <td>{{ $finance->category }}</td>
-                                        <td>{{ number_format($finance->amount, 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($finance->amount, 0, ',', '.') }}</td>
                                         <td>
                                             @if($finance->in_out == 'in')
                                             <span class="badge bg-success-subtle text-success">IN</span>
@@ -175,7 +175,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $finance->user->name ?? '-' }}</td>
-                                        <td>{{ $finance->created_at->format('d-m-Y H:i') }}</td>
+                                        <td>{{ $finance->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $finance->description ?? '-' }}</td>
                                         <td class="text-center">
                                             <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
@@ -231,7 +231,15 @@
                     </div>
                     <div class="mb-2">
                         <label>Jumlah</label>
-                        <input type="number" name="amount" class="form-control" required>
+
+                        <input type="text"
+                            class="form-control amount-display"
+                            placeholder="Rp 0"
+                            required>
+
+                        <input type="hidden"
+                            name="amount"
+                            class="amount-hidden">
                     </div>
                     <div class="mb-2">
                         <label>In/Out</label>
@@ -280,7 +288,17 @@
                     </div>
                     <div class="mb-2">
                         <label>Jumlah</label>
-                        <input type="number" name="amount" value="{{ $finance->amount }}" class="form-control" required>
+
+                        <input type="text"
+                            class="form-control amount-display"
+                            data-value="{{ $finance->amount }}"
+                            value="Rp {{ number_format($finance->amount, 0, ',', '.') }}"
+                            required>
+
+                        <input type="hidden"
+                            name="amount"
+                            class="amount-hidden"
+                            value="{{ $finance->amount }}">
                     </div>
                     <div class="mb-2">
                         <label>In/Out</label>
@@ -330,7 +348,17 @@
                     </div>
                     <div class="mb-2">
                         <label>Jumlah</label>
-                        <input type="number" name="amount" value="{{ $finance->amount }}" class="form-control" required>
+
+                        <input type="text"
+                            class="form-control amount-display"
+                            data-value="{{ $finance->amount }}"
+                            value="Rp {{ number_format($finance->amount, 0, ',', '.') }}"
+                            required>
+
+                        <input type="hidden"
+                            name="amount"
+                            class="amount-hidden"
+                            value="{{ $finance->amount }}">
                     </div>
                     <div class="mb-2">
                         <label>In/Out</label>
@@ -422,6 +450,39 @@
             filterInOut.value = '';
             filterTable();
         });
+    });
+
+    //format rupiah otomatis 
+    document.addEventListener('DOMContentLoaded', function() {
+
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID').format(angka);
+        }
+
+        document.querySelectorAll('.amount-display').forEach(function(displayInput) {
+            const hiddenInput = displayInput.parentElement.querySelector('.amount-hidden');
+
+            // SET NILAI AWAL (KHUSUS EDIT)
+            const initialValue = displayInput.dataset.value;
+            if (initialValue && hiddenInput.value === '') {
+                hiddenInput.value = initialValue;
+                displayInput.value = 'Rp ' + formatRupiah(initialValue);
+            }
+
+            displayInput.addEventListener('input', function() {
+                let raw = this.value.replace(/[^0-9]/g, '');
+
+                if (raw === '') {
+                    hiddenInput.value = '';
+                    this.value = '';
+                    return;
+                }
+
+                hiddenInput.value = raw;
+                this.value = 'Rp ' + formatRupiah(raw);
+            });
+        });
+
     });
 </script>
 @endpush

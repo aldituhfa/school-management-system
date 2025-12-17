@@ -22,7 +22,9 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kelas' => 'required|string|max:255',
+            'nama_kelas' => 'required|string|max:255|unique:kelas,nama_kelas',
+        ], [
+            'nama_kelas.unique' => 'Nama kelas sudah ada / tidak boleh sama.',
         ]);
 
         Kelas::create([
@@ -38,7 +40,9 @@ class KelasController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_kelas' => 'required|string|max:255',
+            'nama_kelas' => 'required|string|max:255|unique:kelas,nama_kelas,' . $id,
+        ], [
+            'nama_kelas.unique' => 'Nama kelas sudah ada / tidak boleh sama.',
         ]);
 
         $kelas = Kelas::findOrFail($id);

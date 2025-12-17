@@ -32,7 +32,10 @@ class SiswaController extends Controller
         }
 
         // --- Pagination ---
-        $siswa = $query->paginate(10)->appends($request->all());
+        $siswa = $query
+            ->orderBy('nama_siswa', 'asc')
+            ->paginate(10)
+            ->appends($request->all());
 
         $kelas = Kelas::all();
         $status = StatusSiswa::all();
@@ -148,16 +151,67 @@ class SiswaController extends Controller
 
         return back()->with('success', "Kolom '$column' berhasil dihapus!");
     }
+
+    public function updateColumn(Request $request)
+    {
+        $request->validate([
+            'old_name' => 'required|string',
+            'new_name' => 'required|string|max:50|alpha_dash',
+        ]);
+
+        $old = $request->old_name;
+        $new = $request->new_name;
+
+        // Kolom default yang tidak boleh diedit
+        $protected = [
+            'id',
+            'nisn',
+            'nama_siswa',
+            'jenis_kelamin',
+            'tempat_lahir',
+            'tanggal_lahir',
+            'kelas_id',
+            'agama',
+            'status_id',
+            'created_at',
+            'updated_at'
+        ];
+
+        if (in_array($old, $protected)) {
+            return back()->withErrors(['Kolom ini tidak boleh diedit.']);
+        }
+
+        // Cek kolom lama ada
+        if (!Schema::hasColumn('siswa', $old)) {
+            return back()->withErrors(['Kolom tidak ditemukan.']);
+        }
+
+        // Cek nama baru sudah ada
+        if (Schema::hasColumn('siswa', $new)) {
+            return back()->withErrors(['Nama kolom sudah digunakan.']);
+        }
+
+        // Rename kolom
+        Schema::table('siswa', function (Blueprint $table) use ($old, $new) {
+            $table->renameColumn($old, $new);
+        });
+
+        return back()->with('success', "Kolom '$old' berhasil diubah menjadi '$new'");
+    }
+
     public function perKelas()
     {
-        $kelas = Kelas::withCount('siswa')->get(); // tambahkan withCount
+        $kelas = Kelas::withCount('siswa')->get();
         return view('roles.superadmin.siswa.perkelas', compact('kelas'));
     }
 
     public function showByKelas($id)
     {
         $kelas = Kelas::findOrFail($id);
-        $siswa = Siswa::where('kelas_id', $id)->with('kelas', 'status')->paginate(10);
+        $siswa = Siswa::where('kelas_id', $id)
+            ->with('kelas', 'status')
+            ->orderBy('nama_siswa', 'asc')
+            ->paginate(10);
         $columns = Schema::getColumnListing('siswa');
 
         return view('roles.superadmin.siswa.detail_perkelas', compact('kelas', 'siswa', 'columns'));

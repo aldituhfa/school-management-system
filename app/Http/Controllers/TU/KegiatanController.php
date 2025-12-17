@@ -14,13 +14,16 @@ class KegiatanController extends Controller
 {
     public function index()
     {
-        $kegiatans = Kegiatan::all();
+        $kegiatans = Kegiatan::latest()->get();
 
         $totalTarget = $kegiatans->sum('target_dana');
         $totalTerkumpul = $kegiatans->sum('terkumpul');
         $totalKurang = $totalTarget - $totalTerkumpul;
 
-        return view('roles.tu.kegiatan.index', compact('kegiatans', 'totalTarget', 'totalTerkumpul', 'totalKurang'));
+        return view(
+            'roles.tu.kegiatan.index',
+            compact('kegiatans', 'totalTarget', 'totalTerkumpul', 'totalKurang')
+        );
     }
 
     public function store(Request $request)
@@ -165,5 +168,23 @@ class KegiatanController extends Controller
         }
 
         return back()->with('success', 'Pembayaran dibatalkan.');
+    }
+
+    public function destroy($id)
+    {
+        DB::transaction(function () use ($id) {
+            // Ambil kegiatan
+            $kegiatan = Kegiatan::findOrFail($id);
+
+            // Hapus semua pembayaran terkait kegiatan ini
+            KegiatanPembayaran::where('kegiatan_id', $kegiatan->id)->delete();
+
+            // Hapus kegiatan
+            $kegiatan->delete();
+        });
+
+        return redirect()
+            ->route('tu.kegiatan.index')
+            ->with('success', 'Kegiatan berhasil dihapus.');
     }
 }

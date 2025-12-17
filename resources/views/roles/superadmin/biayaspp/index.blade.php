@@ -101,7 +101,14 @@
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label required">Nominal</label>
-                                    <input type="number" name="nominal" class="form-control" placeholder="500000" required>
+                                    <input type="text"
+                                        class="form-control nominal-display"
+                                        placeholder="Rp 500.000"
+                                        required>
+
+                                    <input type="hidden"
+                                        name="nominal"
+                                        class="nominal-value">
                                 </div>
                             </div>
                         </div>
@@ -228,7 +235,15 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label required">Nominal</label>
-                                                <input type="number" name="nominal" class="form-control" value="{{ $item->nominal }}" required>
+                                                <input type="text"
+                                                    class="form-control nominal-display"
+                                                    value="Rp {{ number_format($item->nominal, 0, ',', '.') }}"
+                                                    required>
+
+                                                <input type="hidden"
+                                                    name="nominal"
+                                                    class="nominal-value"
+                                                    value="{{ $item->nominal }}">
                                             </div>
                                             <div class="text-end">
                                                 <button type="submit" class="btn btn-warning">
@@ -466,6 +481,31 @@
             statusFilter.value = '';
             filterTable();
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        document.querySelectorAll('.nominal-display').forEach(function(input) {
+
+            let hidden = input.parentElement.querySelector('.nominal-value');
+
+            input.addEventListener('input', function() {
+                let value = this.value.replace(/[^0-9]/g, '');
+                hidden.value = value;
+
+                if (value !== '') {
+                    this.value = formatRupiah(value);
+                } else {
+                    this.value = '';
+                }
+            });
+
+        });
+
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
     });
 </script>
 @endsection

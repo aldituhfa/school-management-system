@@ -185,6 +185,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tu/laporan-tagihan-spp/export-pdf', [LaporanTagihanSppController::class, 'exportPdf'])->name('tu.laporan_tagihan_spp.exportPdf');
     Route::get('/tu/laporan-tagihan-spp/export-excel', [LaporanTagihanSppController::class, 'exportExcel'])->name('tu.laporan_tagihan_spp.exportExcel');
 
+    // SUPERADMIN > spp
+    Route::get('/superadmin/data-spp', [App\Http\Controllers\DataSppController::class, 'index'])
+        ->name('superadmin.data_spp.index');
+    Route::get('/superadmin/data-spp/{id}', [App\Http\Controllers\DataSppController::class, 'show'])
+        ->name('superadmin.data_spp.detail');
+    Route::post('/superadmin/data_spp/cancel/{id}', [App\Http\Controllers\DataSppController::class, 'cancel'])
+        ->name('superadmin.data_spp.cancel');
+    Route::post('/superadmin/data-spp/{id}/update', [App\Http\Controllers\DataSppController::class, 'update'])
+        ->name('superadmin.data_spp.update');
+    Route::post('/superadmin/data-spp/{id}/bayar', [App\Http\Controllers\DataSppController::class, 'bayar'])
+        ->name('superadmin.data_spp.bayar');
 
 
 
@@ -226,6 +237,10 @@ Route::middleware(['auth'])->group(function () {
         //CRUD KOLOM
         Route::post('/siswa/add-column', [App\Http\Controllers\SiswaController::class, 'addColumn'])->name('siswa.addColumn');
         Route::delete('/roles/superadmin/siswa/delete-column/{column}', [SiswaController::class, 'deleteColumn'])->name('siswa.deleteColumn');
+        Route::put(
+            '/roles/superadmin/siswa/update-column',
+            [SiswaController::class, 'updateColumn']
+        )->name('siswa.updateColumn');
 
         // CRUD kelas
         Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
@@ -272,56 +287,58 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
         Route::get('/kegiatan/{id}', [KegiatanController::class, 'show'])->name('kegiatan.show');
         Route::post('/kegiatan/{id}/selesai', [KegiatanController::class, 'setSelesai'])->name('kegiatan.selesai');
+        Route::delete('/kegiatan/{id}', [KegiatanController::class, 'destroy'])
+            ->name('kegiatan.destroy');
 
         Route::post('/kegiatan/{kegiatan}/bayar/{siswa}', [KegiatanController::class, 'bayar'])->name('kegiatan.bayar');
         Route::post('/kegiatan/{kegiatan}/cancel/{siswa}', [KegiatanController::class, 'cancel'])->name('kegiatan.cancel');
     });
 
-    
+
+    // SUPER ADMIN > mata Pelajaran
+    Route::prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::resource('mata_pelajaran', MataPelajaranController::class);
+    });
+
+
+    // SUPER ADMIN > Profile 
+    Route::prefix('superadmin')->middleware(['auth'])->group(function () {
+        Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
+        Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('superadmin.profile.update');
+    });
+
+    Route::prefix('admin')->middleware(['auth'])->group(function () {
+        Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('admin.profile');
+        Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('admin.profile.update');
+    });
+
+    Route::prefix('guru')->middleware(['auth'])->group(function () {
+        Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('guru.profile');
+        Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('guru.profile.update');
+    });
+
+    Route::prefix('tu')->middleware(['auth'])->group(function () {
+        Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('tu.profile');
+        Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('tu.profile.update');
+    });
+
+    Route::prefix('payroll')->middleware(['auth'])->group(function () {
+        Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('payroll.profile');
+        Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('payroll.profile.update');
+    });
+
+
+    // SUPER ADMIN > setting
+    Route::get('/superadmin/setting', [SuperAdminSettingController::class, 'index'])->name('superadmin.setting');
+    Route::post('/superadmin/setting/update', [SuperAdminSettingController::class, 'update'])->name('superadmin.setting.update');
+
+
+    // Jam Belajar
+    Route::prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::resource('jam-belajar', JamBelajarController::class);
+    });
 });
 
-// SUPER ADMIN > mata Pelajaran
-Route::prefix('superadmin')->name('superadmin.')->group(function () {
-    Route::resource('mata_pelajaran', MataPelajaranController::class);
-});
-
-
-// SUPER ADMIN > Profile 
-Route::prefix('superadmin')->middleware(['auth'])->group(function () {
-    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
-    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('superadmin.profile.update');
-});
-
-Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('admin.profile');
-    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('admin.profile.update');
-});
-
-Route::prefix('guru')->middleware(['auth'])->group(function () {
-    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('guru.profile');
-    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('guru.profile.update');
-});
-
-Route::prefix('tu')->middleware(['auth'])->group(function () {
-    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('tu.profile');
-    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('tu.profile.update');
-});
-
-Route::prefix('payroll')->middleware(['auth'])->group(function () {
-    Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('payroll.profile');
-    Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('payroll.profile.update');
-});
-
-
-// SUPER ADMIN > setting
-Route::get('/superadmin/setting', [SuperAdminSettingController::class, 'index'])->name('superadmin.setting');
-Route::post('/superadmin/setting/update', [SuperAdminSettingController::class, 'update'])->name('superadmin.setting.update');
-
-
-// Jam Belajar
-Route::prefix('superadmin')->name('superadmin.')->group(function () {
-    Route::resource('jam-belajar', JamBelajarController::class);
-});
 
 // Jadwal Routes untuk Superadmin
 Route::prefix('roles/superadmin')->middleware(['auth'])->group(function () {

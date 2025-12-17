@@ -339,7 +339,6 @@
 
 
 {{-- ================================================== --}}
-{{-- ================================================== --}}
 {{-- MODAL KELOLA KELAS --}}
 <div class="modal fade" id="modalKelas" tabindex="-1">
   <div class="modal-dialog modal-md" role="document">
@@ -355,6 +354,15 @@
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
+        {{-- Alert error --}}
+        @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="ti ti-alert-circle me-2"></i>
+          {{ $errors->first('nama_kelas') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif
@@ -468,13 +476,33 @@
 
               @forelse($customCols as $col)
               <tr>
-                <td>{{ $col }}</td>
+                <td>
+                  <form action="{{ route('siswa.updateColumn') }}" method="POST" class="d-flex">
+                    @csrf
+                    @method('PUT')
+
+                    <input type="hidden" name="old_name" value="{{ $col }}">
+
+                    <input type="text"
+                      name="new_name"
+                      value="{{ $col }}"
+                      class="form-control form-control-sm me-2"
+                      required>
+
+                    <button type="submit"
+                      class="btn btn-sm btn-outline-warning me-1">
+                      Edit
+                    </button>
+                  </form>
+                </td>
+
                 <td class="text-center">
-                  <form action="{{ route('siswa.deleteColumn', $col) }}" method="POST" class="d-inline">
+                  <form action="{{ route('siswa.deleteColumn', $col) }}"
+                    method="POST"
+                    onsubmit="return confirm('Hapus kolom {{ $col }}?')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                      onclick="return confirm('Hapus kolom {{ $col }}?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
                       Hapus
                     </button>
                   </form>
@@ -494,6 +522,34 @@
 </div>
 
 
+{{-- MODAL EDIT KOLOM --}}
+<div class="modal fade" id="modalEditKolom" tabindex="-1">
+  <div class="modal-dialog modal-md">
+    <form method="POST" id="formEditKolom">
+      @csrf
+      @method('PUT')
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Nama Kolom</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-2">
+            <label class="form-label">Nama Kolom Baru</label>
+            <input type="text" name="new_column_name" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-outline-warning">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 
 {{-- ================================================== --}}
@@ -536,23 +592,6 @@
       });
     });
 
-
-    // reset form setelah tambah
-    const formTambahSiswa = document.querySelector('#formTambahSiswa');
-    formTambahSiswa.addEventListener('submit', () => {
-      setTimeout(() => window.location.reload(), 800);
-    });
-
-    const formTambahKelas = document.querySelector('#formTambahKelas');
-    formTambahKelas.addEventListener('submit', () => {
-      setTimeout(() => window.location.reload(), 800);
-    });
-
-    const formTambahStatus = document.querySelector('#formTambahStatus');
-    formTambahStatus.addEventListener('submit', () => {
-      setTimeout(() => window.location.reload(), 800);
-    });
-
     // Fungsi reset filter
     const btnReset = document.getElementById('btnReset');
     btnReset.addEventListener('click', function() {
@@ -590,6 +629,20 @@
     kelasSelect.addEventListener('change', () => filterForm.submit());
     statusSelect.addEventListener('change', () => filterForm.submit());
   });
+
+  //edit kolom 
+  // document.addEventListener('DOMContentLoaded', function() {
+  //   const modalEdit = document.getElementById('modalEditKolom');
+  //   const formEdit = document.getElementById('formEditKolom');
+
+  //   modalEdit.addEventListener('show.bs.modal', function(event) {
+  //     const button = event.relatedTarget;
+  //     const oldColumn = button.getAttribute('data-old');
+
+  //     formEdit.action = `/siswa/column/${oldColumn}`;
+  //     formEdit.querySelector('input[name="new_column_name"]').value = oldColumn;
+  //   });
+  // });
 </script>
 
 @endsection
