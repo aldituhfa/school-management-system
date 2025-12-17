@@ -19,9 +19,11 @@ use App\Http\Controllers\JamBelajarController;
 use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\LaporanTagihanSppController;
 use App\Http\Controllers\TU\KegiatanController;
+use App\Http\Controllers\JadwalPelajaranController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
+
 use App\Models\User;
 
 /*
@@ -321,6 +323,24 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
     Route::resource('jam-belajar', JamBelajarController::class);
 });
 
+// Jadwal Routes untuk Superadmin
+Route::prefix('roles/superadmin')->middleware(['auth'])->group(function () {
+    Route::prefix('jadwal')->name('jadwal.')->group(function () {
+        Route::get('/', [JadwalPelajaranController::class, 'index'])->name('index');
+        Route::post('/', [JadwalPelajaranController::class, 'store'])->name('store');
+        Route::put('/{id}', [JadwalPelajaranController::class, 'update'])->name('update');
+        Route::delete('/{id}', [JadwalPelajaranController::class, 'destroy'])->name('destroy');
+        
+        // View khusus
+        Route::get('/guru/{guruId}', [JadwalPelajaranController::class, 'jadwalGuru'])->name('guru');
+        Route::get('/kelas/{kelasId}', [JadwalPelajaranController::class, 'jadwalKelas'])->name('kelas');
+
+        // AJAX Endpoints
+        Route::get('/ajax/mapel-guru/{guruId}', [JadwalPelajaranController::class, 'getMataPelajaranByGuru'])->name('ajax.mapel');
+        Route::get('/ajax/jam-belajar/{kelasId}', [JadwalPelajaranController::class, 'getJamBelajarKelas'])->name('ajax.jambelajar');
+        Route::get('/ajax/next-jam', [JadwalPelajaranController::class, 'getNextJamKe'])->name('ajax.nextjam');
+    });
+});
 
 // Route::prefix('finances')->group(function () {
 //     Route::get('/', [FinanceController::class, 'index'])->name('finances.index'); // halaman Blade

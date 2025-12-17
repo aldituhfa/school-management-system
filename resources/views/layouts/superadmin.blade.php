@@ -327,6 +327,13 @@
                     </a>
                 </li>
 
+                     <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('account.main') ? 'active' : '' }}" href="{{ route('account.main') }}">
+                        <i class="ti ti-user-circle"></i>
+                        <span>Account Management</span>
+                    </a>
+                </li>
+
                 <li class="nav-item sidebar-dropdown" id="financeDropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('finances') || request()->is('logs/finances') ? 'active' : '' }}"
                         href="#" role="button" aria-expanded="false">
@@ -341,13 +348,6 @@
                             Log Finance
                         </a>
                     </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('account.main') ? 'active' : '' }}" href="{{ route('account.main') }}">
-                        <i class="ti ti-user-circle"></i>
-                        <span>Account Management</span>
-                    </a>
                 </li>
 
                 <!-- DROPDOWN SISWA -->
@@ -368,12 +368,6 @@
                             Data Siswa per Kelas
                         </a>
 
-                        <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
-                            href="{{ route('superadmin.jam-belajar.index') }}">
-                            Jam Belajar Per Kelas
-                        </a>
-
-                        
                     </div>
                 </li>
 
@@ -400,6 +394,33 @@
                             href="{{ route('roles.superadmin.pilihmapel.index') }}">
                             Pilih Mata Pelajaran
                         </a>
+                    </div>
+                </li>
+
+                <!-- Dropdown Jadwal Pelajaran -->
+                <li class="nav-item sidebar-dropdown" id="jadwalDropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('jadwal.*') ? 'active' : '' }}"
+                        href="#" role="button" aria-expanded="false">
+                        <i class="ti ti-calendar"></i>
+                        <span>Kelola Jadwal</span>
+                    </a>
+
+                    <div class="sidebar-dropdown-menu">
+                    <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
+                            href="{{ route('superadmin.jam-belajar.index') }}">
+                            Jam Belajar Kelas
+                        </a>
+
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('jadwal.index') ? 'active' : '' }}"
+                            href="{{ route('jadwal.index') }}">
+                            Jadwal Pelajaran
+                        </a>
+
+                        
+                        <!-- Optional: Tambahkan menu lain jika perlu -->
+                        <!-- <a class="sidebar-dropdown-item" href="#">
+                            Lihat Jadwal per Kelas
+                        </a> -->
                     </div>
                 </li>
 
@@ -487,7 +508,10 @@
                 },
                 {
                     id: 'siswaDropdown'
-                } // Tambahan untuk dropdown siswa
+                },
+                {
+                    id: 'jadwalDropdown'
+                }
             ];
 
             // Fungsi toggle dropdown
