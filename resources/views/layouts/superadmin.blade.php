@@ -340,7 +340,7 @@ $setting = Setting::first();
                      <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('account.main') ? 'active' : '' }}" href="{{ route('account.main') }}">
                         <i class="ti ti-user-circle"></i>
-                        <span>Account Management</span>
+                        <span>Managemen Akun</span>
                     </a>
                 </li>
 
@@ -348,14 +348,14 @@ $setting = Setting::first();
                     <a class="nav-link dropdown-toggle {{ request()->is('finances') || request()->is('logs/finances') ? 'active' : '' }}"
                         href="#" role="button" aria-expanded="false">
                         <i class="ti ti-wallet"></i>
-                        <span>Finance</span>
+                        <span>Keuangan</span>
                     </a>
                     <div class="sidebar-dropdown-menu">
                         <a class="sidebar-dropdown-item {{ request()->is('finances') ? 'active' : '' }}" href="{{ url('/finances') }}">
-                            Finance
+                            Keuangan Kas & Dana BOS
                         </a>
                         <a class="sidebar-dropdown-item {{ request()->is('logs/finances') ? 'active' : '' }}" href="{{ url('logs/finances') }}">
-                            Log Finance
+                            Riwayat Keuangan 
                         </a>
                     </div>
                 </li>
@@ -378,15 +378,10 @@ $setting = Setting::first();
                             Data Siswa per Kelas
                         </a>
 
-<<<<<<< Updated upstream
-=======
                         <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
                             href="{{ route('superadmin.jam-belajar.index') }}">
                             Jam Belajar Per Kelas
                         </a>
-
-
->>>>>>> Stashed changes
                     </div>
                 </li>
 

@@ -13,6 +13,8 @@
 
     <div class="card-body border-bottom py-3">
         <div class="row g-2 align-items-center">
+
+            {{-- Filter Jenis --}}
             <div class="col-md-3">
                 <select name="type" id="typeFilter" class="form-select">
                     <option value="">Semua Jenis</option>
@@ -21,6 +23,7 @@
                 </select>
             </div>
 
+            {{-- Filter Aksi --}}
             <div class="col-md-3">
                 <select name="action" id="actionFilter" class="form-select">
                     <option value="">Semua Aksi</option>
@@ -30,11 +33,26 @@
                 </select>
             </div>
 
-            {{-- Tombol Reset --}}
+            {{-- Reset --}}
             <div class="col-md-2">
-                <button id="resetBtn" class="btn btn-outline-secondary w-100" style="height: 38px;">
+                <button id="resetBtn" class="btn btn-outline-secondary w-100">
                     Reset
                 </button>
+            </div>
+
+            {{-- Spacer --}}
+            <div class="col-md-4 text-end">
+                <div class="d-flex justify-content-end align-items-center gap-2">
+                    <a href="{{ route('logs.finances.export.pdf', request()->query()) }}"
+                        class="btn btn-outline-danger btn-md shadow-sm px-3">
+                        <i class="ti ti-file-type-pdf me-1"></i> PDF
+                    </a>
+
+                    <a href="{{ route('logs.finances.export.excel', request()->query()) }}"
+                        class="btn btn-outline-success btn-md shadow-sm px-3">
+                        <i class="ti ti-file-spreadsheet me-1"></i> Excel
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -43,14 +61,15 @@
         <table class="table table-vcenter card-table table-striped">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>NO</th>
                     <th>Aksi</th>
                     <th>Jumlah Sebelum</th>
                     <th>Jumlah Sesudah</th>
                     <th>Jenis</th>
-                    <th>Keterangan</th>
+                    <th>Kategori</th>
                     <th>User</th>
                     <th>Waktu</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,10 +93,23 @@
                     <td>{{ $log->meta }}</td>
                     <td>{{ $log->user->name ?? '-' }}</td>
                     <td class="text-muted">{{ $log->created_at->format('d/m/Y') }}</td>
+                    <td class="text-center">
+                        <form action="{{ route('logs.finances.destroy', $log->id) }}"
+                            method="POST"
+                            onsubmit="return confirm('Yakin ingin menghapus log ini?')"
+                            style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+
+                            <button class="btn btn-sm btn-outline-danger">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center py-4">Tidak ada data</td>
+                    <td colspan="9" class="text-center py-4">Tidak ada data</td>
                 </tr>
                 @endforelse
             </tbody>

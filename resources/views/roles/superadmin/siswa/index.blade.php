@@ -629,20 +629,6 @@
     kelasSelect.addEventListener('change', () => filterForm.submit());
     statusSelect.addEventListener('change', () => filterForm.submit());
   });
-
-  //edit kolom 
-  // document.addEventListener('DOMContentLoaded', function() {
-  //   const modalEdit = document.getElementById('modalEditKolom');
-  //   const formEdit = document.getElementById('formEditKolom');
-
-  //   modalEdit.addEventListener('show.bs.modal', function(event) {
-  //     const button = event.relatedTarget;
-  //     const oldColumn = button.getAttribute('data-old');
-
-  //     formEdit.action = `/siswa/column/${oldColumn}`;
-  //     formEdit.querySelector('input[name="new_column_name"]').value = oldColumn;
-  //   });
-  // });
 </script>
 
 @endsection

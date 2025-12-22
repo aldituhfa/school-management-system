@@ -149,6 +149,20 @@ Route::middleware(['auth'])->group(function () {
         ->name('logs.finances')
         ->middleware('role:super_admin,admin,tu,payroll');
 
+    Route::delete('/logs/finances/{id}', [LogController::class, 'destroy'])
+        ->name('logs.finances.destroy')
+        ->middleware('role:super_admin,admin');
+        
+    Route::get('/logs/finances/export/pdf', [LogController::class, 'exportPdf'])
+        ->name('logs.finances.export.pdf')
+        ->middleware('role:super_admin,admin');
+
+    Route::get('/logs/finances/export/excel', [LogController::class, 'exportExcel'])
+        ->name('logs.finances.export.excel')
+        ->middleware('role:super_admin,admin');
+
+
+
     // Totals & Stats untuk card + Chart.js — role selain guru
     // Route::get('/finances/totals', [FinanceController::class, 'totals'])
     //     ->name('finances.totals')
@@ -347,7 +361,7 @@ Route::prefix('roles/superadmin')->middleware(['auth'])->group(function () {
         Route::post('/', [JadwalPelajaranController::class, 'store'])->name('store');
         Route::put('/{id}', [JadwalPelajaranController::class, 'update'])->name('update');
         Route::delete('/{id}', [JadwalPelajaranController::class, 'destroy'])->name('destroy');
-        
+
         // View khusus
         Route::get('/guru/{guruId}', [JadwalPelajaranController::class, 'jadwalGuru'])->name('guru');
         Route::get('/kelas/{kelasId}', [JadwalPelajaranController::class, 'jadwalKelas'])->name('kelas');

@@ -19,12 +19,12 @@ class FinanceController extends Controller
         $danaBos = Finance::with('user')
             ->where('type', 'dana_bos')
             ->orderBy('created_at', 'desc')
-            ->paginate(10, ['*'], 'danaBosPage'); // paginate khusus
+            ->paginate(5, ['*'], 'danaBosPage'); // paginate khusus
 
         $kas = Finance::with('user')
             ->where('type', 'kas')
             ->orderBy('created_at', 'desc')
-            ->paginate(10, ['*'], 'kasPage');
+            ->paginate(5, ['*'], 'kasPage');
 
         // Hitung saldo
         $danaBosIn  = Finance::where('type', 'dana_bos')->where('in_out', 'in')->sum('amount');

@@ -93,7 +93,7 @@
                             <table id="tableDanaBos" class="table table-vcenter text-nowrap table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>NO</th>
                                         <th>Kategori</th>
                                         <th>Jumlah</th>
                                         <th>In/Out</th>
@@ -104,9 +104,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($danaBos as $finance)
+                                    @forelse($danaBos as $index => $finance)
                                     <tr>
-                                        <td>{{ $finance->id }}</td>
+                                        <td> {{ ($danaBos->currentPage() - 1) * $danaBos->perPage() + $index + 1 }}</td>
                                         <td>{{ $finance->category }}</td>
                                         <td>Rp {{ number_format($finance->amount, 0, ',', '.') }}</td>
                                         <td>
@@ -137,8 +137,20 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-3">
-                            {{ $danaBos->onEachSide(1)->links() }}
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                            <div class="text-muted small">
+                                Menampilkan
+                                {{ $danaBos->firstItem() ?? 0 }}
+                                –
+                                {{ $danaBos->lastItem() ?? 0 }}
+                                dari
+                                {{ $danaBos->total() }}
+                                data
+                            </div>
+
+                            <div>
+                                {{ $danaBos->onEachSide(1)->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,7 +163,7 @@
                             <table id="tableKas" class="table table-vcenter text-nowrap table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>NO</th>
                                         <th>Kategori</th>
                                         <th>Jumlah</th>
                                         <th>In/Out</th>
@@ -162,9 +174,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($kas as $finance)
+                                    @forelse($kas as $index => $finance)
                                     <tr>
-                                        <td>{{ $finance->id }}</td>
+                                        <td>{{ ($kas->currentPage() - 1) * $kas->perPage() + $index + 1 }}</td>
                                         <td>{{ $finance->category }}</td>
                                         <td>Rp {{ number_format($finance->amount, 0, ',', '.') }}</td>
                                         <td>
@@ -195,8 +207,20 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-3">
-                            {{ $kas->onEachSide(1)->links() }}
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                            <div class="text-muted small">
+                                Menampilkan
+                                {{ $kas->firstItem() ?? 0 }}
+                                –
+                                {{ $kas->lastItem() ?? 0 }}
+                                dari
+                                {{ $kas->total() }}
+                                data
+                            </div>
+
+                            <div>
+                                {{ $kas->onEachSide(1)->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
                     </div>
                 </div>
