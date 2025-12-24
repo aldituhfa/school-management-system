@@ -267,6 +267,19 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
     });
 
+    
+    Route::middleware(['auth', 'role:guru'])
+    ->prefix('roles/guru')
+    ->name('guru.')
+    ->group(function () {
+
+        Route::get('/siswa-per-kelas', [SiswaController::class, 'perKelas'])
+            ->name('siswa.perkelas');
+
+        Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])
+            ->name('siswa.showByKelas');
+    });
+
 
     //SUPER ADMIN > biaya spp
     Route::prefix('superadmin')->name('superadmin.')->middleware(['auth'])->group(function () {

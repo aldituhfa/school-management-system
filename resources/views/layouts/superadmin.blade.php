@@ -366,7 +366,7 @@ $setting = Setting::first();
             {{ request()->routeIs('siswa.index') || request()->routeIs('siswa.perkelas') || request()->routeIs('siswa.showByKelas') ? 'active' : '' }}"
                         href="#" role="button" aria-expanded="false">
                         <i class="ti ti-users"></i>
-                        <span>Siswa</span>
+                        <span>Kelola Siswa</span>
                     </a>
                     <div class="sidebar-dropdown-menu">
                         <a class="sidebar-dropdown-item {{ request()->routeIs('siswa.index') ? 'active' : '' }}"
@@ -378,26 +378,35 @@ $setting = Setting::first();
                             Data Siswa per Kelas
                         </a>
 
-                        <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
-                            href="{{ route('superadmin.jam-belajar.index') }}">
-                            Jam Belajar Per Kelas
-                        </a>
                     </div>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('superadmin.biayaspp.index') ? 'active' : '' }}" href="{{ route('superadmin.biayaspp.index') }}">
-                        <i class="ti ti-credit-card"></i>
-                        <span>Biaya SPP</span>
-                    </a>
-                </li>
+                   <!-- Dropdown SPP -->
+                    <li class="nav-item sidebar-dropdown" id="sppDropdown">
+                        <a class="nav-link dropdown-toggle
+                            {{ request()->routeIs('superadmin.biayaspp.*') || request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}"
+                        href="#" role="button" aria-expanded="false">
+                            <i class="ti ti-credit-card"></i>
+                            <span>Kelola SPP</span>
+                        </a>
 
-                <li class="nav-item">
-                    <a href="{{ route('superadmin.data_spp.index') }}"
-                        class="nav-link {{ request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}">
-                        <i class="bx bx-list-ul"></i> SPP
-                    </a>
-                </li>
+                        <div class="sidebar-dropdown-menu">
+                            <a class="sidebar-dropdown-item
+                                {{ request()->routeIs('superadmin.biayaspp.index') ? 'active' : '' }}"
+                            href="{{ route('superadmin.biayaspp.index') }}">
+                                Biaya SPP
+                            </a>
+
+                            <a class="sidebar-dropdown-item
+                                {{ request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}"
+                            href="{{ route('superadmin.data_spp.index') }}">
+                                Data SPP
+                            </a>
+                        </div>
+                    </li>
+
+
+
 
                 <!-- Dropdown Mata Pelajaran -->
                 <li class="nav-item sidebar-dropdown" id="mataPelajaranDropdown">
@@ -532,7 +541,10 @@ $setting = Setting::first();
                 },
                 {
                     id: 'jadwalDropdown'
-                }
+                },
+                {
+                    id: 'sppDropdown'
+                },
             ];
 
             // Fungsi toggle dropdown

@@ -202,18 +202,37 @@ class SiswaController extends Controller
     public function perKelas()
     {
         $kelas = Kelas::withCount('siswa')->get();
-        return view('roles.superadmin.siswa.perkelas', compact('kelas'));
+
+            if (auth()->user()->role === 'guru') {
+                return view('roles.guru.siswa.perkelas', compact('kelas'));
+            }
+
+            return view('roles.superadmin.siswa.perkelas', compact('kelas'));
+
     }
 
     public function showByKelas($id)
     {
-        $kelas = Kelas::findOrFail($id);
+            $kelas = Kelas::findOrFail($id);
+
         $siswa = Siswa::where('kelas_id', $id)
             ->with('kelas', 'status')
             ->orderBy('nama_siswa', 'asc')
             ->paginate(10);
+
         $columns = Schema::getColumnListing('siswa');
 
-        return view('roles.superadmin.siswa.detail_perkelas', compact('kelas', 'siswa', 'columns'));
+        if (auth()->user()->role === 'guru') {
+            return view(
+                'roles.guru.siswa.detail_perkelas',
+                compact('kelas', 'siswa', 'columns')
+            );
+        }
+
+        return view(
+            'roles.superadmin.siswa.detail_perkelas',
+            compact('kelas', 'siswa', 'columns')
+        );
+
     }
 }

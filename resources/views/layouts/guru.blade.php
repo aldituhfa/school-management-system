@@ -10,6 +10,8 @@
 
     <!-- Tabler Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
     
 
     <style>
@@ -249,23 +251,34 @@
             </div>
         </div>
         
-        <div class="p-2">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="{{ route('roles.guru.dashboard') }}" class="nav-link active">
-                        <i class="bx bx-home"></i> Dashboard
+            {{-- DASHBOARD --}}
+            <li class="nav-item">
+                <a href="{{ route('roles.guru.dashboard') }}"
+                class="nav-link {{ request()->routeIs('roles.guru.dashboard') ? 'active' : '' }}">
+                    <i class="bx bx-home me-2"></i>
+                    Dashboard
+                </a>
+            </li>
+
+               {{-- DATA SISWA PER KELAS --}}
+                        <li class="nav-item">
+                    <a href="{{ route('guru.siswa.perkelas') }}"
+                    class="nav-link {{
+                            request()->routeIs('guru.siswa.perkelas') ||
+                            request()->routeIs('siswa.showByKelas')
+                            ? 'active' : ''
+                    }}">
+                        <i class="bi bi-people me-2"></i>
+                        Data Siswa
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="bx bx-chalkboard"></i> Mata Pelajaran
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-user-pin"></i> Data Siswa
-                    </a>
-                </li>
+
             </ul>
         </div>
     </div>

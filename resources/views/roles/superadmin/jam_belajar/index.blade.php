@@ -115,10 +115,10 @@
                                             </a>
 
                                             <form action="{{ route('superadmin.jam-belajar.destroy', $item->id) }}" 
-                                                  method="POST" class="d-inline">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-                                                    onclick="return confirm('Hapus data ini?')">
+                                                method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 delete-btn">
                                                     <i class="ti ti-trash"></i> Hapus
                                                 </button>
                                             </form>
@@ -141,6 +141,37 @@
 
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const form = this.closest('.delete-form');
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Yakin ingin menghapus?',
+            html: '<span style="color:#6c757d">Data tidak dapat dikembalikan!</span>',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            buttonsStyling: false,
+            customClass: {
+                popup: 'rounded-3',
+                icon: 'border-warning text-warning',
+                confirmButton: 'btn btn-danger px-4',
+                cancelButton: 'btn btn-secondary px-4 me-2'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
 
 <style>
 .btn-outline-warning {

@@ -575,31 +575,31 @@
 
     // DELETE Confirmation
     document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('.delete-form');
-            
-            Swal.fire({
-                title: 'Hapus Jadwal?',
-                text: "Data jadwal ini akan dihapus permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d63939',
-                cancelButtonColor: '#206bc4',
-                confirmButtonText: '<i class="ti ti-trash me-1"></i> Ya, Hapus!',
-                cancelButtonText: '<i class="ti ti-x me-1"></i> Batal',
-                reverseButtons: true,
-                customClass: {
-                    confirmButton: 'btn btn-danger w-25',
-                    cancelButton: 'btn btn-secondary w-25'
-                },
-                buttonsStyling: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+    btn.addEventListener('click', function () {
+        const form = this.closest('.delete-form');
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Yakin ingin menghapus?',
+            html: '<span style="color:#6c757d">Data tidak dapat dikembalikan!</span>',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            buttonsStyling: false,
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-3',
+                icon: 'border-warning text-warning',
+                confirmButton: 'btn btn-danger px-4',
+                cancelButton: 'btn btn-secondary px-4 me-2'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
     });
+});
 
     // Custom Toast Function with Tabler Icons
     function showToast(type, message) {
