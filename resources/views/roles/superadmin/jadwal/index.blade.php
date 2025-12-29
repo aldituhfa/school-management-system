@@ -83,108 +83,103 @@
                                 </div>
                             </form>
                         </div>
-                        
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-vcenter card-table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center w-1">No</th>
-                                            <th>Hari</th>
-                                            <th class="text-center">Jam Ke</th>
-                                            <th>Waktu</th>
-                                            <th>Kelas</th>
-                                            <th>Mata Pelajaran</th>
-                                            <th>Guru</th>
-                                            <th>Keterangan</th>
-                                            <th class="text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($jadwal as $index => $item)
-                                        <tr>
-                                            <td class="text-center">{{ $index + 1 }}</td>
-                                            <td>
-                                                <span class="badge bg-primary">{{ $item->hari }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge bg-info">{{ $item->jam_ke }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="text-muted">
-                                                    {{ $item->waktu_mulai }} - {{ $item->waktu_selesai }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="flex-fill">
-                                                        <div class="font-weight-medium">{{ $item->kelas->nama_kelas ?? '-' }}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-muted">
-                                                {{ $item->mataPelajaran->nama_mata_pelajaran ?? '-' }}
-                                            </td>
-                                            <td class="text-muted">
-                                                {{ $item->guru->name ?? '-' }}
-                                            </td>
-                                            <td>
-                                                <small class="text-muted">{{ $item->keterangan ?? '-' }}</small>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="btn-list flex-nowrap">
-                                                    <button type="button" 
-                                                            class="btn btn-outline-warning btn-sm edit-btn"
-                                                            data-id="{{ $item->id }}"
-                                                            data-kelas="{{ $item->kelas_id }}"
-                                                            data-guru="{{ $item->guru_id }}"
-                                                            data-mapel="{{ $item->mata_pelajaran_id }}"
-                                                            data-hari="{{ $item->hari }}"
-                                                            data-jam="{{ $item->jam_ke }}"
-                                                            data-mulai="{{ \Carbon\Carbon::parse($item->waktu_mulai)->format('H:i') }}"
-                                                            data-selesai="{{ \Carbon\Carbon::parse($item->waktu_selesai)->format('H:i') }}"
-                                                            data-keterangan="{{ $item->keterangan }}">
-                                                        <i class="ti ti-edit"></i>Edit
-                                                    </button>
-                                                    
-                                                    <form action="{{ route('jadwal.destroy', $item->id) }}" 
-                                                          method="POST" 
-                                                          class="d-inline delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" class="btn btn-outline-danger btn-sm delete-btn">
-                                                            <i class="ti ti-trash"></i> Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center py-4">
-                                                <div class="empty">
-                                                    <div class="empty-img">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-1" />
-                                                            <path d="M5 8v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                                            <path d="M9 5h6" />
-                                                            <path d="M15 8v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                                            <path d="M19 5h4" />
-                                                        </svg>
-                                                    </div>
-                                                    <p class="empty-title">Tidak ada data jadwal</p>
-                                                    <p class="empty-subtitle text-muted">
-                                                        Tambah jadwal baru dengan mengklik tombol "Tambah Jadwal"
-                                                    </p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 50px;">No</th>
+                    <th style="min-width: 80px;">Hari</th>
+                    <th class="text-center" style="width: 80px;">Jam Ke</th>
+                    <th style="min-width: 180px;">Waktu</th>
+                    <th style="min-width: 120px;">Kelas</th>
+                    <th style="min-width: 150px;">Mata Pelajaran</th>
+                    <th style="min-width: 120px;">Guru</th>
+                    <th style="min-width: 150px;">Keterangan</th>
+                    <th class="text-center" style="min-width: 150px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($jadwal as $index => $item)
+                <tr>
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td>
+                        <span class="badge bg-primary">{{ $item->hari }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-info">{{ $item->jam_ke }}</span>
+                    </td>
+                    <td class="text-nowrap">
+                        <span class="text-muted">
+                            {{ $item->waktu_mulai }} - {{ $item->waktu_selesai }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="font-weight-medium">{{ $item->kelas->nama_kelas ?? '-' }}</div>
+                    </td>
+                    <td class="text-muted">
+                        {{ $item->mataPelajaran->nama_mata_pelajaran ?? '-' }}
+                    </td>
+                    <td class="text-muted">
+                        {{ $item->guru->name ?? '-' }}
+                    </td>
+                    <td>
+                        <small class="text-muted">{{ $item->keterangan ?? '-' }}</small>
+                    </td>
+                    <td>
+                        <div class="btn-list flex-nowrap justify-content-center">
+                            <button type="button" 
+                                    class="btn btn-outline-warning btn-sm edit-btn"
+                                    data-id="{{ $item->id }}"
+                                    data-kelas="{{ $item->kelas_id }}"
+                                    data-guru="{{ $item->guru_id }}"
+                                    data-mapel="{{ $item->mata_pelajaran_id }}"
+                                    data-hari="{{ $item->hari }}"
+                                    data-jam="{{ $item->jam_ke }}"
+                                    data-mulai="{{ \Carbon\Carbon::parse($item->waktu_mulai)->format('H:i') }}"
+                                    data-selesai="{{ \Carbon\Carbon::parse($item->waktu_selesai)->format('H:i') }}"
+                                    data-keterangan="{{ $item->keterangan }}">
+                                <i class="ti ti-edit"></i> Edit
+                            </button>
+                            
+                            <form action="{{ route('jadwal.destroy', $item->id) }}" 
+                                  method="POST" 
+                                  class="d-inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-outline-danger btn-sm delete-btn">
+                                    <i class="ti ti-trash"></i> Hapus
+                                </button>
+                            </form>
                         </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="9" class="text-center py-4">
+                        <div class="empty">
+                            <div class="empty-img">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-1" />
+                                    <path d="M5 8v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                    <path d="M9 5h6" />
+                                    <path d="M15 8v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                    <path d="M19 5h4" />
+                                </svg>
+                            </div>
+                            <p class="empty-title">Tidak ada data jadwal</p>
+                            <p class="empty-subtitle text-muted">
+                                Tambah jadwal baru dengan mengklik tombol "Tambah Jadwal"
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
                     </div>
                 </div>
             </div>
