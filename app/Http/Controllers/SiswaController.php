@@ -23,7 +23,11 @@ class SiswaController extends Controller
             });
         }
 
-        if ($request->filled('kelas_id')) {
+        if ($request->kelas_id === 'belum_kelas') {
+            // siswa yang belum punya kelas
+            $query->whereNull('kelas_id');
+        } elseif ($request->kelas_id) {
+            // siswa dengan kelas tertentu
             $query->where('kelas_id', $request->kelas_id);
         }
 
@@ -38,7 +42,7 @@ class SiswaController extends Controller
             ->appends($request->all());
 
         $kelas = Kelas::all();
-        $status = StatusSiswa::all();
+        $status = StatusSiswa::all(); 
         $columns = Schema::getColumnListing('siswa');
 
         return view('roles.superadmin.siswa.index', compact('siswa', 'kelas', 'status', 'columns'));
@@ -53,25 +57,22 @@ class SiswaController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi kolom wajib (yang tetap)
         $request->validate([
             'nisn' => 'required|unique:siswa,nisn',
             'nama_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
-            'kelas_id' => 'required|exists:kelas,id',
             'agama' => 'required',
             'status_id' => 'required|exists:status_siswa,id',
         ]);
 
-        // Ambil semua kolom dari tabel 'siswa'
         $columns = Schema::getColumnListing('siswa');
-
-        // Ambil data request hanya untuk kolom yang ada di tabel (biar aman)
         $data = $request->only($columns);
 
-        // Simpan ke database
+        // kelas_id boleh kosong
+        $data['kelas_id'] = $request->kelas_id ?? null;
+
         Siswa::create($data);
 
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
@@ -234,5 +235,43 @@ class SiswaController extends Controller
             compact('kelas', 'siswa', 'columns')
         );
 
+    }
+
+    public function bulkUpdateKelas(Request $request)
+    {
+        $request->validate([
+            'siswa_ids' => 'required|array',
+            'kelas_id' => 'required|exists:kelas,id',
+        ]);
+
+        Siswa::whereIn('id', $request->siswa_ids)
+            ->update(['kelas_id' => $request->kelas_id]);
+
+        return back()->with('success', 'Kelas berhasil diperbarui.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'siswa_ids' => 'required|array',
+        ]);
+
+        $count = count($request->siswa_ids);
+
+        Siswa::whereIn('id', $request->siswa_ids)->delete();
+
+        return back()->with('success', "$count siswa berhasil dihapus.");
+    }
+
+    public function multiEditUpdate(Request $request)
+    {
+        foreach ($request->siswa as $data) {
+            $id = $data['id'];
+            unset($data['id']);
+
+            Siswa::where('id', $id)->update($data);
+        }
+
+        return back()->with('success', 'Data siswa berhasil diperbarui.');
     }
 }

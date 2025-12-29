@@ -26,11 +26,6 @@
                     <button class="btn btn-outline-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#tingkatModal">
                         <i class="ti ti-stairs-up me-1"></i>Tingkat
                     </button>
-
-                    {{-- Tombol CRUD Status --}}
-                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#statusModal">
-                        <i class="ti ti-circle-plus me-1"></i>Status
-                    </button>
                 </div>
             </div>
         </div>
@@ -92,9 +87,8 @@
                                     <label class="form-label required">Status</label>
                                     <select name="status_id" class="form-select" required>
                                         <option value="">-- Pilih Status --</option>
-                                        @foreach($statuses->reverse() as $s)
-                                        <option value="{{ $s->id }}">{{ $s->nama_status }}</option>
-                                        @endforeach
+                                        <option value="{{ $statusAktif->id }}" selected>Aktif</option>
+                                        <option value="{{ $statusNonaktif->id }}">Nonaktif</option>
                                     </select>
                                 </div>
                             </div>
@@ -135,11 +129,10 @@
                             <input type="text" id="searchInput" class="form-control" placeholder="Cari..." style="width: 200px;">
 
                             {{-- Filter Status --}}
-                            <select id="statusFilter" class="form-select" style="width: 150px;">
+                            <select id="statusFilter" class="form-select">
                                 <option value="">Semua Status</option>
-                                @foreach($statuses as $status)
-                                <option value="{{ $status->nama_status }}">{{ $status->nama_status }}</option>
-                                @endforeach
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
                             </select>
 
                             {{-- Reset --}}
@@ -205,13 +198,19 @@
                                             @method('PUT')
                                             <div class="mb-3">
                                                 <label class="form-label required">Tahun Ajaran</label>
-                                                <select name="tahun_ajaran_id" class="form-select" required>
+
+                                                {{-- Tampilan (tidak bisa diubah) --}}
+                                                <select class="form-select" disabled>
                                                     @foreach($tahunAjarans->reverse() as $t)
-                                                    <option value="{{ $t->id }}" {{ $item->tahun_ajaran_id == $t->id ? 'selected' : '' }}>
+                                                    <option value="{{ $t->id }}"
+                                                        {{ $item->tahun_ajaran_id == $t->id ? 'selected' : '' }}>
                                                         {{ $t->nama_tahun }}
                                                     </option>
                                                     @endforeach
                                                 </select>
+
+                                                {{-- Nilai yang dikirim ke server --}}
+                                                <input type="hidden" name="tahun_ajaran_id" value="{{ $item->tahun_ajaran_id }}">
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label required">Tingkat</label>
@@ -226,11 +225,12 @@
                                             <div class="mb-3">
                                                 <label class="form-label required">Status</label>
                                                 <select name="status_id" class="form-select" required>
-                                                    @foreach($statuses->reverse() as $s)
-                                                    <option value="{{ $s->id }}" {{ $item->status_id == $s->id ? 'selected' : '' }}>
-                                                        {{ $s->nama_status }}
+                                                    <option value="{{ $statusAktif->id }}" {{ $item->status_id == $statusAktif->id ? 'selected' : '' }}>
+                                                        Aktif
                                                     </option>
-                                                    @endforeach
+                                                    <option value="{{ $statusNonaktif->id }}" {{ $item->status_id == $statusNonaktif->id ? 'selected' : '' }}>
+                                                        Nonaktif
+                                                    </option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -383,62 +383,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- ==================== MODAL STATUS ==================== --}}
-        <div class="modal modal-blur fade" id="statusModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="ti ti-circle-plus me-2"></i>Status</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        {{-- Form Tambah Status --}}
-                        <form action="{{ route('superadmin.biayaspp.status.store') }}" method="POST" class="mb-3">
-                            @csrf
-                            <div class="input-group">
-                                <input type="text" name="nama_status" class="form-control" placeholder="Aktif / Nonaktif" required>
-                                <button class="btn btn-primary" type="submit"><i class="ti ti-device-floppy me-2"></i>Simpan</button>
-                            </div>
-                        </form>
-
-                        {{-- List Status --}}
-                        <table class="table table-bordered text-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($statuses->reverse() as $i => $s)
-                                <tr>
-                                    <td>{{ $i + 1 }}</td>
-                                    <td>
-                                        <form action="{{ route('superadmin.biayaspp.status.update', $s->id) }}" method="POST" class="d-flex justify-content-center gap-2">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="text" name="nama_status" value="{{ $s->nama_status }}" class="form-control text-center" required>
-                                            <button class="btn btn-outline-success btn-sm"><i class="ti ti-edit me-1"></i>Update</button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form action="{{ route('superadmin.biayaspp.status.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus status ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-outline-danger btn-sm"><i class="ti ti-trash me-1"></i>Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 

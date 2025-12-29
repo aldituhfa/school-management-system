@@ -18,13 +18,21 @@ class BiayaSppController extends Controller
         $biayaSpps = BiayaSpp::with(['tahunAjaran', 'tingkat', 'status'])->get();
         $tahunAjarans = TahunAjaran::all();
         $tingkats = Tingkat::all();
-        $statuses = Status::all();
+
+        $statusAktif = Status::firstOrCreate(
+            ['nama_status' => 'Aktif']
+        );
+
+        $statusNonaktif = Status::firstOrCreate(
+            ['nama_status' => 'Nonaktif']
+        );
 
         return view('roles.superadmin.biayaspp.index', compact(
             'biayaSpps',
             'tahunAjarans',
             'tingkats',
-            'statuses'
+            'statusAktif',
+            'statusNonaktif'
         ));
     }
 
@@ -66,7 +74,7 @@ class BiayaSppController extends Controller
     // ===============================
     //  CRUD TAHUN AJARAN
     // ===============================
-    
+
     public function storeTahunAjaran(Request $request)
     {
         $request->validate([

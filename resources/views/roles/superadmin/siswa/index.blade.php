@@ -36,9 +36,6 @@
           <button class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#modalKelas">
             <i class="ti ti-building"></i> Kelas
           </button>
-          <button class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#modalStatus">
-            <i class="ti ti-tag"></i> Status
-          </button>
           <button class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#modalTambahKolom">
             <i class="ti ti-tag"></i> kolom
           </button>
@@ -56,6 +53,9 @@
           <div class="col-md-3">
             <select name="kelas_id" class="form-select">
               <option value="">Semua Kelas</option>
+              <option value="belum_kelas" {{ request('kelas_id') == 'belum_kelas' ? 'selected' : '' }}>
+                Belum Ada Kelas
+              </option>
               @foreach($kelas as $k)
               <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>
                 {{ $k->nama_kelas }}
@@ -67,9 +67,11 @@
             <select name="status_id" class="form-select">
               <option value="">Semua Status</option>
               @foreach($status as $s)
+              @if(in_array($s->nama_status, ['Aktif','Nonaktif']))
               <option value="{{ $s->id }}" {{ request('status_id') == $s->id ? 'selected' : '' }}>
                 {{ $s->nama_status }}
               </option>
+              @endif
               @endforeach
             </select>
           </div>
@@ -84,9 +86,17 @@
     <div class="card">
       <div class="card-body border-bottom py-3">
         <div class="table-responsive">
+          <div id="bulkAction" class="mb-3 d-none">
+            <button class="btn btn-outline-primary" id="btnBulkKelas">Pilih Kelas</button>
+            <button class="btn btn-outline-warning" id="btnBulkEdit">Edit</button>
+            <button class="btn btn-outline-danger" id="btnBulkDelete">Hapus</button>
+          </div>
           <table class="table table-hover">
             <thead>
               <tr>
+                <th>
+                  <input type="checkbox" id="checkAll">
+                </th>
                 <th>No</th>
                 <th>NISN</th>
                 <th>Nama Siswa</th>
@@ -108,6 +118,12 @@
             <tbody>
               @forelse($siswa as $index => $item)
               <tr>
+                <td td>
+                  <input type="checkbox"
+                    class="checkItem"
+                    data-has-kelas="{{ $item->kelas_id ? 1 : 0 }}"
+                    value="{{ $item->id }}">
+                </td>
                 <td>{{ $siswa->firstItem() + $index }}</td>
                 <td><span class="text-muted">{{ $item->nisn }}</span></td>
                 <td><strong>{{ $item->nama_siswa }}</strong></td>
@@ -120,11 +136,23 @@
                 <td>{{ $item->$col }}</td>
                 @endif
                 @endforeach
-                <td><span class="badge bg-blue-lt">{{ $item->kelas->nama_kelas }}</span></td>
                 <td>
-                  <span class="badge bg-{{ $item->status->nama_status == 'Aktif' ? 'green' : 'orange' }}-lt">
-                    {{ $item->status->nama_status }}
-                  </span>
+                  @if($item->kelas)
+                  <span class="badge bg-blue-lt">{{ $item->kelas->nama_kelas }}</span>
+                  @else
+                  <span class="badge bg-secondary-lt">Belum ada kelas</span>
+                  @endif
+                </td>
+                <td>
+                  @if($item->status && $item->status->nama_status === 'Aktif')
+                  <span class="badge bg-success-lt">Aktif</span>
+
+                  @elseif($item->status && $item->status->nama_status === 'Nonaktif')
+                  <span class="badge bg-danger-lt">Nonaktif</span>
+
+                  @else
+                  <span class="badge bg-secondary-lt">Tidak Valid</span>
+                  @endif
                 </td>
 
                 <td class="text-center">
@@ -218,20 +246,16 @@
             <input type="date" name="tanggal_lahir" class="form-control" required>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Kelas</label>
-            <select name="kelas_id" class="form-select" required>
-              <option value="">-- Pilih Kelas --</option>
-              @foreach($kelas as $k)
-              <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="col-md-6">
             <label class="form-label">Status</label>
             <select name="status_id" class="form-select" required>
               <option value="">-- Pilih Status --</option>
               @foreach($status as $s)
-              <option value="{{ $s->id }}">{{ $s->nama_status }}</option>
+              @if(in_array($s->nama_status, ['Aktif','Nonaktif']))
+              <option value="{{ $s->id }}"
+                {{ $s->nama_status === 'Aktif' ? 'selected' : '' }}>
+                {{ $s->nama_status }}
+              </option>
+              @endif
               @endforeach
             </select>
           </div>
@@ -283,7 +307,6 @@
           <div class="col-md-6">
             <label class="form-label">Jenis Kelamin</label>
             <select name="jenis_kelamin" id="edit_jk" class="form-select" required>
-              <option value="">-- Pilih --</option>
               <option value="Laki-laki">Laki-laki</option>
               <option value="Perempuan">Perempuan</option>
             </select>
@@ -312,7 +335,9 @@
             <label class="form-label">Status</label>
             <select name="status_id" id="edit_status" class="form-select" required>
               @foreach($status as $s)
+              @if(in_array($s->nama_status, ['Aktif','Nonaktif']))
               <option value="{{ $s->id }}">{{ $s->nama_status }}</option>
+              @endif
               @endforeach
             </select>
           </div>
@@ -386,49 +411,6 @@
             </form>
 
             <form action="{{ route('kelas.destroy', $k->id) }}" method="POST" onsubmit="return confirm('Yakin hapus kelas ini?')">
-              @csrf @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
-            </form>
-          </li>
-          @endforeach
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-{{-- ================================================== --}}
-{{-- MODAL KELOLA STATUS --}}
-<div class="modal fade" id="modalStatus" tabindex="-1">
-  <div class="modal-dialog modal-md" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Kelola Status Siswa</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        {{-- Form tambah status --}}
-        <form id="formTambahStatus" action="{{ route('status.store') }}" method="POST" class="mb-3 d-flex">
-          @csrf
-          <input type="text" name="nama_status" class="form-control" placeholder="Tambah status baru" required>
-          <button type="submit" class="btn btn-outline-primary ms-2">Tambah</button>
-        </form>
-
-        {{-- List status --}}
-        <ul class="list-group">
-          @foreach($status as $s)
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <form action="{{ route('status.update', $s->id) }}" method="POST" class="d-flex w-100 align-items-center">
-              @csrf
-              @method('PUT')
-              <input type="text" name="nama_status" value="{{ $s->nama_status }}" class="form-control me-2">
-              <button type="submit" class="btn btn-sm btn-outline-warning me-2">Update</button>
-            </form>
-
-            <form action="{{ route('status.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Yakin hapus status ini?')">
               @csrf @method('DELETE')
               <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
             </form>
@@ -515,6 +497,19 @@
               @endforelse
             </tbody>
           </table>
+
+          <select id="kelasTemplate" class="d-none">
+            <option value="">-- Pilih --</option>
+            @foreach($kelas as $k)
+            <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
+            @endforeach
+          </select>
+
+          <select id="statusTemplate" class="d-none">
+            @foreach($status as $s)
+            <option value="{{ $s->id }}">{{ $s->nama_status }}</option>
+            @endforeach
+          </select>
         </div>
       </div>
     </div>
@@ -550,6 +545,63 @@
     </form>
   </div>
 </div>
+
+
+
+{{-- ================================================== --}}
+{{-- MODAL BULK PILIH KELAS--}}
+<div class="modal fade" id="modalBulkKelas">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('siswa.bulkKelas') }}" id="formBulkKelas">
+      @csrf
+      <div id="bulkKelasInputs"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Pilih Kelas</h5>
+        </div>
+        <div class="modal-body">
+          <select name="kelas_id" class="form-select" required>
+            <option value="">-- Pilih Kelas --</option>
+            @foreach($kelas as $k)
+            <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary">Simpan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{{-- ================================================== --}}
+{{-- MODAL MULTI EDIT SISWA --}}
+<div class="modal fade" id="modalMultiEdit" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <form method="POST" action="{{ route('siswa.multiEditUpdate') }}">
+      @csrf
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Banyak Siswa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body" id="multiEditContainer">
+          {{-- form siswa akan di-generate JS --}}
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-warning">Simpan Semua</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
 {{-- ================================================== --}}
@@ -628,6 +680,182 @@
     // Auto submit langsung kalau select berubah
     kelasSelect.addEventListener('change', () => filterForm.submit());
     statusSelect.addEventListener('change', () => filterForm.submit());
+  });
+
+  const bulkAction = document.getElementById('bulkAction');
+  const btnKelas = document.getElementById('btnBulkKelas');
+  const checkItems = document.querySelectorAll('.checkItem');
+
+  function updateBulkAction() {
+    const checked = [...checkItems].filter(c => c.checked);
+    if (checked.length === 0) {
+      bulkAction.classList.add('d-none');
+      return;
+    }
+
+    bulkAction.classList.remove('d-none');
+
+    const hasKelas = checked.some(c => c.dataset.hasKelas == 1);
+    const noKelas = checked.some(c => c.dataset.hasKelas == 0);
+
+    // KETENTUAN KAMU
+    if (!hasKelas && noKelas) {
+      btnKelas.classList.remove('d-none');
+    } else {
+      btnKelas.classList.add('d-none');
+    }
+  }
+
+  checkItems.forEach(c => c.addEventListener('change', updateBulkAction));
+
+  document.getElementById('checkAll').addEventListener('change', function() {
+    checkItems.forEach(c => c.checked = this.checked);
+    updateBulkAction();
+  });
+
+  // BULK DELETE
+  document.getElementById('btnBulkDelete').addEventListener('click', function() {
+    const checked = [...checkItems].filter(c => c.checked);
+    if (!confirm(`Apakah anda yakin ingin menghapus ${checked.length} siswa ini?`)) return;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "{{ route('siswa.bulkDelete') }}";
+    form.innerHTML = `@csrf`;
+    checked.forEach(c => {
+      form.innerHTML += `<input type="hidden" name="siswa_ids[]" value="${c.value}">`;
+    });
+    document.body.appendChild(form);
+    form.submit();
+  });
+
+  // BULK KELAS
+  btnKelas.addEventListener('click', () => {
+    const ids = [...checkItems]
+      .filter(c => c.checked)
+      .map(c => c.value);
+
+    const container = document.getElementById('bulkKelasInputs');
+    container.innerHTML = '';
+
+    ids.forEach(id => {
+      container.innerHTML += `
+      <input type="hidden" name="siswa_ids[]" value="${id}">
+    `;
+    });
+
+    new bootstrap.Modal(
+      document.getElementById('modalBulkKelas')
+    ).show();
+  });
+
+
+  // MULTI EDIT 
+  document.getElementById('btnBulkEdit').addEventListener('click', function() {
+    const checked = [...document.querySelectorAll('.checkItem:checked')];
+    const container = document.getElementById('multiEditContainer');
+    container.innerHTML = '';
+
+    const kelasOptions = document.getElementById('kelasTemplate').innerHTML;
+    const statusOptions = document.getElementById('statusTemplate').innerHTML;
+
+    checked.forEach((checkbox, index) => {
+      const row = checkbox.closest('tr');
+      const btn = row.querySelector('.btnEdit');
+      const data = btn.dataset;
+
+      let fieldsHtml = '';
+
+      Object.keys(data).forEach(key => {
+        // SKIP bootstrap & non-field
+        if (
+          ['id', 'bsToggle', 'bsTarget'].includes(key)
+        ) return;
+
+        // mapping nama field
+        const fieldNameMap = {
+          nama: 'nama_siswa',
+          jk: 'jenis_kelamin',
+          tempat: 'tempat_lahir',
+          tanggal: 'tanggal_lahir',
+          kelas: 'kelas_id',
+          status: 'status_id'
+        };
+
+        const name = fieldNameMap[key] || key;
+        const value = data[key] ?? '';
+
+        // SELECT
+        if (key === 'kelas') {
+          fieldsHtml += `
+          <div class="col-md-6">
+            <label>Kelas</label>
+            <select name="siswa[${index}][${name}]" class="form-select kelas-select">
+              ${kelasOptions}
+            </select>
+          </div>
+        `;
+          return;
+        }
+
+        if (key === 'status') {
+          fieldsHtml += `
+          <div class="col-md-6">
+            <label>Status</label>
+            <select name="siswa[${index}][${name}]" class="form-select status-select">
+              ${statusOptions}
+            </select>
+          </div>
+        `;
+          return;
+        }
+
+        if (key === 'jk') {
+          fieldsHtml += `
+          <div class="col-md-6">
+            <label>Jenis Kelamin</label>
+            <select name="siswa[${index}][${name}]" class="form-select">
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+        `;
+          return;
+        }
+
+        // INPUT BIASA (TERMASUK KOLOM TAMBAHAN)
+        fieldsHtml += `
+        <div class="col-md-6">
+          <label>${name.replace('_',' ')}</label>
+          <input type="${key === 'tanggal' ? 'date' : 'text'}"
+            name="siswa[${index}][${name}]"
+            value="${value}"
+            class="form-control">
+        </div>
+      `;
+      });
+
+      container.innerHTML += `
+      <div class="border rounded p-3 mb-4">
+        <h6 class="mb-3">Siswa ${index + 1}</h6>
+        <input type="hidden" name="siswa[${index}][id]" value="${data.id}">
+        <div class="row g-3">
+          ${fieldsHtml}
+        </div>
+      </div>
+    `;
+    });
+
+    // SET selected value
+    container.querySelectorAll('.kelas-select').forEach((select, i) => {
+      select.value = checked[i].closest('tr').querySelector('.btnEdit').dataset.kelas;
+    });
+
+    container.querySelectorAll('.status-select').forEach((select, i) => {
+      select.value = checked[i].closest('tr').querySelector('.btnEdit').dataset.status;
+    });
+
+    new bootstrap.Modal(document.getElementById('modalMultiEdit')).show();
   });
 </script>
 

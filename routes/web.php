@@ -152,7 +152,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/logs/finances/{id}', [LogController::class, 'destroy'])
         ->name('logs.finances.destroy')
         ->middleware('role:super_admin,admin');
-        
+
     Route::get('/logs/finances/export/pdf', [LogController::class, 'exportPdf'])
         ->name('logs.finances.export.pdf')
         ->middleware('role:super_admin,admin');
@@ -237,6 +237,7 @@ Route::middleware(['auth'])->group(function () {
     //     ->name('payrolls.pay')
     //     ->middleware('role:super_admin,admin,payroll');
 
+
     // SUPER ADMIN > data siswa 
     Route::prefix('roles/superadmin')->group(function () {
 
@@ -247,6 +248,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
         Route::get('/siswa-per-kelas', [SiswaController::class, 'perKelas'])->name('siswa.perkelas');
         Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])->name('siswa.showByKelas');
+        Route::post('/siswa/kelas/{id}/status', [SiswaController::class, 'updateStatusKelas'])
+            ->name('siswa.updateStatusKelas');
+
+        //check box update edit dan delete
+        Route::post('/siswa/bulk-kelas', [SiswaController::class, 'bulkUpdateKelas'])->name('siswa.bulkKelas');
+        Route::post('/siswa/bulk-delete', [SiswaController::class, 'bulkDelete'])->name('siswa.bulkDelete');
+        Route::post('/siswa/multi-edit/update', [SiswaController::class, 'multiEditUpdate'])
+            ->name('siswa.multiEditUpdate');
 
         //CRUD KOLOM
         Route::post('/siswa/add-column', [App\Http\Controllers\SiswaController::class, 'addColumn'])->name('siswa.addColumn');
@@ -258,12 +267,12 @@ Route::middleware(['auth'])->group(function () {
 
         // CRUD kelas
         Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
-        Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update'); // <– tambahkan ini
+        Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
         // CRUD status
         Route::post('/status', [StatusSiswaController::class, 'store'])->name('status.store');
-        Route::put('/status/{id}', [StatusSiswaController::class, 'update'])->name('status.update'); // <– tambahkan ini
+        Route::put('/status/{id}', [StatusSiswaController::class, 'update'])->name('status.update');
         Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
     });
 
