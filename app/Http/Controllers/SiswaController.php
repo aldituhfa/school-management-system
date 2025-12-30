@@ -19,7 +19,10 @@ class SiswaController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('nama_siswa', 'like', '%' . $request->search . '%')
-                    ->orWhere('nisn', 'like', '%' . $request->search . '%');
+                    ->orWhere('nisn', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('kelas', function ($k) use ($request) {
+                        $k->where('nama_kelas', 'like', '%' . $request->search . '%');
+                    });
             });
         }
 
@@ -42,7 +45,7 @@ class SiswaController extends Controller
             ->appends($request->all());
 
         $kelas = Kelas::all();
-        $status = StatusSiswa::all(); 
+        $status = StatusSiswa::all();
         $columns = Schema::getColumnListing('siswa');
 
         return view('roles.superadmin.siswa.index', compact('siswa', 'kelas', 'status', 'columns'));
@@ -204,17 +207,16 @@ class SiswaController extends Controller
     {
         $kelas = Kelas::withCount('siswa')->get();
 
-            if (auth()->user()->role === 'guru') {
-                return view('roles.guru.siswa.perkelas', compact('kelas'));
-            }
+        if (auth()->user()->role === 'guru') {
+            return view('roles.guru.siswa.perkelas', compact('kelas'));
+        }
 
-            return view('roles.superadmin.siswa.perkelas', compact('kelas'));
-
+        return view('roles.superadmin.siswa.perkelas', compact('kelas'));
     }
 
     public function showByKelas($id)
     {
-            $kelas = Kelas::findOrFail($id);
+        $kelas = Kelas::findOrFail($id);
 
         $siswa = Siswa::where('kelas_id', $id)
             ->with('kelas', 'status')
@@ -234,7 +236,6 @@ class SiswaController extends Controller
             'roles.superadmin.siswa.detail_perkelas',
             compact('kelas', 'siswa', 'columns')
         );
-
     }
 
     public function bulkUpdateKelas(Request $request)

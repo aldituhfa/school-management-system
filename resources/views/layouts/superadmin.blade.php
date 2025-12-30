@@ -348,7 +348,7 @@ $setting = Setting::first();
                     <a class="nav-link dropdown-toggle {{ request()->is('finances') || request()->is('logs/finances') ? 'active' : '' }}"
                         href="#" role="button" aria-expanded="false">
                         <i class="ti ti-wallet"></i>
-                        <span>Keuangan</span>
+                        <span>Kelola Keuangan</span>
                     </a>
                     <div class="sidebar-dropdown-menu">
                         <a class="sidebar-dropdown-item {{ request()->is('finances') ? 'active' : '' }}" href="{{ url('/finances') }}">

@@ -48,7 +48,7 @@
       <div class="card-body">
         <form id="filterForm" method="GET" action="{{ route('siswa.index') }}" class="row g-2 align-items-end">
           <div class="col-md-4">
-            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari nama atau NISN...">
+            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari nama, kelas atau NISN...">
           </div>
           <div class="col-md-3">
             <select name="kelas_id" class="form-select">
