@@ -20,6 +20,7 @@ use App\Http\Controllers\SuperAdminSettingController;
 use App\Http\Controllers\LaporanTagihanSppController;
 use App\Http\Controllers\TU\KegiatanController;
 use App\Http\Controllers\JadwalPelajaranController;
+use App\Http\Controllers\SiswaLulusController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -257,6 +258,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/siswa/multi-edit/update', [SiswaController::class, 'multiEditUpdate'])
             ->name('siswa.multiEditUpdate');
 
+        //check box siswa lulus 
+        Route::get('/siswa-lulus', [SiswaLulusController::class, 'index'])
+            ->name('siswa.lulus.index');
+        Route::post('/siswa-lulus/store', [SiswaLulusController::class, 'store'])
+            ->name('siswa.lulus.store');
+        Route::delete('/siswa-lulus/{id}', [SiswaLulusController::class, 'destroy'])
+            ->name('siswa.lulus.destroy');
+        Route::get('/siswa-lulus/export/excel', [SiswaLulusController::class, 'exportExcel'])
+            ->name('siswa.lulus.export.excel');
+        Route::get('/siswa-lulus/export/pdf', [SiswaLulusController::class, 'exportPdf'])
+            ->name('siswa.lulus.export.pdf');
+
+
         //CRUD KOLOM
         Route::post('/siswa/add-column', [App\Http\Controllers\SiswaController::class, 'addColumn'])->name('siswa.addColumn');
         Route::delete('/roles/superadmin/siswa/delete-column/{column}', [SiswaController::class, 'deleteColumn'])->name('siswa.deleteColumn');
@@ -271,23 +285,23 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
         // CRUD status
-        Route::post('/status', [StatusSiswaController::class, 'store'])->name('status.store');
-        Route::put('/status/{id}', [StatusSiswaController::class, 'update'])->name('status.update');
-        Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
+        // Route::post('/status', [StatusSiswaController::class, 'store'])->name('status.store');
+        // Route::put('/status/{id}', [StatusSiswaController::class, 'update'])->name('status.update');
+        // Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
     });
 
-    
+
     Route::middleware(['auth', 'role:guru'])
-    ->prefix('roles/guru')
-    ->name('guru.')
-    ->group(function () {
+        ->prefix('roles/guru')
+        ->name('guru.')
+        ->group(function () {
 
-        Route::get('/siswa-per-kelas', [SiswaController::class, 'perKelas'])
-            ->name('siswa.perkelas');
+            Route::get('/siswa-per-kelas', [SiswaController::class, 'perKelas'])
+                ->name('siswa.perkelas');
 
-        Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])
-            ->name('siswa.showByKelas');
-    });
+            Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])
+                ->name('siswa.showByKelas');
+        });
 
 
     //SUPER ADMIN > biaya spp
@@ -373,26 +387,28 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('superadmin')->name('superadmin.')->group(function () {
         Route::resource('jam-belajar', JamBelajarController::class);
     });
-});
 
+    // Jadwal Routes untuk Superadmin
+    Route::prefix('roles/superadmin')->middleware(['auth'])->group(function () {
+        Route::prefix('jadwal')->name('jadwal.')->group(function () {
+            Route::get('/', [JadwalPelajaranController::class, 'index'])->name('index');
+            Route::post('/', [JadwalPelajaranController::class, 'store'])->name('store');
+            Route::put('/{id}', [JadwalPelajaranController::class, 'update'])->name('update');
+            Route::delete('/{id}', [JadwalPelajaranController::class, 'destroy'])->name('destroy');
 
-// Jadwal Routes untuk Superadmin
-Route::prefix('roles/superadmin')->middleware(['auth'])->group(function () {
-    Route::prefix('jadwal')->name('jadwal.')->group(function () {
-        Route::get('/', [JadwalPelajaranController::class, 'index'])->name('index');
-        Route::post('/', [JadwalPelajaranController::class, 'store'])->name('store');
-        Route::put('/{id}', [JadwalPelajaranController::class, 'update'])->name('update');
-        Route::delete('/{id}', [JadwalPelajaranController::class, 'destroy'])->name('destroy');
+            // View khusus
+            Route::get('/guru/{guruId}', [JadwalPelajaranController::class, 'jadwalGuru'])->name('guru');
+            Route::get('/kelas/{kelasId}', [JadwalPelajaranController::class, 'jadwalKelas'])->name('kelas');
 
-        // View khusus
-        Route::get('/guru/{guruId}', [JadwalPelajaranController::class, 'jadwalGuru'])->name('guru');
-        Route::get('/kelas/{kelasId}', [JadwalPelajaranController::class, 'jadwalKelas'])->name('kelas');
-
-        // AJAX Endpoints
-        Route::get('/ajax/mapel-guru/{guruId}', [JadwalPelajaranController::class, 'getMataPelajaranByGuru'])->name('ajax.mapel');
-        Route::get('/ajax/jam-belajar/{kelasId}', [JadwalPelajaranController::class, 'getJamBelajarKelas'])->name('ajax.jambelajar');
-        Route::get('/ajax/next-jam', [JadwalPelajaranController::class, 'getNextJamKe'])->name('ajax.nextjam');
+            // AJAX Endpoints
+            Route::get('/ajax/mapel-guru/{guruId}', [JadwalPelajaranController::class, 'getMataPelajaranByGuru'])->name('ajax.mapel');
+            Route::get('/ajax/jam-belajar/{kelasId}', [JadwalPelajaranController::class, 'getJamBelajarKelas'])->name('ajax.jambelajar');
+            Route::get('/ajax/next-jam', [JadwalPelajaranController::class, 'getNextJamKe'])->name('ajax.nextjam');
+        });
     });
+
+    //WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
+    // DI SINI NIH
 });
 
 // Route::prefix('finances')->group(function () {

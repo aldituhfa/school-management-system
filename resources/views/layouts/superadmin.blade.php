@@ -337,7 +337,7 @@ $setting = Setting::first();
                     </a>
                 </li>
 
-                     <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('account.main') ? 'active' : '' }}" href="{{ route('account.main') }}">
                         <i class="ti ti-user-circle"></i>
                         <span>Managemen Akun</span>
@@ -355,7 +355,7 @@ $setting = Setting::first();
                             Keuangan Kas & Dana BOS
                         </a>
                         <a class="sidebar-dropdown-item {{ request()->is('logs/finances') ? 'active' : '' }}" href="{{ url('logs/finances') }}">
-                            Riwayat Keuangan 
+                            Riwayat Keuangan
                         </a>
                     </div>
                 </li>
@@ -363,7 +363,7 @@ $setting = Setting::first();
                 <!-- DROPDOWN SISWA -->
                 <li class="nav-item sidebar-dropdown" id="siswaDropdown">
                     <a class="nav-link dropdown-toggle
-            {{ request()->routeIs('siswa.index') || request()->routeIs('siswa.perkelas') || request()->routeIs('siswa.showByKelas') ? 'active' : '' }}"
+            {{ request()->routeIs('siswa.index') || request()->routeIs('siswa.perkelas') || request()->routeIs('siswa.showByKelas') || request()->routeIs('siswa.lulus') ? 'active' : '' }}"
                         href="#" role="button" aria-expanded="false">
                         <i class="ti ti-users"></i>
                         <span>Kelola Siswa</span>
@@ -377,33 +377,36 @@ $setting = Setting::first();
                             href="{{ route('siswa.perkelas') }}">
                             Data Siswa per Kelas
                         </a>
-
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('siswa.lulus.*') ? 'active' : '' }}"
+                            href="{{ route('siswa.lulus.index') }}">
+                            Siswa Lulus
+                        </a>
                     </div>
                 </li>
 
-                   <!-- Dropdown SPP -->
-                    <li class="nav-item sidebar-dropdown" id="sppDropdown">
-                        <a class="nav-link dropdown-toggle
+                <!-- Dropdown SPP -->
+                <li class="nav-item sidebar-dropdown" id="sppDropdown">
+                    <a class="nav-link dropdown-toggle
                             {{ request()->routeIs('superadmin.biayaspp.*') || request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}"
                         href="#" role="button" aria-expanded="false">
-                            <i class="ti ti-credit-card"></i>
-                            <span>Kelola SPP</span>
-                        </a>
+                        <i class="ti ti-credit-card"></i>
+                        <span>Kelola SPP</span>
+                    </a>
 
-                        <div class="sidebar-dropdown-menu">
-                            <a class="sidebar-dropdown-item
+                    <div class="sidebar-dropdown-menu">
+                        <a class="sidebar-dropdown-item
                                 {{ request()->routeIs('superadmin.biayaspp.index') ? 'active' : '' }}"
                             href="{{ route('superadmin.biayaspp.index') }}">
-                                Biaya SPP
-                            </a>
+                            Biaya SPP
+                        </a>
 
-                            <a class="sidebar-dropdown-item
+                        <a class="sidebar-dropdown-item
                                 {{ request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}"
                             href="{{ route('superadmin.data_spp.index') }}">
-                                Data SPP
-                            </a>
-                        </div>
-                    </li>
+                            Data SPP
+                        </a>
+                    </div>
+                </li>
 
 
 
@@ -436,7 +439,7 @@ $setting = Setting::first();
                     </a>
 
                     <div class="sidebar-dropdown-menu">
-                    <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
+                        <a class="sidebar-dropdown-item {{ request()->routeIs('superadmin.jam-belajar.index') ? 'active' : '' }}"
                             href="{{ route('superadmin.jam-belajar.index') }}">
                             Jam Belajar Kelas
                         </a>
@@ -446,7 +449,7 @@ $setting = Setting::first();
                             Jadwal Pelajaran
                         </a>
 
-                        
+
                         <!-- Optional: Tambahkan menu lain jika perlu -->
                         <!-- <a class="sidebar-dropdown-item" href="#">
                             Lihat Jadwal per Kelas

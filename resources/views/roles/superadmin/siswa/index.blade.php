@@ -90,6 +90,7 @@
             <button class="btn btn-outline-primary" id="btnBulkKelas">Pilih Kelas</button>
             <button class="btn btn-outline-warning" id="btnBulkEdit">Edit</button>
             <button class="btn btn-outline-danger" id="btnBulkDelete">Hapus</button>
+            <button class="btn btn-outline-success" id="btnSiswaLulus">Siswa Lulus</button>
           </div>
           <table class="table table-hover">
             <thead>
@@ -603,6 +604,34 @@
 </div>
 
 
+{{-- ================================================== --}}
+{{-- MODAL SISWA LULUS --}}
+<div class="modal fade" id="modalSiswaLulus">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('siswa.lulus.store') }}">
+      @csrf
+      <div id="siswaLulusInputs"></div>
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Siswa Lulus</h5>
+        </div>
+        <div class="modal-body">
+          <label>Tahun Lulus</label>
+          <input type="number" name="tahun_lulus"
+            class="form-control"
+            placeholder="Contoh: 2025"
+            required>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success">OK</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 
 {{-- ================================================== --}}
 {{-- SCRIPT UNTUK MODAL EDIT + RESET FORM --}}
@@ -857,6 +886,26 @@
 
     new bootstrap.Modal(document.getElementById('modalMultiEdit')).show();
   });
+
+  //check box siswa lulus
+  document.getElementById('btnSiswaLulus').addEventListener('click', function () {
+  const checked = [...document.querySelectorAll('.checkItem:checked')];
+  if (checked.length === 0) return;
+
+  const container = document.getElementById('siswaLulusInputs');
+  container.innerHTML = '';
+
+  checked.forEach(c => {
+    container.innerHTML += `
+      <input type="hidden" name="siswa_ids[]" value="${c.value}">
+    `;
+  });
+
+  new bootstrap.Modal(
+    document.getElementById('modalSiswaLulus')
+  ).show();
+});
+
 </script>
 
 @endsection
