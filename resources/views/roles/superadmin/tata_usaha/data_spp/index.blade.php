@@ -9,6 +9,14 @@
       <h2 class="page-title fw-bold" style="font-size: 1.40rem;">Data SPP</h2>
     </div>
 
+    @if($isNonaktif)
+    <div class="alert alert-warning alert-dismissible fade show">
+      <strong>Perhatian!</strong>
+      Tahun ajaran yang Anda pilih <b>sudah nonaktif</b>.
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     {{-- CARD UTAMA --}}
     <div class="card shadow-sm" style="border-radius: 10px;">
 

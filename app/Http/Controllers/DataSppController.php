@@ -25,6 +25,12 @@ class DataSppController extends Controller
 
         // Ambil tahun ajaran yang tersimpan di session, atau default ke pertama
         $tahunAjaranId = session('tahun_ajaran_id', TahunAjaran::first()->id ?? null);
+        // Ambil status tahun ajaran dari biaya SPP
+        $statusTahunAjaran = BiayaSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->with('status')
+            ->first();
+
+        $isNonaktif = $statusTahunAjaran && strtolower($statusTahunAjaran->status->nama_status) === 'nonaktif';
 
         // Data lainnya
         $kelas = Kelas::all();
@@ -34,7 +40,7 @@ class DataSppController extends Controller
             ? 'roles.superadmin.tata_usaha.data_spp.index'
             : 'roles.tu.data_spp.index';
 
-        return view($view, compact('siswa', 'kelas', 'tahunAjaran', 'tahunAjaranId'));
+        return view($view, compact('siswa', 'kelas', 'tahunAjaran', 'tahunAjaranId', 'isNonaktif'));
     }
 
 
@@ -45,6 +51,12 @@ class DataSppController extends Controller
 
         // Ambil ID tahun ajaran dari request atau session
         $tahunAjaranId = $request->get('tahun_ajaran_id') ?? session('tahun_ajaran_id', TahunAjaran::first()->id);
+        $statusTahunAjaran = BiayaSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->with('status')
+            ->first();
+
+        $isNonaktif = $statusTahunAjaran && strtolower($statusTahunAjaran->status->nama_status) === 'nonaktif';
+
 
         // Ambil data tahun ajaran
         $tahunAjaran = TahunAjaran::find($tahunAjaranId);
@@ -119,7 +131,8 @@ class DataSppController extends Controller
             'sisaTagihan',
             'bulanLunas',
             'bulanBelum',
-            'terakhirBayar'
+            'terakhirBayar',
+            'isNonaktif'
         ));
     }
 

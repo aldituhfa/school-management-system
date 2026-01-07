@@ -7,14 +7,14 @@
     <title>Tata Usaha Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-   
-   
+
+
     <!-- Boxicons -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" />
 
 
     <!-- Tabler Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
 
     <style>
@@ -374,9 +374,17 @@ $setting = Setting::first();
                 <li class="nav-item">
                     <a href="{{ route('tu.laporan_tagihan_spp.index') }}"
                         class="nav-link {{ request()->routeIs('tu.laporan_tagihan_spp.*') ? 'active' : '' }}">
-                        <i class="bx bx-file"></i> Laporan Tagihan SPP
+                        <i class="bx bx-file"></i> Laporan SPP Tahunan
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('tu.laporan_spp_bulanan.index') }}"
+                        class="nav-link {{ request()->routeIs('tu.laporan_spp_bulanan.*') ? 'active' : '' }}">
+                        <i class="bx bx-calendar"></i> Laporan SPP Bulanan
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('tu.kegiatan.index') }}"
                         class="nav-link {{ request()->routeIs('tu.kegiatan.*') ? 'active' : '' }}">

@@ -18,7 +18,11 @@ class LaporanTagihanSppController extends Controller
         $tahunAjaran = TahunAjaran::all();
         $kelas = Kelas::all();
 
-        $tahunAjaranId = $request->get('tahun_ajaran_id', session('tahun_ajaran_id', TahunAjaran::first()->id ?? null));
+        $tahunAjaranId = $request->get(
+            'tahun_ajaran_id',
+            session('tahun_ajaran_id', TahunAjaran::first()->id ?? null)
+        );
+
         $kelasId = $request->get('kelas_id');
         $search = $request->get('search');
 
@@ -26,36 +30,52 @@ class LaporanTagihanSppController extends Controller
             session(['tahun_ajaran_id' => $request->tahun_ajaran_id]);
         }
 
-        $siswaQuery = Siswa::with(['kelas', 'status'])
+        // Ambil siswa sesuai filter
+        $siswa = Siswa::with(['kelas', 'status'])
             ->when($kelasId, fn($q) => $q->where('kelas_id', $kelasId))
-            ->when($search, fn($q) => $q->where('nama_siswa', 'like', "%{$search}%")->orWhere('nisn', 'like', "%{$search}%"))
-            ->orderBy('nama_siswa');
+            ->when(
+                $search,
+                fn($q) =>
+                $q->where('nama_siswa', 'like', "%{$search}%")
+                    ->orWhere('nisn', 'like', "%{$search}%")
+            )
+            ->orderBy('nama_siswa')
+            ->get();
 
-        $siswa = $siswaQuery->get();
+        // Nominal SPP per bulan
+        $nominalBulanan = TagihanSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->value('nominal') ?? 0;
 
-        // Tambahkan perhitungan bulan lunas untuk setiap siswa
+        $jumlahSiswa = $siswa->count();
+
+        // TOTAL TAGIHAN IDEAL (12 BULAN × SEMUA SISWA)
+        $totalTagihan = $nominalBulanan * 12 * $jumlahSiswa;
+
+        // TOTAL LUNAS (REALISASI)
+        $totalLunas = TagihanSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->when(
+                $kelasId,
+                fn($q) =>
+                $q->whereHas('siswa', fn($sq) => $sq->where('kelas_id', $kelasId))
+            )
+            ->where('status', 'lunas')
+            ->sum('nominal');
+
+        // HITUNG BULAN LUNAS & TUNGGAKAN PER SISWA
+        $totalTunggakan = 0;
+
         foreach ($siswa as $sw) {
-            $totalTagihan = TagihanSpp::where('siswa_id', $sw->id)
-                ->where('tahun_ajaran_id', $tahunAjaranId)
-                ->count();
             $bulanLunas = TagihanSpp::where('siswa_id', $sw->id)
                 ->where('tahun_ajaran_id', $tahunAjaranId)
                 ->where('status', 'lunas')
                 ->count();
+
             $sw->bulan_lunas = $bulanLunas;
-            $sw->total_bulan = $totalTagihan ?: 12; // fallback 12 bulan
+            $sw->total_bulan = 12;
+
+            $tunggakanSiswa = (12 - $bulanLunas) * $nominalBulanan;
+            $totalTunggakan += $tunggakanSiswa;
         }
-
-        // Statistik card
-        $tagihan = TagihanSpp::where('tahun_ajaran_id', $tahunAjaranId)
-            ->when($kelasId, fn($q) => $q->whereHas('siswa', fn($sq) => $sq->where('kelas_id', $kelasId)))
-            ->get();
-
-        $totalTagihan = $tagihan->sum('nominal');
-        $totalLunas = $tagihan->where('status', 'lunas')->sum('nominal');
-        $totalBelum = $tagihan->where('status', 'belum lunas')->sum('nominal');
-        $jumlahSiswa = $siswa->count();
-        $rataPerSiswa = $jumlahSiswa ? round($totalTagihan / $jumlahSiswa, 0) : 0;
 
         return view('roles.tu.laporan_tagihan_spp.index', compact(
             'tahunAjaran',
@@ -65,12 +85,12 @@ class LaporanTagihanSppController extends Controller
             'siswa',
             'totalTagihan',
             'totalLunas',
-            'totalBelum',
+            'totalTunggakan',
             'jumlahSiswa',
-            'rataPerSiswa',
             'search'
         ));
     }
+
 
     public function exportPdf(Request $request)
     {

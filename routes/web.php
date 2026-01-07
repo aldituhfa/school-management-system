@@ -201,6 +201,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tu/laporan-tagihan-spp/export-pdf', [LaporanTagihanSppController::class, 'exportPdf'])->name('tu.laporan_tagihan_spp.exportPdf');
     Route::get('/tu/laporan-tagihan-spp/export-excel', [LaporanTagihanSppController::class, 'exportExcel'])->name('tu.laporan_tagihan_spp.exportExcel');
 
+    //TU > laporan spp bulanan
+    Route::get('/tu/laporan-spp-bulanan', [App\Http\Controllers\LaporanSppBulananController::class, 'index']
+    )->name('tu.laporan_spp_bulanan.index');
+
+
     // SUPERADMIN > spp
     Route::get('/superadmin/data-spp', [App\Http\Controllers\DataSppController::class, 'index'])
         ->name('superadmin.data_spp.index');

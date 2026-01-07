@@ -3,7 +3,7 @@
 @section('content')
 <div class="page-body">
   <div class="container-fluid">
-    <h5 class="mb-3 fw-semibold">Laporan Tagihan SPP</h5>
+    <h5 class="mb-3 fw-semibold">Laporan SPP Tahunan </h5>
 
     {{-- FILTER CARD --}}
     <div class="card shadow-sm mb-3 border-0">
@@ -48,7 +48,7 @@
           <div class="card-body d-flex align-items-center py-2">
             <i class="ti ti-wallet fs-3 text-secondary me-3"></i>
             <div>
-              <h7 class="fw-normal mb-1 text-muted">Total Tagihan</h7>
+              <h7 class="fw-normal mb-1 text-muted">Total Tagihan Tahunan </h7>
               <h5 class="fw-semibold mb-0">Rp {{ number_format($totalTagihan ?? 0, 0, ',', '.') }}</h5>
             </div>
           </div>
@@ -72,8 +72,10 @@
           <div class="card-body d-flex align-items-center py-2">
             <i class="ti ti-users fs-3 text-secondary me-3"></i>
             <div>
-              <h7 class="fw-normal mb-1 text-muted">Jumlah Siswa / Rata-rata</h7>
-              <h5 class="fw-semibold mb-0">{{ $jumlahSiswa ?? 0 }} / Rp {{ number_format($rataPerSiswa ?? 0, 0, ',', '.') }}</h5>
+              <h7 class="fw-normal mb-1 text-muted">Total Tunggakan</h7>
+              <h5 class="fw-semibold mb-0">
+                Rp {{ number_format($totalTunggakan ?? 0, 0, ',', '.') }}
+              </h5>
             </div>
           </div>
         </div>

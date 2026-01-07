@@ -7,6 +7,14 @@
       <h2 class="page-title" style="font-size: 1.25rem; font-weight: 600;">Data SPP</h2>
     </div>
 
+    @if($isNonaktif)
+    <div class="alert alert-warning alert-dismissible fade show">
+      <strong>Perhatian!</strong>
+      Tahun ajaran yang Anda pilih <b>sudah nonaktif</b>.
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     <div class="card">
       <div class="card-body border-bottom py-2">
         <div class="d-flex justify-content-between align-items-center">

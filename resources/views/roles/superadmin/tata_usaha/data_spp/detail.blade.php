@@ -13,6 +13,15 @@
     </div>
   </div>
 
+  @if($isNonaktif)
+  <div class="alert alert-warning alert-dismissible fade show">
+    <strong>Perhatian!</strong>
+    Tahun ajaran <b>{{ $tahunAjaran->nama_tahun }}</b> sudah <b>Nonaktif</b>.
+    Pastikan tidak melakukan transaksi baru pada tahun ajaran ini.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  @endif
+  
   {{-- Alert --}}
   @if(session('success'))
   <div class="alert alert-success alert-dismissible fade show">
