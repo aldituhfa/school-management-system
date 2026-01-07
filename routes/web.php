@@ -21,6 +21,7 @@ use App\Http\Controllers\LaporanTagihanSppController;
 use App\Http\Controllers\TU\KegiatanController;
 use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\SiswaLulusController;
+use App\Http\Controllers\Guru\JadwalGuruController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -409,6 +410,16 @@ Route::middleware(['auth'])->group(function () {
 
     //WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
     // DI SINI NIH
+
+         // Routes untuk Guru - Jadwal Mengajar
+        Route::prefix('guru')->name('guru.')->group(function () {
+            
+            // Jadwal Mengajar
+            Route::get('/jadwal', [JadwalGuruController::class, 'index'])->name('jadwal.index');
+            Route::get('/jadwal/{kelas_id}', [JadwalGuruController::class, 'show'])->name('jadwal.show');
+            
+        });
+
 });
 
 // Route::prefix('finances')->group(function () {

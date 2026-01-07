@@ -273,11 +273,15 @@
                     </a>
                 </li>
 
+                 <!-- Jadwal Mengajar -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-chalkboard"></i> Mata Pelajaran
-                    </a>
-                </li>
+                <a href="{{ route('guru.jadwal.index') }}"
+                class="nav-link {{ request()->routeIs('guru.jadwal.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-week me-2"></i>
+                    Jadwal Mengajar
+                </a>
+            </li>
+
 
             </ul>
         </div>

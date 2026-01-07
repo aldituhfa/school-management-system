@@ -62,11 +62,11 @@
             </div>
 
            <a 
-  href="{{ route('siswa.showByKelas', $k->id) }}"
-  class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center"
->
-  <i class="ti ti-users me-1"></i> Lihat Siswa
-</a>
+              href="{{ route('siswa.showByKelas', $k->id) }}"
+              class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center"
+            >
+              <i class="ti ti-users me-1"></i> Lihat Siswa
+            </a>
 
 
           </div>
