@@ -6,7 +6,6 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SuperAdmin\AccountController;
 use App\Http\Controllers\Finance\FinanceController;
 use App\Http\Controllers\Finance\SPPController;
-// use App\Http\Controllers\Finance\PayrollController;
 use App\Http\Controllers\Finance\LogController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\KelasController;
@@ -41,12 +40,10 @@ use App\Models\User;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
-
-// Landing page
+// ==========================
+// LANDING PAGE 
+// ==========================
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
@@ -166,17 +163,6 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:super_admin,admin');
 
 
-
-    // Totals & Stats untuk card + Chart.js — role selain guru
-    // Route::get('/finances/totals', [FinanceController::class, 'totals'])
-    //     ->name('finances.totals')
-    //     ->middleware('role:super_admin,admin,tu,payroll');
-
-    // Route::get('/finances/stats', [FinanceController::class, 'stats'])
-    //     ->name('finances.stats')
-    //     ->middleware('role:super_admin,admin,tu,payroll');
-
-
     // TU > SPP
     Route::prefix('tu')->name('tu.')->group(function () {
         Route::get('spp', [SPPController::class, 'index'])->name('spp.index');
@@ -198,14 +184,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tu/data-spp/{id}/bayar', [App\Http\Controllers\DataSppController::class, 'bayar'])
         ->name('tu.data_spp.bayar');
 
-    //TU > laporan tagihan spp
+    //TU > laporan tagihan spp (tahunan) 
     Route::get('/tu/laporan-tagihan-spp', [LaporanTagihanSppController::class, 'index'])->name('tu.laporan_tagihan_spp.index');
     Route::get('/tu/laporan-tagihan-spp/export-pdf', [LaporanTagihanSppController::class, 'exportPdf'])->name('tu.laporan_tagihan_spp.exportPdf');
     Route::get('/tu/laporan-tagihan-spp/export-excel', [LaporanTagihanSppController::class, 'exportExcel'])->name('tu.laporan_tagihan_spp.exportExcel');
 
     //TU > laporan spp bulanan
-    Route::get('/tu/laporan-spp-bulanan', [App\Http\Controllers\LaporanSppBulananController::class, 'index']
+    Route::get(
+        '/tu/laporan-spp-bulanan',
+        [App\Http\Controllers\LaporanSppBulananController::class, 'index']
     )->name('tu.laporan_spp_bulanan.index');
+    Route::get(
+        '/tu/laporan-spp-bulanan/pdf',
+        [App\Http\Controllers\LaporanSppBulananController::class, 'exportPdf']
+    )->name('tu.laporan_spp_bulanan.exportPdf');
+    Route::get(
+        '/tu/laporan-spp-bulanan/excel',
+        [App\Http\Controllers\LaporanSppBulananController::class, 'exportExcel']
+    )->name('tu.laporan_spp_bulanan.exportExcel');
 
 
     // SUPERADMIN > spp
@@ -230,23 +226,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-
-
-
-    // // Payroll
-    // Route::get('/payrolls', [PayrollController::class, 'index'])
-    //     ->name('payrolls.index')
-    //     ->middleware('role:super_admin,admin,payroll');
-
-    // Route::post('/payrolls', [PayrollController::class, 'store'])
-    //     ->name('payrolls.store')
-    //     ->middleware('role:super_admin,admin,payroll');
-
-    // Route::post('/payrolls/{id}/pay', [PayrollController::class, 'pay'])
-    //     ->name('payrolls.pay')
-    //     ->middleware('role:super_admin,admin,payroll');
-
-
     // SUPER ADMIN > data siswa 
     Route::prefix('roles/superadmin')->group(function () {
 
@@ -259,6 +238,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])->name('siswa.showByKelas');
         Route::post('/siswa/kelas/{id}/status', [SiswaController::class, 'updateStatusKelas'])
             ->name('siswa.updateStatusKelas');
+        Route::get('/siswa-per-kelas/{id}/export-pdf', [SiswaController::class, 'exportPerKelasPdf'])
+            ->name('siswa.perkelas.exportPdf');
+        Route::get('/siswa-per-kelas/{id}/export-excel', [SiswaController::class, 'exportPerKelasExcel'])
+            ->name('siswa.perkelas.exportExcel');
+
 
         //check box update edit dan delete
         Route::post('/siswa/bulk-kelas', [SiswaController::class, 'bulkUpdateKelas'])->name('siswa.bulkKelas');
@@ -291,14 +275,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
         Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
-
-        // CRUD status
-        // Route::post('/status', [StatusSiswaController::class, 'store'])->name('status.store');
-        // Route::put('/status/{id}', [StatusSiswaController::class, 'update'])->name('status.update');
-        // Route::delete('/status/{status}', [StatusSiswaController::class, 'destroy'])->name('status.destroy');
     });
 
 
+    // GURU > data siswa (perkelas)
     Route::middleware(['auth', 'role:guru'])
         ->prefix('roles/guru')
         ->name('guru.')
@@ -364,22 +344,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('superadmin.profile');
         Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('superadmin.profile.update');
     });
-
     Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('admin.profile');
         Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('admin.profile.update');
     });
-
     Route::prefix('guru')->middleware(['auth'])->group(function () {
         Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('guru.profile');
         Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('guru.profile.update');
     });
-
     Route::prefix('tu')->middleware(['auth'])->group(function () {
         Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('tu.profile');
         Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('tu.profile.update');
     });
-
     Route::prefix('payroll')->middleware(['auth'])->group(function () {
         Route::get('/profile', [SuperAdminProfileController::class, 'index'])->name('payroll.profile');
         Route::post('/profile/update', [SuperAdminProfileController::class, 'update'])->name('payroll.profile.update');
@@ -391,7 +367,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/superadmin/setting/update', [SuperAdminSettingController::class, 'update'])->name('superadmin.setting.update');
 
 
-    // Jam Belajar
+    // SUPER ADMIN > Jam Belajar
     Route::prefix('superadmin')->name('superadmin.')->group(function () {
         Route::resource('jam-belajar', JamBelajarController::class);
     });
@@ -415,48 +391,40 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    //WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
+
+    // ==========================
+    // GURU > Jadwal & Materi
+    // ==========================
+    Route::prefix('guru')->name('guru.')->group(function () {
+
+        // Jadwal Mengajar
+        Route::get('/jadwal', [JadwalGuruController::class, 'index'])->name('jadwal.index');
+        Route::get('/jadwal/{kelas_id}', [JadwalGuruController::class, 'show'])->name('jadwal.show');
+
+        // Materi Pembelajaran
+        Route::prefix('materi')->name('materi.')->group(function () {
+            Route::get('/', [MateriController::class, 'index'])->name('index');
+            Route::get('/create', [MateriController::class, 'create'])->name('create');
+            Route::post('/store', [MateriController::class, 'store'])->name('store');
+            Route::get('/success', [MateriController::class, 'success'])->name('success');
+            Route::get('/list', [MateriController::class, 'list'])->name('list');
+            Route::get('/download/{id}', [MateriController::class, 'download'])->name('download');
+            Route::delete('/{id}', [MateriController::class, 'destroy'])->name('destroy');
+
+            // API
+            Route::get('/get-jadwal', [MateriController::class, 'getJadwal'])->name('get-jadwal');
+        });
+    });
+
+    // WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
     // DI SINI NIH
+    // TANTO KICAU GW MERGE MALAH CONFLIC, UDAH GW BENERIN NIH KUNTUL 
+}); 
 
-         // Routes untuk Guru - Jadwal Mengajar
-        Route::prefix('guru')->name('guru.')->group(function () {
-            
-            // Jadwal Mengajar
-            Route::get('/jadwal', [JadwalGuruController::class, 'index'])->name('jadwal.index');
-            Route::get('/jadwal/{kelas_id}', [JadwalGuruController::class, 'show'])->name('jadwal.show');
-            
-        });
-
-        });
-
-        // Routes for Guru - Materi Pembelajaran
-        Route::prefix('guru')->name('guru.')->group(function () {
-
-        Route::prefix('materi')->name('materi.')->group(function() {
-            
-        Route::get('/', [MateriController::class, 'index'])->name('index');
-        Route::get('/create', [MateriController::class, 'create'])->name('create');
-        Route::post('/store', [MateriController::class, 'store'])->name('store');
-        Route::get('/success', [MateriController::class, 'success'])->name('success');
-        Route::get('/list', [MateriController::class, 'list'])->name('list');
-        Route::get('/download/{id}', [MateriController::class, 'download'])->name('download');
-        Route::delete('/{id}', [MateriController::class, 'destroy'])->name('destroy');
-        
-        // API Route
-        Route::get('/get-jadwal', [MateriController::class, 'getJadwal'])->name('get-jadwal');
-            });
-
-        });
-
-// Route::prefix('finances')->group(function () {
-//     Route::get('/', [FinanceController::class, 'index'])->name('finances.index'); // halaman Blade
-//     Route::get('/list', [FinanceController::class, 'list'])->name('finances.list'); // DataTables JSON
-//     Route::post('/', [FinanceController::class, 'store'])->name('finances.store');
-//     Route::post('/{id}', [FinanceController::class, 'update'])->name('finances.update');
-//     Route::delete('/{id}', [FinanceController::class, 'destroy'])->name('finances.destroy');
-// });
+       
 
 
+// MENU SPP GAGAL 
 // Route::get('/spp', function () {
 //     return view('roles.superadmin.spp.index');
 // })->name('superadmin.spp.index');

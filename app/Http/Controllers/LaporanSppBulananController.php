@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\TahunAjaran;
 use App\Models\Kelas;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanSppBulananExport;
 use Illuminate\Support\Facades\DB;
 
 class LaporanSppBulananController extends Controller
@@ -26,11 +29,22 @@ class LaporanSppBulananController extends Controller
             session('tahun_ajaran_id', TahunAjaran::first()->id ?? null)
         );
 
-        $bulan = $request->get('bulan', 'Januari');
+        $bulan = $request->get(
+            'bulan',
+            session('bulan', 'Januari')
+        );
         $kelasId = $request->get('kelas_id');
 
         if ($request->has('tahun_ajaran_id')) {
             session(['tahun_ajaran_id' => $request->tahun_ajaran_id]);
+        }
+
+        if ($request->has('tahun_ajaran_id')) {
+            session(['tahun_ajaran_id' => $request->tahun_ajaran_id]);
+        }
+
+        if ($request->has('bulan')) {
+            session(['bulan' => $request->bulan]);
         }
 
         // =============================
@@ -116,5 +130,77 @@ class LaporanSppBulananController extends Controller
             'totalSiswa',
             'siswaLunas'
         ));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $data = $this->getFilteredData($request);
+
+        $pdf = Pdf::loadView(
+            'roles.tu.laporan_spp_bulanan.pdf',
+            $data
+        )->setPaper('A4', 'landscape');
+
+        return $pdf->download('laporan_spp_bulanan.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(
+            new LaporanSppBulananExport($request),
+            'laporan_spp_bulanan.xlsx'
+        );
+    }
+
+    private function getFilteredData(Request $request)
+    {
+        $tahunAjaranId = $request->tahun_ajaran_id;
+        $bulan = $request->bulan;
+        $kelasId = $request->kelas_id;
+
+        $tahunAjaranNama = \App\Models\TahunAjaran::where('id', $tahunAjaranId)
+            ->value('nama_tahun') ?? '-';
+
+        $laporanBulanan = Siswa::query()
+            ->leftJoin('kelas', 'kelas.id', '=', 'siswa.kelas_id')
+
+            ->leftJoin('biaya_spps', function ($join) use ($tahunAjaranId) {
+                $join->on('biaya_spps.tahun_ajaran_id', DB::raw($tahunAjaranId));
+            })
+
+            ->leftJoin('tagihan_spps', function ($join) use ($tahunAjaranId, $bulan) {
+                $join->on('siswa.id', '=', 'tagihan_spps.siswa_id')
+                    ->where('tagihan_spps.tahun_ajaran_id', $tahunAjaranId)
+                    ->where('tagihan_spps.bulan', $bulan);
+            })
+
+            ->when(
+                $kelasId,
+                fn($q) =>
+                $q->where('siswa.kelas_id', $kelasId)
+            )
+
+            ->select(
+                DB::raw("'$bulan' as bulan"),
+                'siswa.nama_siswa',
+                'kelas.nama_kelas',
+                DB::raw('COALESCE(biaya_spps.nominal, 0) as nominal'),
+                'tagihan_spps.tanggal_bayar',
+                DB::raw("
+                CASE 
+                    WHEN tagihan_spps.tanggal_bayar IS NOT NULL 
+                    THEN 'Lunas' 
+                    ELSE 'Menunggak' 
+                END as status
+            ")
+            )
+            ->orderBy('siswa.nama_siswa')
+            ->get();
+
+        return [
+            'laporanBulanan' => $laporanBulanan,
+            'bulan' => $bulan,
+            'tahunAjaranNama' => $tahunAjaranNama,
+        ];
     }
 }

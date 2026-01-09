@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\StatusSiswa;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SiswaPerKelasExport;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
@@ -237,6 +240,32 @@ class SiswaController extends Controller
             compact('kelas', 'siswa', 'columns')
         );
     }
+
+    public function exportPerKelasPdf($id)
+    {
+        $kelas = Kelas::findOrFail($id);
+
+        $siswa = Siswa::where('kelas_id', $id)
+            ->with('status')
+            ->orderBy('nama_siswa')
+            ->get();
+
+        $pdf = Pdf::loadView(
+            'roles.superadmin.siswa.export_perkelas_pdf',
+            compact('kelas', 'siswa')
+        )->setPaper('A4', 'landscape');
+
+        return $pdf->download('siswa_kelas_' . $kelas->nama_kelas . '.pdf');
+    }
+
+    public function exportPerKelasExcel($id)
+    {
+        return Excel::download(
+            new SiswaPerKelasExport($id),
+            'siswa_kelas.xlsx'
+        );
+    }
+
 
     public function bulkUpdateKelas(Request $request)
     {
