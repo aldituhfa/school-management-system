@@ -282,6 +282,15 @@
                 </a>
             </li>
 
+            <!-- Materi Pembelajaran -->
+            <li class="nav-item">
+                <a href="{{ route('guru.materi.index') }}"
+                class="nav-link {{ request()->routeIs('guru.materi.*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text me-2"></i>
+                    Materi Pembelajaran
+                </a>
+            </li>
+
 
             </ul>
         </div>

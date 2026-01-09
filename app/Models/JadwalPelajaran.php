@@ -173,6 +173,10 @@ class JadwalPelajaran extends Model
 
         return true;
     }
-
+    
+    public function materiPembelajaran()
+{
+    return $this->hasMany(MateriPembelajaran::class, 'jadwal_id');
+}
     
 }

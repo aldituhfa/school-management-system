@@ -22,6 +22,8 @@ use App\Http\Controllers\TU\KegiatanController;
 use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\SiswaLulusController;
 use App\Http\Controllers\Guru\JadwalGuruController;
+use App\Http\Controllers\Guru\MateriController;
+
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -425,7 +427,26 @@ Route::middleware(['auth'])->group(function () {
             
         });
 
-});
+        });
+
+        // Routes for Guru - Materi Pembelajaran
+        Route::prefix('guru')->name('guru.')->group(function () {
+
+        Route::prefix('materi')->name('materi.')->group(function() {
+            
+        Route::get('/', [MateriController::class, 'index'])->name('index');
+        Route::get('/create', [MateriController::class, 'create'])->name('create');
+        Route::post('/store', [MateriController::class, 'store'])->name('store');
+        Route::get('/success', [MateriController::class, 'success'])->name('success');
+        Route::get('/list', [MateriController::class, 'list'])->name('list');
+        Route::get('/download/{id}', [MateriController::class, 'download'])->name('download');
+        Route::delete('/{id}', [MateriController::class, 'destroy'])->name('destroy');
+        
+        // API Route
+        Route::get('/get-jadwal', [MateriController::class, 'getJadwal'])->name('get-jadwal');
+            });
+
+        });
 
 // Route::prefix('finances')->group(function () {
 //     Route::get('/', [FinanceController::class, 'index'])->name('finances.index'); // halaman Blade
