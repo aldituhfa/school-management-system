@@ -64,9 +64,10 @@
                     </div>
 
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i>
-                        </button>
+                       <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2">
+    <i class="bi bi-search"></i>
+    <span>Cari</span>
+</button>
                         @if(request()->query())
                             <a href="{{ route('guru.materi.list') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-x-lg"></i>
@@ -109,17 +110,25 @@
                             <div class="col">
                                 <h6 class="fw-bold mb-1">{{ $materi->judul }}</h6>
 
-                                <div class="mb-2">
-                                    <span class="badge bg-primary">
+                                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+
+                                    <span class="badge rounded-pill bg-primary d-flex align-items-center gap-1 px-2 py-1">
+                                        <i class="bi bi-journal-bookmark-fill small"></i>
                                         {{ optional($materi->jadwal?->mapel)->nama_mapel ?? '-' }}
                                     </span>
-                                    <span class="badge bg-secondary">
+
+                                    <span class="badge rounded-pill bg-secondary d-flex align-items-center gap-1 px-2 py-1">
+                                        <i class="bi bi-people-fill small"></i>
                                         {{ optional($materi->jadwal?->kelas)->nama_kelas ?? '-' }}
                                     </span>
-                                    <span class="badge bg-info text-dark">
-                                        {{ ucfirst($materi->tipe_materi) }}
+
+                                    <span class="badge rounded-pill bg-light text-dark border d-flex align-items-center gap-1 px-2 py-1">
+                                        <i class="bi bi-file-earmark-text-fill text-primary small"></i>
+                                        {{ strtoupper($materi->tipe_materi) }}
                                     </span>
+
                                 </div>
+
 
                                 @if($materi->deskripsi)
                                     <p class="text-muted small mb-2">

@@ -1336,8 +1336,8 @@
                 <h3>Kontrol Penuh Sistem</h3>
                 <p>Super Admin memiliki akses penuh ke seluruh sistem untuk mengelola konfigurasi, user management, dan pengaturan tingkat lanjut.</p>
                 <ul class="role-features">
-                  <li><i class="bi bi-check-circle-fill"></i> Manajemen seluruh pengguna dan role</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Konfigurasi sistem dan pengaturan global</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Manajemen seluruh role</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Konfigurasi Logo sekolah</li>
                   <li><i class="bi bi-check-circle-fill"></i> Akses ke semua modul dan fitur</li>
                   <li><i class="bi bi-check-circle-fill"></i> Laporan lengkap dan audit log</li>
                 </ul>
@@ -1350,7 +1350,7 @@
             </div>
  
             <!-- Slide 2: Admin Sekolah -->
-            <div class="role-slide">
+            <!-- <div class="role-slide">
               <div class="role-content">
                 <div class="role-badge" style="background: #0ea5e9;">
                   <i class="bi bi-people-fill me-2"></i>Admin Sekolah
@@ -1369,7 +1369,7 @@
                   <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop" alt="Admin Dashboard">
                 </div>
               </div>
-            </div>
+            </div> -->
  
             <!-- Slide 3: Guru -->
             <div class="role-slide">
@@ -1378,12 +1378,13 @@
                   <i class="bi bi-mortarboard-fill me-2"></i>Guru
                 </div>
                 <h3>Manajemen Pembelajaran</h3>
-                <p>Guru dapat mengelola nilai, absensi, materi pembelajaran, dan berkomunikasi dengan siswa serta orang tua dengan efektif.</p>
+                <p>Guru dapat mengelola proses pembelajaran, serta melakukan pencatatan
+                   aktivitas kelas secara efisien melalui sistem ini.</p>
                 <ul class="role-features">
-                  <li><i class="bi bi-check-circle-fill"></i> Input dan kelola nilai siswa</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Pencatatan kehadiran real-time</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Melihat data siswa</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Melihat jadwal mengajar secara real-time</li>
                   <li><i class="bi bi-check-circle-fill"></i> Upload materi pembelajaran</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Komunikasi dengan siswa dan ortu</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Melakukan pencatatan kehadiran siswa</li>
                 </ul>
               </div>
               <div class="role-image">
@@ -1394,7 +1395,7 @@
             </div>
  
             <!-- Slide 4: Siswa -->
-            <div class="role-slide">
+            <!-- <div class="role-slide">
               <div class="role-content">
                 <div class="role-badge" style="background: #f59e0b;">
                   <i class="bi bi-person-fill me-2"></i>Siswa
@@ -1413,7 +1414,7 @@
                   <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop" alt="Siswa Dashboard">
                 </div>
               </div>
-            </div>
+            </div> -->
  
             <!-- Slide 5: Tata Usaha -->
             <div class="role-slide">
@@ -1422,12 +1423,14 @@
                   <i class="bi bi-clipboard-data-fill me-2"></i>Tata Usaha
                 </div>
                 <h3>Administrasi Sekolah</h3>
-                <p>Tata usaha mengelola administrasi, dokumentasi, surat menyurat, dan arsip sekolah secara digital dan terorganisir.</p>
+                <p> Sistem ini dirancang untuk mempermudah pengelolaan administrasi sekolah,
+                    khususnya dalam pencatatan SPP, pembuatan laporan, serta pengelolaan kegiatan sekolah
+                    secara terpusat dan efisien.</p>
                 <ul class="role-features">
-                  <li><i class="bi bi-check-circle-fill"></i> Manajemen surat dan dokumen</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Arsip digital sekolah</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Generate sertifikat dan ijazah</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Laporan administrasi</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Manajemen dan pemantauan data SPP siswa</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Laporan SPP bulanan yang rapi dan terstruktur</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Rekap laporan SPP tahunan secara otomatis</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Pengelolaan kegiatan sekolah </li>
                 </ul>
               </div>
               <div class="role-image">
@@ -1473,8 +1476,8 @@
           <div class="slider-indicator" onclick="goToRoleSlide(1)"></div>
           <div class="slider-indicator" onclick="goToRoleSlide(2)"></div>
           <div class="slider-indicator" onclick="goToRoleSlide(3)"></div>
-          <div class="slider-indicator" onclick="goToRoleSlide(4)"></div>
-          <div class="slider-indicator" onclick="goToRoleSlide(5)"></div>
+          <!-- <div class="slider-indicator" onclick="goToRoleSlide(4)"></div>
+          <div class="slider-indicator" onclick="goToRoleSlide(5)"></div> -->
         </div>
       </div>
     </div>
@@ -1666,7 +1669,7 @@
     let currentRoleSlide = 0;
     const roleSlides = document.getElementById('roleSlides');
     const roleIndicators = document.querySelectorAll('#roleIndicators .slider-indicator');
-    const totalRoleSlides = 6;
+    const totalRoleSlides = 4;
  
     function updateRoleSlide() {
       roleSlides.style.transform = `translateX(-${currentRoleSlide * 100}%)`;

@@ -12,6 +12,8 @@
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta19/dist/css/tabler.min.css" rel="stylesheet">
+
 
 
 
@@ -301,6 +303,15 @@ $setting = Setting::first();
                     class="nav-link {{ request()->routeIs('guru.materi.*') ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text me-2"></i>
                     Materi Pembelajaran
+                </a>
+            </li>
+
+              {{-- list --}}
+            <li class="nav-item">
+                <a href="{{ route('guru.materi.list') }}"
+                    class="nav-link {{ request()->routeIs('guru.materi.list') ? 'active' : '' }}">
+                    <i class="bx bx-home me-2"></i>
+                    List Materi 
                 </a>
             </li>
 

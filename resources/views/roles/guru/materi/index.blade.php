@@ -85,7 +85,7 @@
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-center text-muted small">
-                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <i class="bi bi-journal-text me-2"></i>
                                     <span>{{ $jadwal->keterangan ?? '—' }}</span>
                                 </div>
                             </div>

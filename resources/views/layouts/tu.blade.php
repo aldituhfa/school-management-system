@@ -15,6 +15,7 @@
 
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    
 
 
     <style>
@@ -350,16 +351,7 @@ $setting = Setting::first();
                         <i class="bx bx-home"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-folder"></i> Arsip
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-envelope"></i> Surat
-                    </a>
-                </li>
+                
                 <!-- <li class="nav-item">
                     <a href="{{ route('tu.spp.index') }}" class="nav-link {{ request()->routeIs('tu.spp.index') ? 'active' : '' }}">
                         <i class="bx bx-money"></i> Pembayaran SPP
