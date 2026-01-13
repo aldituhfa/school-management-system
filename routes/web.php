@@ -261,6 +261,10 @@ Route::middleware(['auth'])->group(function () {
             ->name('siswa.lulus.export.excel');
         Route::get('/siswa-lulus/export/pdf', [SiswaLulusController::class, 'exportPdf'])
             ->name('siswa.lulus.export.pdf');
+        Route::delete(
+            '/siswa-lulus/tahun/{tahun}',
+            [SiswaLulusController::class, 'destroyByYear']
+        )->name('siswa.lulus.deleteAll');
 
 
         //CRUD KOLOM

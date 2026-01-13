@@ -24,6 +24,16 @@
       </div>
     </div>
 
+    {{-- ALERT --}}
+    <div id="alert-nonaktif">
+      @if($isNonaktif)
+      <div class="alert alert-warning d-flex align-items-center mb-3">
+        <div>
+          Tahun ajaran yang dipilih <b>sudah Nonaktif</b>
+        </div>
+      </div>
+      @endif
+    </div>
 
     {{-- FILTER --}}
     <div class="card border-0 shadow-sm mb-3">
@@ -234,10 +244,28 @@
   const summary = document.getElementById('summary');
   const labelTahun = document.getElementById('label-tahun');
   const labelBulan = document.getElementById('label-bulan');
+  const alertBox = document.getElementById('alert-nonaktif');
 
-  [tahun, bulan, kelas].forEach(el => {
-    el.addEventListener('change', loadData);
+  let prevTahunAjaran = document.getElementById('tahun_ajaran_id').value;
+  // 🔹 TAHUN AJARAN (PAKAI CONFIRM)
+  tahun.addEventListener('change', function() {
+    const yakin = confirm('Apakah Anda yakin ingin mengganti tahun ajaran?');
+
+    if (!yakin) {
+      // ❌ batal → kembalikan ke nilai sebelumnya
+      tahun.value = prevTahunAjaran;
+      return;
+    }
+
+    // ✅ lanjut
+    prevTahunAjaran = tahun.value;
+    loadData();
   });
+
+  // 🔹 BULAN & KELAS (TANPA CONFIRM)
+  bulan.addEventListener('change', loadData);
+  kelas.addEventListener('change', loadData);
+
 
   function loadData() {
     // 🔹 UPDATE HEADER LANGSUNG
@@ -261,8 +289,16 @@
       .then(res => res.text())
       .then(html => {
         const dom = new DOMParser().parseFromString(html, 'text/html');
-        tbody.innerHTML = dom.querySelector('#table-body').innerHTML;
-        summary.innerHTML = dom.querySelector('#summary').innerHTML;
+
+        tbody.innerHTML =
+          dom.querySelector('#table-body').innerHTML;
+
+        summary.innerHTML =
+          dom.querySelector('#summary').innerHTML;
+
+        alertBox.innerHTML =
+          dom.querySelector('#alert-nonaktif').innerHTML;
+
         applySearch();
       });
   }

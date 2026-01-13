@@ -8,45 +8,71 @@ use App\Exports\SiswaLulusExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class SiswaLulusController extends Controller
 {
     public function index(Request $request)
     {
-        // ambil semua tahun lulus unik (untuk dropdown filter)
+        // dropdown tahun
         $tahunList = SiswaLulus::select('tahun_lulus')
             ->distinct()
             ->orderBy('tahun_lulus', 'desc')
             ->pluck('tahun_lulus');
 
-        // query utama
-        $query = SiswaLulus::query();
+        // base query
+        $baseQuery = SiswaLulus::query();
 
-        // filter tahun lulus
         if ($request->filled('tahun_lulus')) {
-            $query->where('tahun_lulus', $request->tahun_lulus);
+            $baseQuery->where('tahun_lulus', $request->tahun_lulus);
         }
 
-        // search
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
+            $baseQuery->where(function ($q) use ($request) {
                 $q->where('nama_siswa', 'like', '%' . $request->search . '%')
                     ->orWhere('nisn', 'like', '%' . $request->search . '%');
             });
         }
 
-        // ambil data + group per tahun
-        $siswa = $query
+        // ambil semua data
+        $all = $baseQuery
             ->orderBy('tahun_lulus', 'desc')
             ->orderBy('nama_siswa', 'asc')
             ->get()
             ->groupBy('tahun_lulus');
+
+        $siswa = [];
+
+        foreach ($all as $tahun => $items) {
+
+            $pageKey = 'page_' . $tahun; // unik per tahun
+            $currentPage = LengthAwarePaginator::resolveCurrentPage($pageKey);
+            $perPage = 10;
+
+            $currentItems = $items
+                ->slice(($currentPage - 1) * $perPage, $perPage)
+                ->values();
+
+            $siswa[$tahun] = new LengthAwarePaginator(
+                $currentItems,
+                $items->count(),
+                $perPage,
+                $currentPage,
+                [
+                    'path' => request()->url(),
+                    'pageName' => $pageKey,
+                    'query' => request()->query(),
+                ]
+            );
+        }
 
         return view(
             'roles.superadmin.siswa_lulus.index',
             compact('siswa', 'tahunList')
         );
     }
+
 
     public function store(Request $request)
     {
@@ -117,5 +143,16 @@ class SiswaLulusController extends Controller
         )->setPaper('a4', 'portrait');
 
         return $pdf->download('siswa-lulus.pdf');
+    }
+
+
+    public function destroyByYear($tahun)
+    {
+        SiswaLulus::where('tahun_lulus', $tahun)->delete();
+
+        return back()->with(
+            'success',
+            "Semua siswa lulus tahun $tahun berhasil dihapus"
+        );
     }
 }

@@ -17,13 +17,26 @@
       </div>
     </div>
 
+    {{-- ALERT --}}
+    <div id="alert-nonaktif">
+      @if($isNonaktif)
+      <div class="alert alert-warning d-flex align-items-center mb-3">
+        <div>
+          Tahun ajaran yang dipilih <b>sudah Nonaktif</b>
+        </div>
+      </div>
+      @endif
+    </div>
+
     {{-- FILTER --}}
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-body py-2">
         <form method="GET" class="row gx-3 gy-2 align-items-center">
           <div class="col-md-4">
             <label class="form-label text-muted mb-1">Tahun Ajaran</label>
-            <select name="tahun_ajaran_id" class="form-select form-select-sm" onchange="this.form.submit()">
+            <select name="tahun_ajaran_id"
+              id="tahunAjaranSelect"
+              class="form-select form-select-sm">
               @foreach($tahunAjaran as $t)
               <option value="{{ $t->id }}" {{ $tahunAjaranId == $t->id ? 'selected' : '' }}>
                 {{ $t->nama_tahun }}
@@ -142,6 +155,85 @@
 
     </div>
 
+    <div class="row g-3 mb-3">
+
+      {{-- GAUGE --}}
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <small class="text-muted text-uppercase">Pelunasan Tahunan</small>
+
+            <div class="position-relative my-3" style="height:140px">
+              <svg width="160" height="160" viewBox="0 0 36 36">
+                <path
+                  d="M18 2.0845
+                 a 15.9155 15.9155 0 0 1 0 31.831
+                 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#e9ecef"
+                  stroke-width="3" />
+                <path
+                  d="M18 2.0845
+                 a 15.9155 15.9155 0 0 1 0 31.831"
+                  fill="none"
+                  stroke="#0d6efd"
+                  stroke-width="3"
+                  stroke-dasharray="{{ $persenLunas }}, 100" />
+              </svg>
+
+              <div class="position-absolute top-50 start-50 translate-middle">
+                <h3 class="fw-bold mb-0">{{ $persenLunas }}%</h3>
+              </div>
+            </div>
+
+            <small class="text-muted">
+              {{ number_format($totalLunas,0,',','.') }} dari
+              {{ number_format($totalTagihan,0,',','.') }}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      {{-- RANGKUMAN KUARTAL --}}
+      <div class="col-md-8">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h6 class="fw-semibold mb-3">Rangkuman Kuartal</h6>
+
+            @php
+            $max = max($kuartal);
+            @endphp
+
+            @foreach([
+            'Q1' => 'Kuartal 1 (Jan–Mar)',
+            'Q2' => 'Kuartal 2 (Apr–Jun)',
+            'Q3' => 'Kuartal 3 (Jul–Sep)',
+            'Q4' => 'Kuartal 4 (Okt–Des)',
+            ] as $key => $label)
+
+            @php
+            $percent = $max > 0 ? round(($kuartal[$key] / $max) * 100) : 0;
+            @endphp
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <small class="text-muted">{{ $label }}</small>
+                <small class="fw-semibold">
+                  Rp {{ number_format($kuartal[$key],0,',','.') }}
+                </small>
+              </div>
+              <div class="progress" style="height:6px">
+                <div class="progress-bar bg-dark"
+                  style="width: {{ $percent }}%"></div>
+              </div>
+            </div>
+            @endforeach
+
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     {{-- TABLE --}}
     <div class="card border-0 shadow-sm">
@@ -216,4 +308,24 @@
 
   </div>
 </div>
+
+<script>
+  const tahunSelect = document.getElementById('tahunAjaranSelect');
+  let prevTahun = tahunSelect.value;
+
+  tahunSelect.addEventListener('change', function() {
+    const yakin = confirm('Apakah Anda yakin ingin mengganti tahun ajaran?');
+
+    if (!yakin) {
+      // ❌ batal → kembalikan ke pilihan sebelumnya
+      tahunSelect.value = prevTahun;
+      return;
+    }
+
+    // ✅ lanjut → submit form
+    prevTahun = tahunSelect.value;
+    tahunSelect.form.submit();
+  });
+</script>
+
 @endsection

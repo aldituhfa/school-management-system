@@ -23,6 +23,15 @@ class LaporanTagihanSppController extends Controller
             session('tahun_ajaran_id', TahunAjaran::first()->id ?? null)
         );
 
+        $statusTahunAjaran = \App\Models\BiayaSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->with('status')
+            ->first();
+
+        $isNonaktif = $statusTahunAjaran
+            && $statusTahunAjaran->status
+            && strtolower($statusTahunAjaran->status->nama_status) === 'nonaktif';
+
+
         $kelasId = $request->get('kelas_id');
         $search = $request->get('search');
 
@@ -77,6 +86,26 @@ class LaporanTagihanSppController extends Controller
             $totalTunggakan += $tunggakanSiswa;
         }
 
+        $kuartal = [
+            'Q1' => 0, // Jan–Mar
+            'Q2' => 0, // Apr–Jun
+            'Q3' => 0, // Jul–Sep
+            'Q4' => 0, // Okt–Des
+        ];
+
+        $tagihanKuartal = TagihanSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->where('status', 'lunas')
+            ->get();
+
+        foreach ($tagihanKuartal as $t) {
+            $bulan = (int) \Carbon\Carbon::parse($t->tanggal_bayar)->format('m');
+
+            if ($bulan <= 3) $kuartal['Q1'] += $t->nominal;
+            elseif ($bulan <= 6) $kuartal['Q2'] += $t->nominal;
+            elseif ($bulan <= 9) $kuartal['Q3'] += $t->nominal;
+            else $kuartal['Q4'] += $t->nominal;
+        }
+
         return view('roles.tu.laporan_tagihan_spp.index', compact(
             'tahunAjaran',
             'kelas',
@@ -87,7 +116,9 @@ class LaporanTagihanSppController extends Controller
             'totalLunas',
             'totalTunggakan',
             'jumlahSiswa',
-            'search'
+            'search',
+            'isNonaktif',
+            'kuartal'
         ));
     }
 

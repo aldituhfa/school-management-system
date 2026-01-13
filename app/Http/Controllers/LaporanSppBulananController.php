@@ -29,6 +29,15 @@ class LaporanSppBulananController extends Controller
             session('tahun_ajaran_id', TahunAjaran::first()->id ?? null)
         );
 
+        $statusTahunAjaran = \App\Models\BiayaSpp::where('tahun_ajaran_id', $tahunAjaranId)
+            ->with('status')
+            ->first();
+
+        $isNonaktif = $statusTahunAjaran
+            && $statusTahunAjaran->status
+            && strtolower($statusTahunAjaran->status->nama_status) === 'nonaktif';
+            
+
         $bulan = $request->get(
             'bulan',
             session('bulan', 'Januari')
@@ -128,7 +137,8 @@ class LaporanSppBulananController extends Controller
             'totalDibayar',
             'totalTunggakan',
             'totalSiswa',
-            'siswaLunas'
+            'siswaLunas',
+            'isNonaktif'
         ));
     }
 

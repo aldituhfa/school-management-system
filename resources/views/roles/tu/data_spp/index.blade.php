@@ -10,7 +10,7 @@
     @if($isNonaktif)
     <div class="alert alert-warning alert-dismissible fade show">
       <strong>Perhatian!</strong>
-      Tahun ajaran yang Anda pilih <b>sudah nonaktif</b>.
+      Tahun ajaran yang Anda pilih <b>sudah Nonaktif</b>.
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     @endif

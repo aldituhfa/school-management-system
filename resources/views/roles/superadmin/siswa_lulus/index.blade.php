@@ -84,19 +84,80 @@
             @forelse($siswa as $tahun => $list)
 
             {{-- HEADER TAHUN --}}
-            <tr class="table-secondary fw-semibold">
+            <tr class="table-secondary fw-semibold tahun-header"
+              data-tahun="{{ $tahun }}">
               <td colspan="8">
-                Tahun Lulus {{ $tahun }}
-                <span class="text-muted">
-                  ({{ $list->count() }} siswa)
-                </span>
+                <div class="d-flex justify-content-between align-items-center">
+
+                  <div>
+                    Tahun Lulus {{ $tahun }}
+                    <span class="text-muted">
+                      ({{ $list->total() }} siswa)
+                    </span>
+                  </div>
+
+                  {{-- MENU TITIK 3 --}}
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 px-2"
+                      data-bs-toggle="dropdown"
+                      data-bs-display="static"
+                      aria-expanded="false"
+                      style="border-radius:8px">
+                      <i class="ti ti-dots-vertical"></i>
+                      <i class="ti ti-chevron-down"></i>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm dropdown-fixed">
+                      {{-- HIDE / SHOW --}}
+                      <li>
+                        <button
+                          type="button"
+                          class="dropdown-item d-flex align-items-center gap-2 toggle-siswa"
+                          data-tahun="{{ $tahun }}">
+                          <i class="ti ti-eye-off"></i>
+                          <span>Hide Siswa</span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <hr class="dropdown-divider">
+                      </li>
+
+                      {{-- DELETE ALL --}}
+                      <li>
+                        <form
+                          action="{{ route('siswa.lulus.deleteAll', $tahun) }}"
+                          method="POST"
+                          onsubmit="return confirm(
+                'Apakah Anda yakin ingin menghapus SEMUA siswa lulus tahun {{ $tahun }}?\n\nData akan dihapus permanen!'
+              )">
+                          @csrf
+                          @method('DELETE')
+
+                          <button
+                            type="submit"
+                            class="dropdown-item text-danger d-flex align-items-center gap-2">
+                            <i class="ti ti-trash"></i>
+                            <span>Delete All</span>
+                          </button>
+                        </form>
+                      </li>
+
+                    </ul>
+                  </div>
+
+                </div>
               </td>
             </tr>
 
-            @php $no = 1; @endphp
+
+            @php
+            $no = ($list->currentPage() - 1) * $list->perPage() + 1;
+            @endphp
 
             @foreach($list as $s)
-            <tr>
+            <tr class="siswa-row siswa-{{ $tahun }}">
               <td>{{ $no++ }}</td>
               <td>{{ $s->nisn }}</td>
               <td class="fw-medium">{{ $s->nama_siswa }}</td>
@@ -119,6 +180,17 @@
               </td>
             </tr>
             @endforeach
+
+            {{-- PAGINATION PER TAHUN --}}
+            @if ($list->hasPages())
+            <tr>
+              <td colspan="8">
+                <div class="d-flex justify-content-end py-2">
+                  {{ $list->links('pagination::bootstrap-5') }}
+                </div>
+              </td>
+            </tr>
+            @endif
 
             @empty
             <tr>
@@ -154,5 +226,68 @@
   tahunFilter.addEventListener('change', function() {
     form.submit();
   });
+
+
+  /* ===============================
+     DROPDOWN POSITION (SUDAH ADA)
+  =============================== */
+  document.querySelectorAll('.dropdown').forEach(dropdown => {
+    const button = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+    const menu = dropdown.querySelector('.dropdown-menu');
+
+    button.addEventListener('click', () => {
+      const rect = button.getBoundingClientRect();
+      menu.style.top = rect.bottom + 'px';
+      menu.style.left = (rect.right - menu.offsetWidth) + 'px';
+    });
+  });
+
+  /* ===============================
+     HIDE / SHOW SISWA + PERSIST
+  =============================== */
+  document.querySelectorAll('.toggle-siswa').forEach(btn => {
+    const tahun = btn.dataset.tahun;
+    const rows = document.querySelectorAll('.siswa-' + tahun);
+
+    if (!rows.length) return;
+
+    const icon = btn.querySelector('i');
+    const text = btn.querySelector('span');
+
+    /* ---- CEK STATUS SAAT PAGE LOAD ---- */
+    const savedState = localStorage.getItem('hide_tahun_' + tahun);
+
+    if (savedState === 'true') {
+      rows.forEach(row => row.style.display = 'none');
+      icon.className = 'ti ti-eye';
+      text.innerText = 'Show Siswa';
+    }
+
+    /* ---- SAAT DIKLIK ---- */
+    btn.addEventListener('click', function() {
+      const isHidden = rows[0].style.display === 'none';
+
+      rows.forEach(row => {
+        row.style.display = isHidden ? '' : 'none';
+      });
+
+      if (isHidden) {
+        localStorage.setItem('hide_tahun_' + tahun, 'false');
+        icon.className = 'ti ti-eye-off';
+        text.innerText = 'Hide Siswa';
+      } else {
+        localStorage.setItem('hide_tahun_' + tahun, 'true');
+        icon.className = 'ti ti-eye';
+        text.innerText = 'Show Siswa';
+      }
+    });
+  });
 </script>
+
+<style>
+  .dropdown-fixed {
+    position: fixed !important;
+    z-index: 1060;
+  }
+</style>
 @endsection
