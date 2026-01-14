@@ -15,7 +15,7 @@
 
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    
+
 
 
     <style>
@@ -351,31 +351,6 @@ $setting = Setting::first();
                         <i class="bx bx-home"></i> Dashboard
                     </a>
                 </li>
-                
-                <!-- <li class="nav-item">
-                    <a href="{{ route('tu.spp.index') }}" class="nav-link {{ request()->routeIs('tu.spp.index') ? 'active' : '' }}">
-                        <i class="bx bx-money"></i> Pembayaran SPP
-                    </a>
-                </li> -->
-                <li class="nav-item">
-                    <a href="{{ route('tu.data_spp.index') }}"
-                        class="nav-link {{ request()->routeIs('tu.data_spp.*') ? 'active' : '' }}">
-                        <i class="bx bx-list-ul"></i> Data SPP
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('tu.laporan_tagihan_spp.index') }}"
-                        class="nav-link {{ request()->routeIs('tu.laporan_tagihan_spp.*') ? 'active' : '' }}">
-                        <i class="bx bx-file"></i> Laporan SPP Tahunan
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('tu.laporan_spp_bulanan.index') }}"
-                        class="nav-link {{ request()->routeIs('tu.laporan_spp_bulanan.*') ? 'active' : '' }}">
-                        <i class="bx bx-calendar"></i> Laporan SPP Bulanan
-                    </a>
-                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('tu.kegiatan.index') }}"
@@ -383,6 +358,40 @@ $setting = Setting::first();
                         <i class="bx bx-calendar-event"></i> Kegiatan Sekolah
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('tu.data_spp.index') }}"
+                        class="nav-link {{ request()->routeIs('tu.data_spp.*') ? 'active' : '' }}">
+                        <i class="bx bx-list-ul"></i> Data SPP
+                    </a>
+                </li>
+                
+                {{-- ===== LABEL LAPORAN SPP ===== --}}
+                <li class="nav-item mt-1 mb-0">
+                    <span class="nav-link text-uppercase text-muted small fw-semibold px-3 py-1">
+                        Laporan SPP
+                    </span>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('tu.laporan_tagihan_spp.index') }}"
+                        class="nav-link ps-4 {{ request()->routeIs('tu.laporan_tagihan_spp.*') ? 'active' : '' }}">
+                        <i class="bx bx-file"></i> Tahunan
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('tu.laporan_spp_bulanan.index') }}"
+                        class="nav-link ps-4 {{ request()->routeIs('tu.laporan_spp_bulanan.*') ? 'active' : '' }}">
+                        <i class="bx bx-calendar"></i> Bulanan
+                    </a>
+                </li>
+
+                <!-- <li class="nav-item">
+                    <a href="{{ route('tu.spp.index') }}" class="nav-link {{ request()->routeIs('tu.spp.index') ? 'active' : '' }}">
+                        <i class="bx bx-money"></i> Pembayaran SPP
+                    </a>
+                </li> -->
 
             </ul>
         </div>

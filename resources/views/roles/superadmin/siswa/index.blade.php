@@ -717,6 +717,8 @@
 
   function updateBulkAction() {
     const checked = [...checkItems].filter(c => c.checked);
+
+    // Tidak ada yang dicentang
     if (checked.length === 0) {
       bulkAction.classList.add('d-none');
       return;
@@ -727,11 +729,21 @@
     const hasKelas = checked.some(c => c.dataset.hasKelas == 1);
     const noKelas = checked.some(c => c.dataset.hasKelas == 0);
 
-    // KETENTUAN KAMU
+    // ===== BULK KELAS (punyamu, tetap) =====
     if (!hasKelas && noKelas) {
       btnKelas.classList.remove('d-none');
     } else {
       btnKelas.classList.add('d-none');
+    }
+
+    // ===== SISWA LULUS (INI YANG BARU) =====
+    const btnLulus = document.getElementById('btnSiswaLulus');
+
+    // Semua yang dicentang HARUS punya kelas
+    if (!noKelas) {
+      btnLulus.classList.remove('d-none');
+    } else {
+      btnLulus.classList.add('d-none');
     }
   }
 
@@ -888,24 +900,23 @@
   });
 
   //check box siswa lulus
-  document.getElementById('btnSiswaLulus').addEventListener('click', function () {
-  const checked = [...document.querySelectorAll('.checkItem:checked')];
-  if (checked.length === 0) return;
+  document.getElementById('btnSiswaLulus').addEventListener('click', function() {
+    const checked = [...document.querySelectorAll('.checkItem:checked')];
+    if (checked.length === 0) return;
 
-  const container = document.getElementById('siswaLulusInputs');
-  container.innerHTML = '';
+    const container = document.getElementById('siswaLulusInputs');
+    container.innerHTML = '';
 
-  checked.forEach(c => {
-    container.innerHTML += `
+    checked.forEach(c => {
+      container.innerHTML += `
       <input type="hidden" name="siswa_ids[]" value="${c.value}">
     `;
+    });
+
+    new bootstrap.Modal(
+      document.getElementById('modalSiswaLulus')
+    ).show();
   });
-
-  new bootstrap.Modal(
-    document.getElementById('modalSiswaLulus')
-  ).show();
-});
-
 </script>
 
 @endsection
