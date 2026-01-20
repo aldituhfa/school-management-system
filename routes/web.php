@@ -22,6 +22,8 @@ use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\SiswaLulusController;
 use App\Http\Controllers\Guru\JadwalGuruController;
 use App\Http\Controllers\Guru\MateriController;
+use App\Http\Controllers\Payroll\PayrollPeriodController;
+use App\Http\Controllers\Payroll\ProsesPenggajianController;
 
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
@@ -419,6 +421,60 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/get-jadwal', [MateriController::class, 'getJadwal'])->name('get-jadwal');
         });
     });
+
+
+
+
+    // PAYROLL > data penggajian
+    Route::middleware(['auth', 'role:payroll'])->group(function () {
+        Route::get(
+            '/roles/payroll/data-penggajian',
+            [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'index']
+        )->name('payroll.data_penggajian.index');
+
+        Route::get(
+            '/roles/payroll/data-penggajian/{id}/edit',
+            [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'edit']
+        )->name('payroll.data_penggajian.edit');
+
+        Route::post(
+            '/roles/payroll/data-penggajian/{id}',
+            [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'update']
+        )->name('payroll.data_penggajian.update');
+    });
+
+
+    // PAYROLL > periode penggajian 
+    Route::prefix('payroll')->middleware(['auth', 'role:payroll'])->group(function () {
+        Route::resource('periode-penggajian', PayrollPeriodController::class)
+            ->except(['show']);
+    });
+
+
+    // PAYROLL > proses penggajian
+    Route::prefix('payroll')->middleware(['auth', 'role:payroll'])->group(function () {
+
+        Route::get('proses-penggajian', [ProsesPenggajianController::class, 'index'])
+            ->name('payroll.proses.index');
+
+        Route::post(
+            'proses-penggajian/{period}/pay/{user}',
+            [ProsesPenggajianController::class, 'pay']
+        )->name('payroll.proses.pay');
+
+        Route::post(
+            'proses-penggajian/{period}/cancel/{user}',
+            [ProsesPenggajianController::class, 'cancel']
+        )->name('payroll.proses.cancel');
+
+        Route::post(
+            'proses-penggajian/{period}/close',
+            [ProsesPenggajianController::class, 'closePeriod']
+        )->name('payroll.proses.close');
+    });
+
+
+
 
     // WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
     // DI SINI NIH

@@ -92,8 +92,17 @@ class User extends Authenticatable
     }
 
     public function mataPelajaran()
-{
-    return $this->belongsToMany(MataPelajaran::class, 'guru_mata_pelajaran', 'guru_id', 'mata_pelajaran_id');
-}
+    {
+        return $this->belongsToMany(MataPelajaran::class, 'guru_mata_pelajaran', 'guru_id', 'mata_pelajaran_id');
+    }
 
+    public function payrollSetting()
+    {
+        return $this->hasOne(\App\Models\PayrollSetting::class);
+    }
+
+    public function payrollHistories()
+    {
+        return $this->hasMany(PayrollHistory::class);
+    }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
 
 
     <!-- Tabler Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
 
     <style>
@@ -18,7 +19,7 @@
             --tblr-border-color: #e6e7e9;
             --tblr-sidebar-width: 240px;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #f5f7fb;
@@ -27,7 +28,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         .sidebar {
             width: var(--tblr-sidebar-width);
             background-color: #fff;
@@ -39,7 +40,7 @@
             left: 0;
             top: 0;
         }
-        
+
         .sidebar .nav-link {
             color: #576176;
             padding: 0.5rem 0.75rem;
@@ -51,13 +52,13 @@
             text-decoration: none;
             transition: all 0.2s;
         }
-        
-        .sidebar .nav-link:hover, 
+
+        .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             background-color: rgba(32, 107, 196, 0.08);
             color: var(--tblr-primary);
         }
-        
+
         .sidebar .nav-link i {
             margin-right: 0.5rem;
             font-size: 1rem;
@@ -65,7 +66,7 @@
             text-align: center;
             flex-shrink: 0;
         }
-        
+
         .sidebar-header {
             padding: 1rem 0.75rem;
             border-bottom: 1px solid var(--tblr-border-color);
@@ -74,7 +75,7 @@
             top: 0;
             z-index: 10;
         }
-        
+
         .logo-container {
             display: flex;
             flex-direction: column;
@@ -83,16 +84,19 @@
             text-decoration: none;
             color: inherit;
             width: 100%;
-            cursor: default; /* Tambahkan ini */
+            cursor: default;
+            /* Tambahkan ini */
         }
-        
+
         .logo-img {
-            width: 64px; /* Diperbesar dari 48px */
-            height: 64px; /* Diperbesar dari 48px */
+            width: 64px;
+            /* Diperbesar dari 48px */
+            height: 64px;
+            /* Diperbesar dari 48px */
             object-fit: contain;
             border-radius: 6px;
         }
-        
+
         .school-name {
             font-weight: 600;
             font-size: 0.875rem;
@@ -100,10 +104,12 @@
             text-align: center;
             line-height: 1.3;
         }
-        
+
         .logo-fallback {
-            width: 64px; /* Diperbesar dari 48px */
-            height: 64px; /* Diperbesar dari 48px */
+            width: 64px;
+            /* Diperbesar dari 48px */
+            height: 64px;
+            /* Diperbesar dari 48px */
             border-radius: 6px;
             background-color: var(--tblr-primary);
             display: flex;
@@ -111,15 +117,16 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.875rem; /* Diperbesar dari 0.75rem */
+            font-size: 0.875rem;
+            /* Diperbesar dari 0.75rem */
         }
-        
+
         .main-content {
             margin-left: var(--tblr-sidebar-width);
             min-height: 100vh;
             background-color: #f5f7fb;
         }
-        
+
         .navbar {
             background-color: #fff;
             border-bottom: 1px solid var(--tblr-border-color);
@@ -129,11 +136,11 @@
             top: 0;
             z-index: 999;
         }
-        
+
         .page-wrapper {
             padding: 1rem;
         }
-        
+
         .avatar {
             width: 28px;
             height: 28px;
@@ -147,30 +154,30 @@
             font-size: 0.75rem;
             flex-shrink: 0;
         }
-        
+
         .user-dropdown .dropdown-toggle::after {
             display: none;
         }
-        
+
         .user-dropdown .dropdown-menu {
             border: 1px solid var(--tblr-border-color);
             font-size: 0.8125rem;
             min-width: 150px;
         }
-        
+
         .page-title {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             color: #1a1a1a;
         }
-        
+
         .page-subtitle {
             font-size: 0.875rem;
             color: #6c757d;
             margin-bottom: 1.5rem;
         }
-        
+
         .btn {
             border-radius: 6px;
             font-weight: 500;
@@ -180,46 +187,50 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .btn-primary {
             background-color: var(--tblr-primary);
             border-color: var(--tblr-primary);
         }
-        
+
         .page-header-actions {
             display: flex;
             gap: 0.75rem;
             align-items: center;
         }
-        
+
         @media (max-width: 768px) {
             .sidebar {
                 margin-left: calc(-1 * var(--tblr-sidebar-width));
                 transition: margin-left 0.3s ease;
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
-            
+
             .sidebar.show {
                 margin-left: 0;
             }
-            
+
             .navbar {
                 position: relative;
             }
-            
+
             .logo-img {
-                width: 56px; /* Diperbesar dari 40px */
-                height: 56px; /* Diperbesar dari 40px */
+                width: 56px;
+                /* Diperbesar dari 40px */
+                height: 56px;
+                /* Diperbesar dari 40px */
             }
-            
+
             .logo-fallback {
-                width: 56px; /* Diperbesar dari 40px */
-                height: 56px; /* Diperbesar dari 40px */
+                width: 56px;
+                /* Diperbesar dari 40px */
+                height: 56px;
+                /* Diperbesar dari 40px */
             }
-            
+
             .school-name {
                 font-size: 0.8125rem;
             }
@@ -228,8 +239,8 @@
 </head>
 
 @php
-    use App\Models\Setting;
-    $setting = Setting::first();
+use App\Models\Setting;
+$setting = Setting::first();
 @endphp
 
 <body>
@@ -238,17 +249,17 @@
         <div class="sidebar-header">
             <div class="logo-container">
                 @if($setting && $setting->logo)
-                    <img src="{{ asset('storage/' . $setting->logo) }}" 
-                         alt="Logo Sekolah" 
-                         class="logo-img"
-                         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                <img src="{{ asset('storage/' . $setting->logo) }}"
+                    alt="Logo Sekolah"
+                    class="logo-img"
+                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
                 @else
-                    <div class="logo-fallback" id="logo-fallback">LOGO</div>
+                <div class="logo-fallback" id="logo-fallback">LOGO</div>
                 @endif
                 <span class="school-name">{{ $setting->logo_name ?? 'SMS' }}</span>
             </div>
         </div>
-        
+
         <div class="p-2">
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -266,6 +277,25 @@
                         <i class="bx bx-user-pin"></i> Laporan
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('payroll.data_penggajian.index') }}"
+                        class="nav-link {{ request()->routeIs('payroll.data_penggajian.*') ? 'active' : '' }}">
+                        <i class="bx bx-wallet"></i> Data Penggajian
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('periode-penggajian.index') }}" class="nav-link">
+                        <i class="bx bx-calendar"></i> Periode Penggajian
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('payroll.proses.index') }}" class="nav-link">
+                        <i class="bx bx-credit-card"></i> Proses Penggajian
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
@@ -278,30 +308,30 @@
                 <button class="navbar-toggler d-lg-none" type="button" id="sidebarToggle">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                
+
                 <!-- Page Title -->
                 <div class="d-none d-md-flex align-items-center me-auto">
                     <h2 class="page-title mb-0">@yield('title')</h2>
                 </div>
-                
+
                 <div class="navbar-nav ms-auto">
                     <div class="nav-item dropdown user-dropdown">
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
                             <div class="avatar me-2">
                                 @if(Auth::user()->profile_photo)
-                                    <img src="{{ Auth::user()->profile_photo_url }}" 
-                                         alt="Profile" 
-                                         class="rounded-circle" 
-                                         style="width:28px; height:28px; object-fit:cover;">
+                                <img src="{{ Auth::user()->profile_photo_url }}"
+                                    alt="Profile"
+                                    class="rounded-circle"
+                                    style="width:28px; height:28px; object-fit:cover;">
                                 @else
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                                 @endif
                             </div>
                             <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end">
-                             <a class="dropdown-item" href="{{ route('admin.profile') }}" style="font-size: 0.8125rem;">
+                            <a class="dropdown-item" href="{{ route('admin.profile') }}" style="font-size: 0.8125rem;">
                                 <i class="ti ti-user me-2"></i> Profile
                             </a>
                             <div class="dropdown-divider"></div>
@@ -337,7 +367,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const logoImg = document.querySelector('.logo-img');
             const logoFallback = document.getElementById('logo-fallback');
-            
+
             if (logoImg && logoFallback) {
                 if (logoImg.complete) {
                     if (logoImg.naturalHeight === 0) {
@@ -354,4 +384,5 @@
         });
     </script>
 </body>
+
 </html>
