@@ -9,10 +9,27 @@
             <div class="row align-items-center">
                 <div class="col">
                     <h2 class="page-title fw-bold">Manajemen Keuangan</h2>
-                    <p class="text-muted">Kelola transaksi keuangan Dana BOS & Kas Sekolah</p>
+                    <p class="text-muted">Menampilkan seluruh transaksi BOS & Kas (Transaksi Manual, SPP, Payroll)</p>
                 </div>
             </div>
         </div>
+
+        {{-- Chart --}}
+        <div class="card shadow-sm border-0 mb-4 rounded-3">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3">Grafik Pemasukan & Pengeluaran</h5>
+                <canvas id="financeChart" height="100"></canvas>
+            </div>
+        </div>
+
+        {{-- Flash message --}}
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
 
         {{-- Card Saldo --}}
         <div class="row g-3 mb-4">
@@ -42,32 +59,9 @@
             </div>
         </div>
 
-        {{-- Chart --}}
-        <div class="card shadow-sm border-0 mb-4 rounded-3">
-            <div class="card-body">
-                <h5 class="fw-semibold mb-3">Grafik Pemasukan & Pengeluaran</h5>
-                <canvas id="financeChart" height="100"></canvas>
-            </div>
-        </div>
-
-        {{-- Flash message --}}
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-
         {{-- Daftar Transaksi --}}
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body">
-
-                {{-- Header Action --}}
-                <div class="d-flex justify-content-end mb-3">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFinanceModal">
-                        <i class="ti ti-plus me-1"></i> Tambah Transaksi
-                    </button>
-                </div>
 
                 {{-- Search & Filter --}}
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
@@ -97,10 +91,10 @@
                                         <th>Kategori</th>
                                         <th>Jumlah</th>
                                         <th>In/Out</th>
+                                        <th>Source</th>
                                         <th>User</th>
                                         <th>Tanggal</th>
                                         <th>Deskripsi</th>
-                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,18 +110,14 @@
                                             <span class="badge bg-danger-subtle text-danger">OUT</span>
                                             @endif
                                         </td>
+                                        <td>
+                                            <span class="badge bg-secondary-subtle text-secondary">
+                                                {{ strtoupper($finance->source ?? 'SYSTEM') }}
+                                            </span>
+                                        </td>
                                         <td>{{ $finance->user->name ?? '-' }}</td>
                                         <td>{{ $finance->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $finance->description ?? '-' }}</td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                                data-bs-target="#editFinanceModal{{ $finance->id }}">Edit</button>
-                                            <form action="{{ route('finances.destroy', $finance->id) }}" method="POST"
-                                                class="d-inline" onsubmit="return confirm('Yakin hapus transaksi?')">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-sm btn-outline-danger">Hapus</button>
-                                            </form>
-                                        </td>
                                     </tr>
                                     @empty
                                     <tr>
@@ -167,10 +157,10 @@
                                         <th>Kategori</th>
                                         <th>Jumlah</th>
                                         <th>In/Out</th>
+                                        <th>Source</th>
                                         <th>User</th>
                                         <th>Tanggal</th>
                                         <th>Deskripsi</th>
-                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -186,18 +176,14 @@
                                             <span class="badge bg-danger-subtle text-danger">OUT</span>
                                             @endif
                                         </td>
+                                        <td>
+                                            <span class="badge bg-secondary-subtle text-secondary">
+                                                {{ strtoupper($finance->source ?? 'SYSTEM') }}
+                                            </span>
+                                        </td>
                                         <td>{{ $finance->user->name ?? '-' }}</td>
                                         <td>{{ $finance->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $finance->description ?? '-' }}</td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                                data-bs-target="#editFinanceModal{{ $finance->id }}">Edit</button>
-                                            <form action="{{ route('finances.destroy', $finance->id) }}" method="POST"
-                                                class="d-inline" onsubmit="return confirm('Yakin hapus transaksi?')">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-sm btn-outline-danger">Hapus</button>
-                                            </form>
-                                        </td>
                                     </tr>
                                     @empty
                                     <tr>
@@ -230,181 +216,6 @@
 
     </div>
 </div>
-
-{{-- Modal Tambah --}}
-<div class="modal fade" id="addFinanceModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ route('finances.store') }}" method="POST">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Transaksi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label>Jenis</label>
-                        <select name="type" class="form-control" required>
-                            <option value="dana_bos">Dana BOS</option>
-                            <option value="kas">Kas</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Kategori</label>
-                        <input type="text" name="category" class="form-control" required>
-                    </div>
-                    <div class="mb-2">
-                        <label>Jumlah</label>
-
-                        <input type="text"
-                            class="form-control amount-display"
-                            placeholder="Rp 0"
-                            required>
-
-                        <input type="hidden"
-                            name="amount"
-                            class="amount-hidden">
-                    </div>
-                    <div class="mb-2">
-                        <label>In/Out</label>
-                        <select name="in_out" class="form-control" required>
-                            <option value="in">Pemasukan</option>
-                            <option value="out">Pengeluaran</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Deskripsi</label>
-                        <textarea name="description" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-outline-primary">Simpan</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-{{-- Modal Edit --}}
-@foreach($danaBos as $finance)
-<div class="modal fade" id="editFinanceModal{{ $finance->id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ route('finances.update', $finance->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Transaksi Dana BOS</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label>Jenis</label>
-                        <select name="type" class="form-control" required>
-                            <option value="dana_bos" {{ $finance->type == 'dana_bos' ? 'selected' : '' }}>Dana BOS</option>
-                            <option value="kas" {{ $finance->type == 'kas' ? 'selected' : '' }}>Kas</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Kategori</label>
-                        <input type="text" name="category" value="{{ $finance->category }}" class="form-control" required>
-                    </div>
-                    <div class="mb-2">
-                        <label>Jumlah</label>
-
-                        <input type="text"
-                            class="form-control amount-display"
-                            data-value="{{ $finance->amount }}"
-                            value="Rp {{ number_format($finance->amount, 0, ',', '.') }}"
-                            required>
-
-                        <input type="hidden"
-                            name="amount"
-                            class="amount-hidden"
-                            value="{{ $finance->amount }}">
-                    </div>
-                    <div class="mb-2">
-                        <label>In/Out</label>
-                        <select name="in_out" class="form-control" required>
-                            <option value="in" {{ $finance->in_out == 'in' ? 'selected' : '' }}>Pemasukan</option>
-                            <option value="out" {{ $finance->in_out == 'out' ? 'selected' : '' }}>Pengeluaran</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Deskripsi</label>
-                        <textarea name="description" class="form-control">{{ $finance->description }}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-outline-primary">Update</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-@endforeach
-
-{{-- Modal Edit untuk Kas --}}
-@foreach($kas as $finance)
-<div class="modal fade" id="editFinanceModal{{ $finance->id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ route('finances.update', $finance->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Transaksi Kas</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label>Jenis</label>
-                        <select name="type" class="form-control" required>
-                            <option value="dana_bos" {{ $finance->type == 'dana_bos' ? 'selected' : '' }}>Dana BOS</option>
-                            <option value="kas" {{ $finance->type == 'kas' ? 'selected' : '' }}>Kas</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Kategori</label>
-                        <input type="text" name="category" value="{{ $finance->category }}" class="form-control" required>
-                    </div>
-                    <div class="mb-2">
-                        <label>Jumlah</label>
-
-                        <input type="text"
-                            class="form-control amount-display"
-                            data-value="{{ $finance->amount }}"
-                            value="Rp {{ number_format($finance->amount, 0, ',', '.') }}"
-                            required>
-
-                        <input type="hidden"
-                            name="amount"
-                            class="amount-hidden"
-                            value="{{ $finance->amount }}">
-                    </div>
-                    <div class="mb-2">
-                        <label>In/Out</label>
-                        <select name="in_out" class="form-control" required>
-                            <option value="in" {{ $finance->in_out == 'in' ? 'selected' : '' }}>Pemasukan</option>
-                            <option value="out" {{ $finance->in_out == 'out' ? 'selected' : '' }}>Pengeluaran</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Deskripsi</label>
-                        <textarea name="description" class="form-control">{{ $finance->description }}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer" <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-outline-primary">Update</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-@endforeach
-
 @endsection
 
 @push('scripts')

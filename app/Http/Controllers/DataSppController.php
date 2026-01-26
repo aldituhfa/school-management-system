@@ -8,6 +8,8 @@ use App\Models\BiayaSpp;
 use App\Models\TahunAjaran;
 use App\Models\TagihanSpp;
 use Carbon\Carbon;
+use App\Models\Finance;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class DataSppController extends Controller
@@ -139,31 +141,61 @@ class DataSppController extends Controller
 
     public function bayar(Request $request, $id)
     {
-        $tagihan = TagihanSpp::findOrFail($id);
+        $tagihan = TagihanSpp::with('siswa')->findOrFail($id);
 
-        // Update data tagihan menjadi lunas
+        // CEK JIKA SUDAH LUNAS (ANTI DOUBLE INPUT)
+        if ($tagihan->status === 'lunas') {
+            return back()->with('warning', 'Tagihan ini sudah lunas.');
+        }
+
+        // Update status SPP
         $tagihan->update([
             'tanggal_bayar' => now(),
             'status' => 'lunas',
             'keterangan' => 'Dibayar pada ' . now()->translatedFormat('d F Y'),
         ]);
 
-        return back()->with('success', 'Tagihan bulan ' . $tagihan->bulan . ' telah dibayar.');
+        // === MASUK KE KAS ===
+        Finance::create([
+            'type' => 'kas',
+            'category' => 'spp',
+            'amount' => $tagihan->nominal,
+            'in_out' => 'in',
+            'description' => 'Pembayaran SPP Siswa',
+            'user_id' => Auth::id(),
+            'source' => 'spp',
+        ]);
+
+        return back()->with('success', 'Tagihan bulan ' . $tagihan->bulan . ' berhasil dibayar & masuk ke kas.');
     }
+
 
     public function cancel($id)
     {
-        $tagihan = TagihanSpp::findOrFail($id);
+        $tagihan = TagihanSpp::with('siswa')->findOrFail($id);
 
-        // Update data tagihan jadi belum lunas kembali
+        if ($tagihan->status !== 'lunas') {
+            return back()->with('warning', 'Tagihan belum lunas.');
+        }
+
+        // HAPUS TRANSAKSI KAS TERKAIT SPP
+        Finance::where([
+            'type' => 'kas',
+            'category' => 'spp',
+            'amount' => $tagihan->nominal,
+            'description' => 'Pembayaran SPP Siswa',
+        ])->latest()->first()?->delete();
+
+        // Update status tagihan
         $tagihan->update([
             'tanggal_bayar' => null,
             'status' => 'belum lunas',
             'keterangan' => 'Dibatalkan pada ' . now()->translatedFormat('d F Y'),
         ]);
 
-        return back()->with('success', 'Pembayaran bulan ' . $tagihan->bulan . ' telah dibatalkan.');
+        return back()->with('success', 'Pembayaran SPP dibatalkan & kas dikoreksi.');
     }
+
 
     public function update(Request $request, $id)
     {

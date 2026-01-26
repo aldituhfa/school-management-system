@@ -12,7 +12,8 @@ class PayrollHistory extends Model
         'payroll_period_id',
         'gaji_pokok',
         'status',
-        'paid_at'
+        'paid_at',
+        'finance_id'
     ];
 
     public function user()
@@ -23,5 +24,10 @@ class PayrollHistory extends Model
     public function period()
     {
         return $this->belongsTo(PayrollPeriod::class, 'payroll_period_id');
+    }
+
+    public function finance()
+    {
+        return $this->belongsTo(Finance::class);
     }
 }

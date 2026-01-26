@@ -55,9 +55,12 @@
                 </thead>
                 <tbody>
                     @foreach($users as $u)
+
                     @php
-                    $paid = $u->payrollHistories->isNotEmpty();
+                    $history = $u->payrollHistories->first();
+                    $paid = $history && $history->status === 'paid';
                     @endphp
+                    
                     <tr>
                         <td class="fw-semibold">{{ $u->name }}</td>
 
@@ -86,18 +89,22 @@
                         {{-- AKSI --}}
                         <td class="text-center">
                             @if(!$paid)
-                            <form method="POST"
-                                action="{{ route('payroll.proses.pay',[$period->id,$u->id]) }}">
+                            <form action="{{ route('payroll.proses.pay', [$period->id, $u->id]) }}" method="POST">
                                 @csrf
-                                <button class="btn btn-sm btn-success">
+                                <select name="source" required class="form-select form-select-sm mb-1">
+                                    <option value="">Sumber Dana</option>
+                                    <option value="kas">Kas</option>
+                                    <option value="dana_bos">BOS</option>
+                                </select>
+                                <button class="btn btn-success btn-sm w-100">
                                     <i class="bx bx-money"></i> Bayar
                                 </button>
                             </form>
                             @else
                             <form method="POST"
-                                action="{{ route('payroll.proses.cancel',[$period->id,$u->id]) }}">
+                                action="{{ route('payroll.proses.cancel', [$period->id, $u->id]) }}">
                                 @csrf
-                                <button class="btn btn-sm btn-warning"
+                                <button class="btn btn-sm btn-warning w-100"
                                     onclick="return confirm('Batalkan pembayaran gaji?')">
                                     <i class="bx bx-x-circle"></i> Cancel
                                 </button>

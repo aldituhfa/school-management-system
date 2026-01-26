@@ -135,6 +135,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('finances.index')
         ->middleware('role:super_admin,admin,tu,payroll');
 
+
+    //SUPER ADMIN > transaksi manual
+    Route::get('/finances/manual', [FinanceController::class, 'manualIndex'])
+        ->name('finances.manual')
+        ->middleware('role:super_admin,admin,tu,payroll');
+
     Route::post('/finances', [FinanceController::class, 'store'])
         ->name('finances.store')
         ->middleware('role:super_admin,admin,tu,payroll');
@@ -146,6 +152,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/finances/{id}', [FinanceController::class, 'destroy'])
         ->name('finances.destroy')
         ->middleware('role:super_admin,admin,tu,payroll');
+
+
+
 
     // SUPER ADMIN > Finance logs
     Route::get('/logs/finances', [LogController::class, 'index'])

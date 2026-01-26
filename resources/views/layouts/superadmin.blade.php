@@ -344,21 +344,35 @@ $setting = Setting::first();
                     </a>
                 </li>
 
-                <li class="nav-item sidebar-dropdown" id="financeDropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->is('finances') || request()->is('logs/finances') ? 'active' : '' }}"
-                        href="#" role="button" aria-expanded="false">
+                <li id="financeDropdown"
+                    class="nav-item sidebar-dropdown {{ request()->is('finances*') || request()->is('logs/finances*') ? 'show' : '' }}">
+
+                    <a class="nav-link dropdown-toggle {{ request()->is('finances*') || request()->is('logs/finances*') ? 'active' : '' }}"
+                        href="#"
+                        role="button"
+                        aria-expanded="{{ request()->is('finances*') || request()->is('logs/finances*') ? 'true' : 'false' }}">
                         <i class="ti ti-wallet"></i>
                         <span>Kelola Keuangan</span>
                     </a>
+
                     <div class="sidebar-dropdown-menu">
-                        <a class="sidebar-dropdown-item {{ request()->is('finances') ? 'active' : '' }}" href="{{ url('/finances') }}">
-                            Keuangan Kas & Dana BOS
+                        <a href="{{ url('/finances') }}"
+                            class="sidebar-dropdown-item {{ request()->is('finances') ? 'active' : '' }}">
+                            Kas & Dana BOS
                         </a>
-                        <a class="sidebar-dropdown-item {{ request()->is('logs/finances') ? 'active' : '' }}" href="{{ url('logs/finances') }}">
-                            Riwayat Keuangan
+
+                        <a href="{{ route('finances.manual') }}"
+                            class="sidebar-dropdown-item {{ request()->is('finances/manual') ? 'active' : '' }}">
+                            Transaksi
+                        </a>
+
+                        <a href="{{ url('logs/finances') }}"
+                            class="sidebar-dropdown-item {{ request()->is('logs/finances') ? 'active' : '' }}">
+                            Riwayat Transaksi
                         </a>
                     </div>
                 </li>
+
 
                 <!-- DROPDOWN SISWA -->
                 <li class="nav-item sidebar-dropdown" id="siswaDropdown">
@@ -400,11 +414,11 @@ $setting = Setting::first();
                             Biaya SPP
                         </a>
 
-                        <a class="sidebar-dropdown-item
+                        <!-- <a class="sidebar-dropdown-item
                                 {{ request()->routeIs('superadmin.data_spp.*') ? 'active' : '' }}"
                             href="{{ route('superadmin.data_spp.index') }}">
                             Data SPP
-                        </a>
+                        </a> -->
                     </div>
                 </li>
 

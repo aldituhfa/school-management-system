@@ -10,7 +10,7 @@ class Finance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type','category','amount','in_out','description','user_id'
+        'type','category','amount','in_out','description','user_id', 'source'
     ];
 
     public function user()

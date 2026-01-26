@@ -65,6 +65,7 @@ class FinanceController extends Controller
 
         $data = $request->only('type', 'category', 'amount', 'in_out', 'description');
         $data['user_id'] = Auth::id();
+        $data['source'] = 'manual';
 
         $finance = Finance::create($data);
 
@@ -87,6 +88,11 @@ class FinanceController extends Controller
     public function update(Request $request, $id)
     {
         $finance = Finance::findOrFail($id);
+
+        if ($finance->source !== 'manual') {
+            abort(403, 'Transaksi sistem tidak dapat diubah');
+        }
+
         $before = $finance->amount;
 
         $request->validate([
@@ -128,6 +134,10 @@ class FinanceController extends Controller
     {
         $finance = Finance::findOrFail($id);
 
+        if ($finance->source !== 'manual') {
+            abort(403, 'Transaksi sistem tidak dapat diubah');
+        }
+
         FinanceLog::create([
             'user_id' => Auth::id(),
             'finance_id' => $finance->id,
@@ -141,5 +151,17 @@ class FinanceController extends Controller
         $finance->delete();
 
         return redirect()->back()->with('success', 'Transaksi berhasil dihapus.');
+    }
+
+    public function manualIndex()
+    {
+        // Ambil semua transaksi manual, urut dari yang terbaru
+        $manuals = Finance::with('user')
+            ->where('source', 'manual')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); // Bisa ubah jumlah per halaman
+
+        // Kirim ke view dengan variable $manuals
+        return view('roles.superadmin.manual', compact('manuals'));
     }
 }
