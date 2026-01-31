@@ -296,6 +296,19 @@ $setting = Setting::first();
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('slip_gaji.index') }}"
+                        class="nav-link {{ request()->is('slip-gaji*') ? 'active' : '' }}">
+                        <i class="bx bx-receipt"></i> Slip Gaji
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('payroll.laporan_gaji.index') }}" class="nav-link">
+                        <i class="bx bx-bar-chart"></i> Laporan Gaji
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>

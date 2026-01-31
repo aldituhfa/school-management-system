@@ -24,6 +24,8 @@ use App\Http\Controllers\Guru\JadwalGuruController;
 use App\Http\Controllers\Guru\MateriController;
 use App\Http\Controllers\Payroll\PayrollPeriodController;
 use App\Http\Controllers\Payroll\ProsesPenggajianController;
+use App\Http\Controllers\Payroll\SlipGajiController;
+use App\Http\Controllers\Payroll\PayrollReportController;
 
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
@@ -130,48 +132,32 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    // SUPER ADMIN > finance
+    // FINANCE
     Route::get('/finances', [FinanceController::class, 'index'])
-        ->name('finances.index')
-        ->middleware('role:super_admin,admin,tu,payroll');
+        ->name('finances.index');
 
-
-    //SUPER ADMIN > transaksi manual
+    // transaksi manual
     Route::get('/finances/manual', [FinanceController::class, 'manualIndex'])
-        ->name('finances.manual')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
+        ->name('finances.manual');
     Route::post('/finances', [FinanceController::class, 'store'])
-        ->name('finances.store')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
+        ->name('finances.store');
     Route::put('/finances/{id}', [FinanceController::class, 'update'])
-        ->name('finances.update')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
+        ->name('finances.update');
     Route::delete('/finances/{id}', [FinanceController::class, 'destroy'])
-        ->name('finances.destroy')
-        ->middleware('role:super_admin,admin,tu,payroll');
+        ->name('finances.destroy');
 
 
 
-
-    // SUPER ADMIN > Finance logs
+    // FINANCE LOGS
     Route::get('/logs/finances', [LogController::class, 'index'])
-        ->name('logs.finances')
-        ->middleware('role:super_admin,admin,tu,payroll');
-
+        ->name('logs.finances');
     Route::delete('/logs/finances/{id}', [LogController::class, 'destroy'])
-        ->name('logs.finances.destroy')
-        ->middleware('role:super_admin,admin');
-
+        ->name('logs.finances.destroy');
     Route::get('/logs/finances/export/pdf', [LogController::class, 'exportPdf'])
-        ->name('logs.finances.export.pdf')
-        ->middleware('role:super_admin,admin');
-
+        ->name('logs.finances.export.pdf');
     Route::get('/logs/finances/export/excel', [LogController::class, 'exportExcel'])
-        ->name('logs.finances.export.excel')
-        ->middleware('role:super_admin,admin');
+        ->name('logs.finances.export.excel');
+
 
 
     // TU > SPP
@@ -293,6 +279,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
+
     // GURU > data siswa (perkelas)
     Route::middleware(['auth', 'role:guru'])
         ->prefix('roles/guru')
@@ -305,6 +292,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/siswa-per-kelas/{id}', [SiswaController::class, 'showByKelas'])
                 ->name('siswa.showByKelas');
         });
+
 
 
     //SUPER ADMIN > biaya spp
@@ -387,6 +375,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('jam-belajar', JamBelajarController::class);
     });
 
+
     // Jadwal Routes untuk Superadmin
     Route::prefix('roles/superadmin')->middleware(['auth'])->group(function () {
         Route::prefix('jadwal')->name('jadwal.')->group(function () {
@@ -435,33 +424,33 @@ Route::middleware(['auth'])->group(function () {
 
 
     // PAYROLL > data penggajian
-    Route::middleware(['auth', 'role:payroll'])->group(function () {
-        Route::get(
-            '/roles/payroll/data-penggajian',
-            [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'index']
-        )->name('payroll.data_penggajian.index');
+    Route::get(
+        '/roles/payroll/data-penggajian',
+        [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'index']
+    )->name('payroll.data_penggajian.index');
 
-        Route::get(
-            '/roles/payroll/data-penggajian/{id}/edit',
-            [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'edit']
-        )->name('payroll.data_penggajian.edit');
+    Route::get(
+        '/roles/payroll/data-penggajian/{id}/edit',
+        [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'edit']
+    )->name('payroll.data_penggajian.edit');
 
-        Route::post(
-            '/roles/payroll/data-penggajian/{id}',
-            [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'update']
-        )->name('payroll.data_penggajian.update');
-    });
+    Route::post(
+        '/roles/payroll/data-penggajian/{id}',
+        [\App\Http\Controllers\Payroll\DataPenggajianController::class, 'update']
+    )->name('payroll.data_penggajian.update');
+
 
 
     // PAYROLL > periode penggajian 
-    Route::prefix('payroll')->middleware(['auth', 'role:payroll'])->group(function () {
+    Route::prefix('payroll')->group(function () {
         Route::resource('periode-penggajian', PayrollPeriodController::class)
             ->except(['show']);
     });
 
 
+
     // PAYROLL > proses penggajian
-    Route::prefix('payroll')->middleware(['auth', 'role:payroll'])->group(function () {
+    Route::prefix('payroll')->group(function () {
 
         Route::get('proses-penggajian', [ProsesPenggajianController::class, 'index'])
             ->name('payroll.proses.index');
@@ -484,10 +473,24 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+    // PAYROLL > slip gaji
+    Route::get('/slip-gaji', [SlipGajiController::class, 'index'])
+        ->name('slip_gaji.index');
+
+    Route::get('/slip-gaji/{id}', [SlipGajiController::class, 'show'])
+        ->name('slip_gaji.show');
+
+    Route::get('/slip-gaji/{id}/download', [SlipGajiController::class, 'download'])
+        ->name('slip_gaji.download');
+
+
+    // PAYROLL > laporan gaji 
+    Route::get('/laporan-gaji', [PayrollReportController::class, 'index'])
+        ->name('payroll.laporan_gaji.index');
+
 
     // WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
     // DI SINI NIH
-    // TANTO KICAU GW MERGE MALAH CONFLIC, UDAH GW BENERIN NIH KUNTUL 
 }); 
 
        

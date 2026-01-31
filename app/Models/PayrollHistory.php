@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PayrollHistory extends Model
 {
+    protected $casts = [
+        'paid_at' => 'datetime',
+    ];
+    
     protected $fillable = [
         'user_id',
         'payroll_period_id',
