@@ -463,11 +463,25 @@ $setting = Setting::first();
                             Jadwal Pelajaran
                         </a>
 
+                        <!-- Dropdown Materi Guru -->
+                <li class="nav-item sidebar-dropdown" id="materiGuruDropdown">
+                    <a class="nav-link dropdown-toggle 
+                        {{ request()->routeIs('superadmin.materi.guru*') ? 'active' : '' }}"
+                        href="#" role="button" aria-expanded="false">
+                        <i class="ti ti-file-description"></i>
+                        <span>Materi Guru</span>
+                    </a>
 
-                        <!-- Optional: Tambahkan menu lain jika perlu -->
-                        <!-- <a class="sidebar-dropdown-item" href="#">
-                            Lihat Jadwal per Kelas
-                        </a> -->
+                    <div class="sidebar-dropdown-menu">
+                        <a class="sidebar-dropdown-item 
+                            {{ request()->routeIs('superadmin.materi.guru') ? 'active' : '' }}"
+                            href="{{ route('superadmin.materi.guru') }}">
+                            Daftar Guru
+                        </a>
+            
+                    </div>
+                </li>
+
                     </div>
                 </li>
 
@@ -562,6 +576,9 @@ $setting = Setting::first();
                 {
                     id: 'sppDropdown'
                 },
+                {
+                    id: 'materiGuruDropdown'
+                }
             ];
 
             // Fungsi toggle dropdown

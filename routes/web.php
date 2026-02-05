@@ -26,7 +26,7 @@ use App\Http\Controllers\Payroll\PayrollPeriodController;
 use App\Http\Controllers\Payroll\ProsesPenggajianController;
 use App\Http\Controllers\Payroll\SlipGajiController;
 use App\Http\Controllers\Payroll\PayrollReportController;
-
+use App\Http\Controllers\SuperAdmin\MateriGuruController;
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -491,6 +491,20 @@ Route::middleware(['auth'])->group(function () {
 
     // WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >
     // DI SINI NIH
+
+    // List Materi Super Admin ON Pro
+        Route::middleware(['auth', 'role:super_admin'])->group(function () {
+            Route::prefix('superadmin')->group(function () {
+
+                Route::get('/materi-guru', [MateriGuruController::class, 'index'])
+                    ->name('superadmin.materi.guru');
+
+                Route::get('/materi-guru/{guru}', [MateriGuruController::class, 'show'])
+                    ->name('superadmin.materi.guru.show');
+
+            });
+        });
+        
 }); 
 
        
