@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Payroll;
 use App\Http\Controllers\Controller;
 use App\Models\PayrollHistory;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SlipGajiController extends Controller
 {
@@ -35,11 +36,20 @@ class SlipGajiController extends Controller
         return PayrollHistory::with(['user', 'period'])->findOrFail($id);
     }
 
-    
+
     public function download($id)
     {
         $slip = PayrollHistory::with(['user', 'period'])->findOrFail($id);
 
-        return view('roles.payroll.slip_gaji.pdf', compact('slip'));
+        $pdf = Pdf::loadView('roles.payroll.slip_gaji.pdf', [
+            'slip' => $slip
+        ])->setPaper('A4', 'portrait');
+
+        $fileName = 'slip-gaji-' .
+            str_replace(' ', '-', strtolower($slip->user->name)) . '-' .
+            strtolower($slip->period->bulan) . '-' .
+            $slip->period->tahun . '.pdf';
+
+        return $pdf->download($fileName);
     }
 }

@@ -9,14 +9,22 @@ use Illuminate\Http\Request;
 
 class DataPenggajianController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::whereIn('role', ['super_admin', 'tu', 'guru', 'payroll'])
-            ->with('payrollSetting')
-            ->get();
+        $role = $request->query('role');
 
-        return view('roles.payroll.data_penggajian.index', compact('users'));
+        $query = User::whereIn('role', ['super_admin', 'guru', 'payroll'])
+            ->with('payrollSetting');
+
+        if ($role) {
+            $query->where('role', $role);
+        }
+
+        $users = $query->get();
+
+        return view('roles.payroll.data_penggajian.index', compact('users', 'role'));
     }
+
 
     public function edit($id)
     {

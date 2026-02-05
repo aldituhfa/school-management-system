@@ -60,7 +60,10 @@ class PayrollPeriodController extends Controller
         // CANCEL
         if ($request->action === 'cancel') {
 
-            $hasPayment = PayrollHistory::where('payroll_period_id', $period->id)->exists();
+            $hasPayment = PayrollHistory::where('payroll_period_id', $period->id)
+                ->where('status', 'paid')
+                ->exists();
+
 
             if ($hasPayment) {
                 return back()->with(

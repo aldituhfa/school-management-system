@@ -485,8 +485,15 @@ Route::middleware(['auth'])->group(function () {
 
 
     // PAYROLL > laporan gaji 
+    // PAYROLL > laporan gaji
     Route::get('/laporan-gaji', [PayrollReportController::class, 'index'])
         ->name('payroll.laporan_gaji.index');
+
+    Route::get('/laporan-gaji/export/pdf', [PayrollReportController::class, 'exportPdf'])
+        ->name('payroll.laporan_gaji.export.pdf');
+
+    Route::get('/laporan-gaji/export/excel', [PayrollReportController::class, 'exportExcel'])
+        ->name('payroll.laporan_gaji.export.excel');
 
 
     // WOY TANTO KALO BIKIN ROUTE BARU TARO DI BAWAH INI >

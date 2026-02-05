@@ -261,56 +261,70 @@ $setting = Setting::first();
         </div>
 
         <div class="p-2">
-            <ul class="nav flex-column">
+            <ul class="nav flex-column gap-1">
+
+                {{-- DASHBOARD --}}
                 <li class="nav-item">
-                    <a href="{{ route('roles.payroll.dashboard') }}" class="nav-link active">
+                    <a href="{{ route('roles.payroll.dashboard') }}"
+                        class="nav-link {{ request()->routeIs('roles.payroll.dashboard') ? 'active' : '' }}">
                         <i class="bx bx-home"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-chalkboard"></i> Gaji
-                    </a>
+
+                {{-- GROUP : PENGGAJIAN --}}
+                <li class="nav-item mt-2">
+                    <div class="nav-link text-muted fw-semibold disabled"
+                        style="cursor: default;">
+                        <i class="bx bx-wallet"></i> Penggajian
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bx bx-user-pin"></i> Laporan
-                    </a>
-                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('payroll.data_penggajian.index') }}"
-                        class="nav-link {{ request()->routeIs('payroll.data_penggajian.*') ? 'active' : '' }}">
-                        <i class="bx bx-wallet"></i> Data Penggajian
+                        class="nav-link ps-4 {{ request()->routeIs('payroll.data_penggajian.*') ? 'active' : '' }}">
+                        Data Gaji
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('periode-penggajian.index') }}" class="nav-link">
-                        <i class="bx bx-calendar"></i> Periode Penggajian
+                    <a href="{{ route('periode-penggajian.index') }}"
+                        class="nav-link ps-4 {{ request()->routeIs('periode-penggajian.*') ? 'active' : '' }}">
+                        Periode
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('payroll.proses.index') }}" class="nav-link">
-                        <i class="bx bx-credit-card"></i> Proses Penggajian
+                    <a href="{{ route('payroll.proses.index') }}"
+                        class="nav-link ps-4 {{ request()->routeIs('payroll.proses.*') ? 'active' : '' }}">
+                        Proses
+                    </a>
+                </li>
+
+                {{-- GROUP : LAPORAN & SLIP --}}
+                <li class="nav-item mt-2">
+                    <div class="nav-link text-muted fw-semibold disabled"
+                        style="cursor: default;">
+                        <i class="bx bx-bar-chart"></i> Laporan & Slip
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('payroll.laporan_gaji.index') }}"
+                        class="nav-link ps-4 {{ request()->routeIs('payroll.laporan_gaji.*') ? 'active' : '' }}">
+                        Laporan Gaji
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('slip_gaji.index') }}"
-                        class="nav-link {{ request()->is('slip-gaji*') ? 'active' : '' }}">
-                        <i class="bx bx-receipt"></i> Slip Gaji
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('payroll.laporan_gaji.index') }}" class="nav-link">
-                        <i class="bx bx-bar-chart"></i> Laporan Gaji
+                        class="nav-link ps-4 {{ request()->routeIs('slip_gaji.*') ? 'active' : '' }}">
+                        Slip Gaji
                     </a>
                 </li>
 
             </ul>
         </div>
+
     </div>
 
     <!-- Main Content -->
