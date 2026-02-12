@@ -1381,10 +1381,10 @@
                 <p>Guru dapat mengelola proses pembelajaran, serta melakukan pencatatan
                    aktivitas kelas secara efisien melalui sistem ini.</p>
                 <ul class="role-features">
+                  <li><i class="bi bi-check-circle-fill"></i> Dashboard Interaktif</li>
                   <li><i class="bi bi-check-circle-fill"></i> Melihat data siswa</li>
                   <li><i class="bi bi-check-circle-fill"></i> Melihat jadwal mengajar secara real-time</li>
                   <li><i class="bi bi-check-circle-fill"></i> Upload materi pembelajaran</li>
-                  <li><i class="bi bi-check-circle-fill"></i> Melakukan pencatatan kehadiran siswa</li>
                 </ul>
               </div>
               <div class="role-image">

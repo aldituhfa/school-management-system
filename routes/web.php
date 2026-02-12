@@ -79,10 +79,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 // GURU
+// Route::middleware(['auth', 'role:guru'])->group(function () {
+//     Route::get('/roles/guru/dashboard', function () {
+//         return view('roles.guru.dashboard');
+//     })->name('roles.guru.dashboard');
+// });
+
+// GURU
 Route::middleware(['auth', 'role:guru'])->group(function () {
-    Route::get('/roles/guru/dashboard', function () {
-        return view('roles.guru.dashboard');
-    })->name('roles.guru.dashboard');
+    Route::get('/roles/guru/dashboard', [App\Http\Controllers\GuruDashboardController::class, 'index'])->name('roles.guru.dashboard');
 });
 
 // TU
