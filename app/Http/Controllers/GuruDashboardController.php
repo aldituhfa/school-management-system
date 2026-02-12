@@ -12,13 +12,9 @@ use Carbon\Carbon;
 
 class GuruDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $guru = Auth::user();
-        
-        // Debug: Cek guru_id
-        \Log::info('Guru ID: ' . $guru->id);
-        \Log::info('Guru Name: ' . $guru->name);
         
         // Statistik Cards
         $totalSiswa = $this->getTotalSiswa($guru->id);
@@ -26,23 +22,17 @@ class GuruDashboardController extends Controller
         $totalMateri = $this->getTotalMateri($guru->id);
         $totalKelas = $this->getTotalKelas($guru->id);
         
-        // Debug: Cek jumlah jadwal
-        \Log::info('Total Jadwal: ' . $jadwalMingguIni);
+        // Data Siswa Terbaru dengan Pagination dan Search
+        $searchSiswa = $request->input('search_siswa');
+        $siswaTerbaru = $this->getSiswaTerbaru($guru->id, $searchSiswa);
         
-        // Data Siswa Terbaru (4 siswa terbaru dari kelas yang diajar guru)
-        $siswaTerbaru = $this->getSiswaTerbaru($guru->id);
-        
-        // Jadwal Minggu Ini Detail
+        // Jadwal Minggu Ini Detail dengan Pagination
         $jadwalDetail = $this->getJadwalMingguIniDetail($guru->id);
         
-        // Debug: Cek jadwal detail
-        \Log::info('Jadwal Detail Count: ' . $jadwalDetail->count());
-        \Log::info('Jadwal Detail: ' . json_encode($jadwalDetail));
-        
-        // Materi Pembelajaran
+        // Materi Pembelajaran dengan Pagination
         $materiPembelajaran = $this->getMateriPembelajaran($guru->id);
         
-        // Aktivitas Terbaru
+        // Aktivitas Terbaru dengan Pagination
         $aktivitasTerbaru = $this->getAktivitasTerbaru($guru->id);
         
         return view('roles.guru.dashboard', compact(
@@ -54,7 +44,8 @@ class GuruDashboardController extends Controller
             'siswaTerbaru',
             'jadwalDetail',
             'materiPembelajaran',
-            'aktivitasTerbaru'
+            'aktivitasTerbaru',
+            'searchSiswa'
         ));
     }
     
@@ -80,45 +71,43 @@ class GuruDashboardController extends Controller
         return MateriPembelajaran::where('guru_id', $guruId)->count();
     }
     
-    private function getSiswaTerbaru($guruId)
+    private function getSiswaTerbaru($guruId, $search = null)
     {
         $kelasIds = JadwalPelajaran::where('guru_id', $guruId)
             ->distinct()
             ->pluck('kelas_id');
         
-        return Siswa::with('kelas')
-            ->whereIn('kelas_id', $kelasIds)
-            ->orderBy('created_at', 'desc')
-            ->limit(4)
-            ->get();
+        $query = Siswa::with('kelas')
+            ->whereIn('kelas_id', $kelasIds);
+        
+        // Tambahkan search jika ada
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nama_siswa', 'LIKE', "%{$search}%")
+                  ->orWhere('nisn', 'LIKE', "%{$search}%")
+                  ->orWhere('tempat_lahir', 'LIKE', "%{$search}%")
+                  ->orWhere('agama', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        return $query->orderBy('created_at', 'desc')
+            ->paginate(5, ['*'], 'siswa_page');
     }
     
     private function getJadwalMingguIniDetail($guruId)
     {
-        $today = Carbon::now();
-        $currentDayOfWeek = $today->dayOfWeek; // 0 = Minggu, 1 = Senin, dst
-        
-        // Mapping hari dalam bahasa Indonesia
-        $hariMapping = [
-            1 => 'Senin',
-            2 => 'Selasa',
-            3 => 'Rabu',
-            4 => 'Kamis',
-            5 => 'Jumat',
-            6 => 'Sabtu',
-            0 => 'Minggu'
-        ];
-        
-        // Ambil semua jadwal guru, tidak filter berdasarkan hari
-        // Karena kita ingin tampilkan semua jadwal minggu ini
-        $jadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
+        // Ambil semua jadwal guru dengan pagination per hari
+        $allJadwal = JadwalPelajaran::with(['kelas', 'mataPelajaran'])
             ->where('guru_id', $guruId)
             ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
             ->orderBy('waktu_mulai')
-            ->get()
-            ->groupBy('hari');
+            ->paginate(10, ['*'], 'jadwal_page');
         
-        return $jadwal;
+        // Group by hari setelah pagination
+        $grouped = $allJadwal->getCollection()->groupBy('hari');
+        $allJadwal->setCollection(collect($grouped));
+        
+        return $allJadwal;
     }
     
     private function getMateriPembelajaran($guruId)
@@ -126,8 +115,7 @@ class GuruDashboardController extends Controller
         return MateriPembelajaran::with(['jadwal.kelas', 'jadwal.mataPelajaran'])
             ->where('guru_id', $guruId)
             ->orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get();
+            ->paginate(5, ['*'], 'materi_page');
     }
     
     private function getTotalKelas($guruId)
@@ -140,12 +128,11 @@ class GuruDashboardController extends Controller
     
     private function getAktivitasTerbaru($guruId)
     {
-        // Ambil 10 aktivitas terbaru (upload materi)
+        // Ambil aktivitas terbaru dengan pagination
         return MateriPembelajaran::with(['jadwal.kelas', 'jadwal.mataPelajaran'])
             ->where('guru_id', $guruId)
             ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
+            ->paginate(10, ['*'], 'aktivitas_page');
     }
     
     private function getDayName($dayOfWeek)

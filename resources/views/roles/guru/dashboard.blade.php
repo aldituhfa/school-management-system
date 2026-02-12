@@ -122,21 +122,35 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3 border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            <h6 class="mb-0 font-weight-bold text-blue mr-3">
-                                <i class="fas fa-users fa-sm mr-2"></i> Data Siswa Terbaru
-                            </h6>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-blue dropdown-toggle py-1" type="button" 
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-filter fa-xs mr-1"></i> Filter
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">Semua</a>
-                                <a class="dropdown-item" href="#">Aktif</a>
-                                <a class="dropdown-item" href="#">Baru</a>
-                            </div>
+                        <h6 class="mb-0 font-weight-bold text-blue">
+                            <i class="fas fa-users fa-sm mr-2"></i> Data Siswa Terbaru
+                        </h6>
+                        <div class="search-box">
+                            <form method="GET" action="{{ route('roles.guru.dashboard') }}" class="form-inline">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" 
+                                           name="search_siswa" 
+                                           class="form-control form-control-sm" 
+                                           placeholder="Cari siswa..."
+                                           value="{{ $searchSiswa ?? '' }}"
+                                           style="border-radius: 20px 0 0 20px; border-right: 0; font-size: 0.75rem;">
+                                    <div class="input-group-append">
+                                        @if($searchSiswa)
+                                        <a href="{{ route('roles.guru.dashboard') }}" 
+                                           class="btn btn-sm btn-outline-secondary"
+                                           style="border-radius: 0; border-right: 0; border-left: 0; padding: 0.25rem 0.5rem;"
+                                           title="Clear">
+                                            <i class="fas fa-times fa-xs"></i>
+                                        </a>
+                                        @endif
+                                        <button class="btn btn-sm btn-blue" 
+                                                type="submit"
+                                                style="border-radius: 0 20px 20px 0; padding: 0.25rem 0.75rem;">
+                                            <i class="fas fa-search fa-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -211,9 +225,23 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white py-2 px-3 border-top">
-                    <a href="#" class="btn btn-sm btn-outline-blue py-1">
-                        <i class="fas fa-eye mr-1"></i> Lihat Semua Siswa
-                    </a>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            @if($searchSiswa)
+                            <span class="text-muted small">
+                                <i class="fas fa-search fa-xs mr-1"></i>
+                                Hasil pencarian "<strong>{{ $searchSiswa }}</strong>": {{ $siswaTerbaru->total() }} siswa
+                            </span>
+                            @else
+                            <a href="#" class="btn btn-sm btn-outline-blue py-1">
+                                <i class="fas fa-eye mr-1"></i> Lihat Semua Siswa
+                            </a>
+                            @endif
+                        </div>
+                        <div class="pagination-sm mb-0">
+                            {{ $siswaTerbaru->appends(['search_siswa' => $searchSiswa])->links('pagination::bootstrap-4') }}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -278,6 +306,11 @@
                             <p class="text-muted mb-0 small">Belum ada aktivitas</p>
                         </div>
                         @endforelse
+                    </div>
+                </div>
+                <div class="card-footer bg-white py-2 px-3 border-top">
+                    <div class="pagination-sm mb-0">
+                        {{ $aktivitasTerbaru->appends(request()->except('aktivitas_page'))->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>
@@ -353,43 +386,50 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="schedule-container" style="max-height: 400px; overflow-y: auto;">
-                        @forelse($jadwalDetail as $hari => $jadwals)
-                        <div class="schedule-day p-3 border-bottom">
-                            <div class="d-flex align-items-center mb-2">
-                                <span class="day-badge bg-blue text-white rounded px-2 py-1">
-                                    {{ $hari }}
-                                </span>
-                                <span class="ml-2 text-muted small">
-                                    {{ count($jadwals) }} kelas
-                                </span>
-                            </div>
-                            @foreach($jadwals as $jadwal)
-                            <div class="schedule-item mb-2 p-2 bg-light-blue rounded">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div>
-                                        <p class="font-weight-bold mb-1 small">
-                                            <i class="far fa-clock text-blue fa-xs mr-1"></i>
-                                            {{ \Carbon\Carbon::parse($jadwal->waktu_mulai)->format('H:i') }} - 
-                                            {{ \Carbon\Carbon::parse($jadwal->waktu_selesai)->format('H:i') }}
-                                        </p>
-                                        <p class="text-muted mb-0 smaller">
-                                            <i class="fas fa-book fa-xs mr-1"></i>
-                                            {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
-                                        </p>
-                                    </div>
-                                    <span class="badge bg-blue text-white smaller">
-                                        {{ $jadwal->kelas->nama_kelas }}
+                        @if($jadwalDetail->count() > 0)
+                            @foreach($jadwalDetail->items() as $hari => $jadwals)
+                            <div class="schedule-day p-3 border-bottom">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="day-badge bg-blue text-white rounded px-2 py-1">
+                                        {{ $hari }}
+                                    </span>
+                                    <span class="ml-2 text-muted small">
+                                        {{ count($jadwals) }} kelas
                                     </span>
                                 </div>
+                                @foreach($jadwals as $jadwal)
+                                <div class="schedule-item mb-2 p-2 bg-light-blue rounded">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <p class="font-weight-bold mb-1 small">
+                                                <i class="far fa-clock text-blue fa-xs mr-1"></i>
+                                                {{ \Carbon\Carbon::parse($jadwal->waktu_mulai)->format('H:i') }} - 
+                                                {{ \Carbon\Carbon::parse($jadwal->waktu_selesai)->format('H:i') }}
+                                            </p>
+                                            <p class="text-muted mb-0 smaller">
+                                                <i class="fas fa-book fa-xs mr-1"></i>
+                                                {{ $jadwal->mataPelajaran->nama_mata_pelajaran }}
+                                            </p>
+                                        </div>
+                                        <span class="badge bg-blue text-white smaller">
+                                            {{ $jadwal->kelas->nama_kelas }}
+                                        </span>
+                                    </div>
+                                </div>
+                                @endforeach
                             </div>
                             @endforeach
-                        </div>
-                        @empty
+                        @else
                         <div class="text-center py-4">
                             <i class="fas fa-calendar-times fa-2x text-gray-300 mb-2"></i>
                             <p class="text-muted small mb-0">Belum ada jadwal minggu ini</p>
                         </div>
-                        @endforelse
+                        @endif
+                    </div>
+                </div>
+                <div class="card-footer bg-white py-2 px-3 border-top">
+                    <div class="pagination-sm mb-0">
+                        {{ $jadwalDetail->appends(request()->except('jadwal_page'))->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>
@@ -508,6 +548,16 @@
                         </table>
                     </div>
                 </div>
+                <div class="card-footer bg-white py-3 px-4 border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted small">
+                            Menampilkan {{ $materiPembelajaran->firstItem() ?? 0 }} - {{ $materiPembelajaran->lastItem() ?? 0 }} dari {{ $materiPembelajaran->total() }} materi
+                        </div>
+                        <div class="pagination-sm mb-0">
+                            {{ $materiPembelajaran->appends(request()->except('materi_page'))->links('pagination::bootstrap-4') }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -592,5 +642,72 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #f8f9fa; }
     ::-webkit-scrollbar-thumb { background: var(--blue); }
+
+    /* Pagination Styles */
+    .pagination-sm .pagination {
+        margin-bottom: 0;
+    }
+    
+    .pagination-sm .page-link {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        color: var(--blue);
+        border-color: #dee2e6;
+    }
+    
+    .pagination-sm .page-link:hover {
+        background-color: var(--blue-lighter);
+        border-color: var(--blue);
+        color: var(--blue);
+    }
+    
+    .pagination-sm .page-item.active .page-link {
+        background-color: var(--blue);
+        border-color: var(--blue);
+        color: white;
+    }
+    
+    .pagination-sm .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
+    }
+    
+    /* Search Box Styles */
+    .search-box .input-group-sm .form-control {
+        height: calc(1.5em + 0.5rem + 2px);
+    }
+    
+    .search-box .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .search-box .form-control:focus {
+        border-color: var(--blue);
+        box-shadow: none;
+    }
+    
+    .search-box .btn-blue {
+        background-color: var(--blue);
+        border-color: var(--blue);
+        color: white;
+    }
+    
+    .search-box .btn-blue:hover {
+        background-color: var(--blue-light);
+        border-color: var(--blue-light);
+    }
+    
+    .search-box .btn-outline-secondary {
+        border-color: #ced4da;
+        color: #6c757d;
+    }
+    
+    .search-box .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
 </style>
 @endpush
