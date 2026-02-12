@@ -56,7 +56,7 @@
                                 <th class="text-muted text-uppercase small fw-normal">Nama</th>
                                 <th class="text-muted text-uppercase small fw-normal">Email</th>
                                 <th class="text-muted text-uppercase small fw-normal">Gaji Pokok</th>
-                                <th class="text-muted text-uppercase small fw-normal">Status Aktif</th>
+                                <th class="text-muted text-uppercase small fw-normal">Status Pegawai</th>
                                 <th class="text-muted text-uppercase small fw-normal">Status Penggajian</th>
                                 <th class="text-muted text-uppercase small fw-normal text-center">Aksi</th>
                             </tr>

@@ -27,6 +27,10 @@ use App\Http\Controllers\Payroll\ProsesPenggajianController;
 use App\Http\Controllers\Payroll\SlipGajiController;
 use App\Http\Controllers\Payroll\PayrollReportController;
 use App\Http\Controllers\SuperAdmin\MateriGuruController;
+use App\Http\Controllers\Payroll\PayrollDashboardController;
+use App\Http\Controllers\TU\DashboardTuController;
+use App\Http\Controllers\SuperAdmin\DashboardController;
+
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
 // use App\Http\Controllers\StatusController;
@@ -66,9 +70,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // SUPER ADMIN
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/roles/superadmin/dashboard', function () {
-        return view('roles.superadmin.dashboard');
-    })->name('roles.superadmin.dashboard');
+    Route::get('/roles/superadmin/dashboard', [DashboardController::class, 'index'])
+        ->name('roles.superadmin.dashboard');
 });
 
 // ADMIN
@@ -92,10 +95,10 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
 
 // TU
 Route::middleware(['auth', 'role:tu'])->group(function () {
-    Route::get('/roles/tu/dashboard', function () {
-        return view('roles.tu.dashboard');
-    })->name('roles.tu.dashboard');
+    Route::get('/roles/tu/dashboard', [DashboardTuController::class, 'index'])
+        ->name('roles.tu.dashboard');
 });
+
 
 // SISWA
 Route::middleware(['auth', 'role:siswa'])->group(function () {
@@ -106,9 +109,10 @@ Route::middleware(['auth', 'role:siswa'])->group(function () {
 
 // PAYROLL
 Route::middleware(['auth', 'role:payroll'])->group(function () {
-    Route::get('/roles/payroll/dashboard', function () {
-        return view('roles.payroll.dashboard');
-    })->name('roles.payroll.dashboard');
+    Route::get(
+        '/roles/payroll/dashboard',
+        [PayrollDashboardController::class, 'index']
+    )->name('roles.payroll.dashboard');
 });
 
 
@@ -505,18 +509,16 @@ Route::middleware(['auth'])->group(function () {
     // DI SINI NIH
 
     // List Materi Super Admin ON Pro
-        Route::middleware(['auth', 'role:super_admin'])->group(function () {
-            Route::prefix('superadmin')->group(function () {
+    Route::middleware(['auth', 'role:super_admin'])->group(function () {
+        Route::prefix('superadmin')->group(function () {
 
-                Route::get('/materi-guru', [MateriGuruController::class, 'index'])
-                    ->name('superadmin.materi.guru');
+            Route::get('/materi-guru', [MateriGuruController::class, 'index'])
+                ->name('superadmin.materi.guru');
 
-                Route::get('/materi-guru/{guru}', [MateriGuruController::class, 'show'])
-                    ->name('superadmin.materi.guru.show');
-
-            });
+            Route::get('/materi-guru/{guru}', [MateriGuruController::class, 'show'])
+                ->name('superadmin.materi.guru.show');
         });
-        
+    });
 }); 
 
        
