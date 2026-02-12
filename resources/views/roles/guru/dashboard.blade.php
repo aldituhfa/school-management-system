@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent py-2 px-3 border-top-0">
-                    <a href="#" class="text-blue small d-block text-right">
+                    <a href="{{ route('guru.siswa.perkelas') }}" class="text-blue small d-block text-right">
                         Lihat detail <i class="fas fa-arrow-right ml-1 fa-xs"></i>
                     </a>
                 </div>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent py-2 px-3 border-top-0">
-                    <a href="#" class="text-blue small d-block text-right">
+                   <a href="{{ route('guru.jadwal.index') }}" class="text-blue small d-block text-right">
                         Lihat jadwal <i class="fas fa-arrow-right ml-1 fa-xs"></i>
                     </a>
                 </div>
@@ -82,8 +82,8 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent py-2 px-3 border-top-0">
-                    <a href="#" class="text-blue small d-block text-right">
-                        Upload baru <i class="fas fa-arrow-right ml-1 fa-xs"></i>
+                    <a href="{{ route('guru.materi.index') }}" class="text-blue small d-block text-right">
+                        Upload Materi <i class="fas fa-arrow-right ml-1 fa-xs"></i>
                     </a>
                 </div>
             </div>
@@ -107,9 +107,10 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent py-2 px-3 border-top-0">
-                    <a href="#" class="text-blue small d-block text-right">
-                        Lihat detail <i class="fas fa-arrow-right ml-1 fa-xs"></i>
-                    </a>
+                    <a href="{{ route('guru.jadwal.index') }}" class="text-blue small d-block text-right">
+                            Lihat kelas <i class="fas fa-arrow-right ml-1 fa-xs"></i>
+                        </a>
+
                 </div>
             </div>
         </div>
@@ -233,7 +234,7 @@
                                 Hasil pencarian "<strong>{{ $searchSiswa }}</strong>": {{ $siswaTerbaru->total() }} siswa
                             </span>
                             @else
-                            <a href="#" class="btn btn-sm btn-outline-blue py-1">
+                            <a href="{{ route('guru.siswa.perkelas') }}" class="btn btn-sm btn-outline-blue py-1">
                                 <i class="fas fa-eye mr-1"></i> Lihat Semua Siswa
                             </a>
                             @endif

@@ -50,15 +50,17 @@ class GuruDashboardController extends Controller
     }
     
     private function getTotalSiswa($guruId)
-    {
-        // Ambil semua kelas yang diajar guru
-        $kelasIds = JadwalPelajaran::where('guru_id', $guruId)
-            ->distinct()
-            ->pluck('kelas_id');
-        
-        // Hitung total siswa dari kelas-kelas tersebut
-        return Siswa::whereIn('kelas_id', $kelasIds)->count();
+{
+    $kelasIds = JadwalPelajaran::where('guru_id', $guruId)
+        ->pluck('kelas_id');
+
+    if ($kelasIds->isEmpty()) {
+        return 0;
     }
+
+    return Siswa::whereIn('kelas_id', $kelasIds)->count();
+}
+
     
     private function getJadwalMingguIni($guruId)
     {
