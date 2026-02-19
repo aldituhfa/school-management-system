@@ -13,7 +13,7 @@ class DataPenggajianController extends Controller
     {
         $role = $request->query('role');
 
-        $query = User::whereIn('role', ['super_admin', 'guru', 'payroll'])
+        $query = User::whereIn('role', ['super_admin', 'guru', 'payroll', 'tu'])
             ->with('payrollSetting');
 
         if ($role) {

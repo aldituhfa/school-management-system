@@ -365,7 +365,7 @@ $setting = Setting::first();
                         <i class="bx bx-list-ul"></i> Data SPP
                     </a>
                 </li>
-                
+
                 {{-- ===== LABEL LAPORAN SPP ===== --}}
                 <li class="nav-item mt-1 mb-0">
                     <span class="nav-link text-uppercase text-muted small fw-semibold px-3 py-1">
@@ -399,9 +399,11 @@ $setting = Setting::first();
 
     <!-- Main Content -->
     <div class="main-content">
+
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
+
                 <button class="navbar-toggler d-lg-none" type="button" id="sidebarToggle">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -411,7 +413,80 @@ $setting = Setting::first();
                     <h2 class="page-title mb-0">@yield('title')</h2>
                 </div>
 
-                <div class="navbar-nav ms-auto">
+                <div class="navbar-nav ms-auto d-flex align-items-center">
+
+                    {{-- 🔔 NOTIFICATION --}}
+                    <div class="nav-item dropdown me-3">
+                        <a href="#" class="nav-link position-relative" data-bs-toggle="dropdown">
+                            <i class="ti ti-bell" style="font-size: 20px;"></i>
+
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                            <span id="notifBadge"
+                                class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+                                {{ auth()->user()->unreadNotifications->count() }}
+                            </span>
+                            @endif
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end shadow p-3"
+                            style="width: 360px; max-height: 420px; overflow-y: auto;">
+
+                            <h6 class="fw-bold mb-3 border-bottom pb-2">
+                                🔔 Notifikasi
+                            </h6>
+
+                            <div id="notifContainer">
+
+                                @forelse(auth()->user()->unreadNotifications as $notification)
+
+                                <div class="mb-3 pb-3 border-bottom notification-item"
+                                    id="notif-{{ $notification->id }}">
+
+                                    {{-- HEADER + DELETE --}}
+                                    <div class="d-flex justify-content-between align-items-start">
+
+                                        <div class="fw-semibold text-dark mb-1">
+                                            {{ $notification->data['title'] ?? 'Notifikasi' }}
+                                        </div>
+
+                                        {{-- 🔥 TOMBOL X --}}
+                                        <button class="btn btn-sm text-danger p-0 deleteNotif"
+                                            data-id="{{ $notification->id }}">
+                                            <i class="ti ti-x"></i>
+                                        </button>
+                                    </div>
+
+                                    {{-- Pesan --}}
+                                    <div class="text-muted small mb-3" style="line-height: 1.4;">
+                                        {{ $notification->data['message'] ?? '' }}
+                                    </div>
+
+                                    {{-- BUTTON UNDUH --}}
+                                    <form action="{{ route('notifications.read', $notification->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        <input type="hidden" name="redirect"
+                                            value="{{ $notification->data['unduh_url'] ?? '#' }}">
+                                        <button type="submit"
+                                            class="btn btn-sm btn-dark px-3">
+                                            <i class="ti ti-download"></i> Unduh
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                                @empty
+                                <div id="emptyNotif"
+                                    class="text-center text-muted small py-3">
+                                    Tidak ada notifikasi terbaru
+                                </div>
+                                @endforelse
+
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- 👤 USER PROFILE --}}
                     <div class="nav-item dropdown user-dropdown">
                         <a href="#" class="nav-link d-flex align-items-center p-0" data-bs-toggle="dropdown">
                             <div class="avatar me-2">
@@ -424,23 +499,31 @@ $setting = Setting::first();
                                 {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                                 @endif
                             </div>
-                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                            <span class="d-none d-md-inline">
+                                {{ Auth::user()->name }}
+                            </span>
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="{{ route('payroll.profile') }}" style="font-size: 0.8125rem;">
+                            <a class="dropdown-item"
+                                href="{{ route('payroll.profile') }}"
+                                style="font-size: 0.8125rem;">
                                 <i class="ti ti-user me-2"></i> Profile
                             </a>
 
                             <div class="dropdown-divider"></div>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+
+                            <form action="{{ route('logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="dropdown-item text-danger" style="font-size: 0.8125rem;">
+                                <button type="submit"
+                                    class="dropdown-item text-danger"
+                                    style="font-size: 0.8125rem;">
                                     <i class="bx bx-log-out me-2"></i> Logout
                                 </button>
                             </form>
                         </div>
                     </div>
+
                 </div>
             </div>
         </nav>
@@ -448,7 +531,6 @@ $setting = Setting::first();
         <!-- Page Content -->
         <div class="page-wrapper">
             <div class="container-fluid">
-                <!-- Content Area -->
                 <div class="row">
                     <div class="col-12">
                         @yield('content')
@@ -456,7 +538,9 @@ $setting = Setting::first();
                 </div>
             </div>
         </div>
+
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -483,6 +567,53 @@ $setting = Setting::first();
                     });
                 }
             }
+        });
+
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            document.querySelectorAll('.deleteNotif').forEach(button => {
+
+                button.addEventListener('click', function() {
+
+                    let notifId = this.dataset.id;
+
+                    fetch(`/notifications/${notifId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+
+                            if (data.success) {
+
+                                document.getElementById('notif-' + notifId).remove();
+
+                                let badge = document.getElementById('notifBadge');
+
+                                if (badge) {
+                                    let count = parseInt(badge.innerText) - 1;
+
+                                    if (count <= 0) {
+                                        badge.remove();
+                                        document.getElementById('notifContainer').innerHTML =
+                                            '<div class="text-center text-muted small py-3">Tidak ada notifikasi terbaru</div>';
+                                    } else {
+                                        badge.innerText = count;
+                                    }
+                                }
+                            }
+                        });
+
+                });
+
+            });
+
         });
     </script>
 

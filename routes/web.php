@@ -30,6 +30,7 @@ use App\Http\Controllers\SuperAdmin\MateriGuruController;
 use App\Http\Controllers\Payroll\PayrollDashboardController;
 use App\Http\Controllers\TU\DashboardTuController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
+use Illuminate\Http\Request;
 
 // use App\Http\Controllers\TahunAjaranController;
 // use App\Http\Controllers\TingkatController;
@@ -492,8 +493,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/slip-gaji/{id}/download', [SlipGajiController::class, 'download'])
         ->name('slip_gaji.download');
 
+    //kirim notif slip gaji
+    Route::post(
+        '/slip-gaji/{id}/kirim',
+        [SlipGajiController::class, 'kirim']
+    )->name('slip_gaji.kirim');
 
-    // PAYROLL > laporan gaji 
+
+
     // PAYROLL > laporan gaji
     Route::get('/laporan-gaji', [PayrollReportController::class, 'index'])
         ->name('payroll.laporan_gaji.index');
@@ -519,6 +526,34 @@ Route::middleware(['auth'])->group(function () {
                 ->name('superadmin.materi.guru.show');
         });
     });
+
+
+    //notifikasi
+    Route::post('/notifications/{id}/read', function (Request $request, $id) {
+
+        $notification = auth()->user()
+            ->notifications()
+            ->findOrFail($id);
+
+        $notification->markAsRead();
+
+        return redirect($request->redirect ?? '/');
+    })->name('notifications.read');
+
+
+    Route::delete('/notifications/{id}', function ($id) {
+
+        $notification = auth()->user()
+            ->notifications()
+            ->findOrFail($id);
+
+        $notification->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    })->name('notifications.delete');
+
 }); 
 
        

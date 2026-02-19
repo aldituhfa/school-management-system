@@ -35,6 +35,12 @@
                 class="btn btn-pill {{ ($role ?? '') === 'payroll' ? 'btn-primary' : 'btn-outline-primary' }}">
                 Payroll
             </a>
+
+            <a href="{{ route('payroll.data_penggajian.index', ['role' => 'tu']) }}"
+                class="btn btn-pill {{ ($role ?? '') === 'tata_usaha' ? 'btn-primary' : 'btn-outline-primary' }}">
+                Tata Usaha
+            </a>
+
         </div>
 
         {{-- CARD --}}

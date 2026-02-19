@@ -1,6 +1,20 @@
 @extends('layouts.payroll')
 
 @section('content')
+
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
+@if(session('info'))
+<div class="alert alert-info alert-dismissible fade show">
+    {{ session('info') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
 <div class="container-xl">
     <div class="page-header mb-4">
         <h2 class="page-title" style="font-weight: 600; color: #2c3e50;">Slip Gaji Digital</h2>
@@ -80,18 +94,35 @@
                                     </div>
                                 </div>
 
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 action-buttons">
                                     <a href="{{ route('slip_gaji.index', ['selected' => $slip->id]) }}"
-                                        class="btn btn-sm d-flex align-items-center gap-1"
-                                        style="background: #e8f4ff; color: #1976d2; border: 1px solid #bbdefb;">
-                                        <i class="bx bx-show"></i> Lihat
+                                        class="btn btn-sm btn-view">
+                                        <i class="bx bx-show"></i>
+                                        <span>Lihat</span>
                                     </a>
 
                                     <a href="{{ route('slip_gaji.download', $slip->id) }}"
-                                        class="btn btn-sm d-flex align-items-center gap-1"
-                                        style="background: #1e293b; color: white; border: none;">
-                                        <i class="bx bx-download"></i> Unduh
+                                        class="btn btn-sm btn-download">
+                                        <i class="bx bx-download"></i>
+                                        <span>Unduh</span>
                                     </a>
+
+                                    <form action="{{ route('slip_gaji.kirim', $slip->id) }}" method="POST">
+                                        @csrf
+
+                                        @if($slip->slip_sent_at)
+                                        <button type="button" class="btn btn-sm btn-secondary" disabled>
+                                            <i class="bx bx-check"></i>
+                                            <span>Terkirim</span>
+                                        </button>
+                                        @else
+                                        <button type="submit" class="btn btn-sm btn-send">
+                                            <i class="bx bx-send"></i>
+                                            <span>Kirim Slip</span>
+                                        </button>
+                                        @endif
+                                    </form>
+
                                 </div>
                             </div>
                         </div>
@@ -229,41 +260,109 @@
 </script>
 
 <style>
-    .card {
-        border-radius: 12px;
-    }
-
-    .list-group-item {
-        transition: background-color 0.2s ease;
-    }
-
-    .btn {
-        transition: all 0.2s ease;
-    }
-
-    .btn:hover {
-        transform: translateY(-1px);
-    }
-
-    .sticky-top {
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .badge {
+    .action-buttons .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
         font-weight: 500;
-        padding: 0.35em 0.65em;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .action-buttons .btn i {
+        font-size: 1.1rem;
+    }
+
+    .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-buttons .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* View Button */
+    .btn-view {
+        background: #e8f4ff;
+        color: #1976d2;
+        border: 1px solid #bbdefb;
+    }
+
+    .btn-view:hover {
+        background: #d4e9ff;
+        color: #1565c0;
+        border-color: #90caf9;
+    }
+
+    /* Download Button */
+    .btn-download {
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        color: white;
+    }
+
+    .btn-download:hover {
+        background: linear-gradient(145deg, #334155, #1e293b);
+        color: white;
+    }
+
+    /* Send Button */
+    .btn-send {
+        background: linear-gradient(145deg, #10b981, #059669);
+        color: white;
+    }
+
+    .btn-send:hover {
+        background: linear-gradient(145deg, #34d399, #10b981);
+        color: white;
+    }
+
+    /* Form styling */
+    .action-buttons form {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Focus states */
+    .action-buttons .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+    }
+
+    .btn-download:focus {
+        box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.3);
+    }
+
+    .btn-send:focus {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Disabled state (if needed) */
+    .action-buttons .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+        transform: none;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-wrap: wrap;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+            justify-content: center;
+            min-width: 100px;
+        }
     }
 </style>
 @endsection

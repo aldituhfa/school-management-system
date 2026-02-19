@@ -17,7 +17,8 @@ class PayrollHistory extends Model
         'gaji_pokok',
         'status',
         'paid_at',
-        'finance_id'
+        'finance_id',
+        'slip_sent_at'
     ];
 
     public function user()

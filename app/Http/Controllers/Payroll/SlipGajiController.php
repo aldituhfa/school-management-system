@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\PayrollHistory;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Notifications\SlipGajiDikirimNotification;
+use App\Models\User;
 
 class SlipGajiController extends Controller
 {
@@ -51,5 +53,26 @@ class SlipGajiController extends Controller
             $slip->period->tahun . '.pdf';
 
         return $pdf->download($fileName);
+    }
+
+
+    public function kirim($id)
+    {
+        $slip = PayrollHistory::with(['user', 'period'])->findOrFail($id);
+
+        // kalau sudah pernah dikirim, jangan kirim lagi
+        if ($slip->slip_sent_at) {
+            return back()->with('info', 'Slip sudah pernah dikirim.');
+        }
+
+        // kirim notifikasi
+        $slip->user->notify(new SlipGajiDikirimNotification($slip));
+
+        // update waktu kirim
+        $slip->update([
+            'slip_sent_at' => now()
+        ]);
+
+        return back()->with('success', 'Slip gaji berhasil dikirim.');
     }
 }
